@@ -22,10 +22,13 @@
       ],
       "link": "https://github.com/FahmiRfld-Tech/wisatabatam",
       "preview": "https://batamtes.vercel.app/",
-      "alt": "Hallo Batam AI homepage",
-      "image": "/projects/batam.webp",
-      "width": 1021,
-      "height": 854
+      "alt": [
+        "Pertanyaan tentang pantai tenang di Nongsa dan jawaban asli tentang Pantai Nongsa serta Tanjung Memban.",
+        "A question about quiet beaches in Nongsa and the live app’s reply about Nongsa Beach and Tanjung Memban."
+      ],
+      "image": "/projects/batam-chat.webp",
+      "width": 770,
+      "height": 453
     },
     {
       "id": "cireundeu",
@@ -48,10 +51,17 @@
       ],
       "link": "https://kampungcireundeu.kii.lat/",
       "preview": "https://kampungcireundeu.kii.lat/",
-      "alt": "Kampung Adat Cireundeu homepage",
+      "alt": [
+        "Beranda Kampung Adat Cireundeu",
+        "Kampung Adat Cireundeu homepage"
+      ],
       "image": "/projects/cireundeu.webp",
       "width": 1320,
-      "height": 848
+      "height": 848,
+      "role": [
+        "Project Manager & Full-Stack Developer · Tim 13 orang",
+        "Project Manager & Full-Stack Developer · 13-person team"
+      ]
     },
     {
       "id": "quran",
@@ -60,12 +70,12 @@
         "Sahabat Qur’an"
       ],
       "category": [
-        "2026 / EdTech · Konsep 3D",
-        "2026 / EdTech · 3D Concept"
+        "2026 / EdTech · Prototipe Web",
+        "2026 / EdTech · Web Prototype"
       ],
       "summary": [
-        "Konsep pembelajaran spasial untuk menghafal Juz 30.",
-        "A spatial learning concept for memorizing Juz 30."
+        "Prototipe web untuk menjelajahi ayat lewat perjalanan belajar bertema.",
+        "A web prototype for exploring verses through themed learning journeys."
       ],
       "stack": [
         "Spatial Learning",
@@ -73,10 +83,17 @@
       ],
       "link": "https://github.com/FahmiRfld-Tech/sahabatquran",
       "preview": "https://sahabatquran-phi.vercel.app/",
-      "alt": "Sahabat Qur’an dashboard",
+      "alt": [
+        "Dasbor Sahabat Qur’an",
+        "Sahabat Qur’an dashboard"
+      ],
       "image": "/projects/quran.webp",
       "width": 1025,
-      "height": 755
+      "height": 755,
+      "role": [
+        "Konsep hafalan 3D didokumentasikan di GitHub.",
+        "The 3D memorization concept is documented on GitHub."
+      ]
     },
     {
       "id": "rag",
@@ -98,11 +115,18 @@
         "ChromaDB"
       ],
       "link": "https://github.com/FahmiRfld-Tech/wisatabatam-backend.",
-      "preview": "https://github.com/FahmiRfld-Tech/wisatabatam-backend.#readme",
-      "alt": "Public Django backend README",
+      "preview": "https://github.com/FahmiRfld-Tech/wisatabatam-backend.",
+      "alt": [
+        "README backend Django di GitHub",
+        "Public Django backend README"
+      ],
       "image": "/projects/rag.webp",
       "width": 905,
-      "height": 791
+      "height": 791,
+      "role": [
+        "Eksperimen Django REST terpisah dari aplikasi publik.",
+        "Django REST experiment alongside the public app."
+      ]
     }
   ],
   "roles": [
@@ -287,12 +311,12 @@
   ],
   "copy": {
     "lead": [
-      "Full-stack developer dengan fokus pada AI terapan dan multimedia interaktif.",
-      "Full-stack developer focused on applied AI and interactive multimedia."
+      "Full-stack developer untuk web dan AI terapan.",
+      "Full-stack developer for web and applied AI."
     ],
     "bio": [
-      "Mahasiswa tingkat akhir D4 Teknologi Rekayasa Multimedia di Telkom University. Saya membangun aplikasi web, asisten AI berbasis sumber, dan sistem pengelolaan konten.",
-      "Final-year Multimedia Engineering Technology student at Telkom University. I build web applications, source-grounded AI assistants, and tools for managing digital content."
+      "Saya membangun asisten wisata yang menyertakan sumber dan portal yang bisa diperbarui pengelola UMKM.",
+      "I build travel assistants that cite sources and portals that local business owners can update."
     ],
     "availability": [
       "Terbuka untuk peluang kerja dan kolaborasi",
