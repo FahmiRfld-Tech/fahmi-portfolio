@@ -1,111 +1,114 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { ArrowRight, Database, MapPin, Send, Sparkles, Square } from 'lucide-react'
+import { useReducedMotion } from 'framer-motion'
+import { ArrowUpRight, CalendarDays, Send, Sparkles, Square, Utensils, Waves } from 'lucide-react'
+import { fallback, matchScenario, scenarios } from './playground-scenarios.js'
 
-const scenarios = [
-  {
-    id: 'coast', match: /pantai|bahari|laut|beach|coast|sea|nongsa/i,
-    prompt: ['Rekomendasi wisata bahari Batam?', 'Where can I explore the Batam coast?'],
-    answer: [
-      'Coba mulai dari kawasan Nongsa untuk suasana pesisir. Untuk sesi yang lebih santai, pilih satu titik pantai dan sisakan waktu untuk perjalanan dari penginapan. Cek akses serta kondisi setempat sebelum berangkat.',
-      'Start around Nongsa for a coastal outing. For a slower day, pick one beach and leave time for the trip from your accommodation. Check local access and conditions before leaving.',
-    ],
-  },
-  {
-    id: 'day', match: /sehari|itinerary|rute|jalan|jadwal|day|plan|route|barelang/i,
-    prompt: ['Rute santai satu hari di Batam', 'A relaxed one-day Batam itinerary'],
-    answer: [
-      'Mulai dengan sarapan di area kota, pilih satu kunjungan ke kawasan Barelang, lalu tutup hari dengan kuliner. Sisakan waktu untuk perjalanan darat dan sesuaikan rutenya dengan lokasi penginapan.',
-      'Start with breakfast in the city, choose one stop in the Barelang area, and end the day with a meal. Leave time for road travel and adjust the route around where you are staying.',
-    ],
-  },
-  {
-    id: 'food', match: /kuliner|makan|food|cuisine|seafood|restaurant|restoran/i,
-    prompt: ['Mau cari kuliner lokal', 'Find local food in Batam'],
-    answer: [
-      'Untuk mulai menjelajah kuliner, coba kawasan Nagoya atau Batam Centre. Kalau ingin makan hidangan laut, cek menu, lokasi, dan kisaran harga langsung ke tempatnya sebelum datang.',
-      'Try Nagoya or Batam Centre as starting points for a food outing. If you are looking for seafood, check the menu, location, and prices directly with the restaurant before visiting.',
-    ],
-  },
-]
-const fallback = [
-  'Simulasi ini mencakup tiga topik wisata Batam. Coba tanya tentang wisata bahari, rencana perjalanan satu hari, atau kuliner lokal.',
-  'This simulation covers three Batam travel topics. Try asking about coastal spots, a one-day itinerary, or local food.',
-]
+const icons = { food: Utensils, day: CalendarDays, coast: Waves }
+const displayOrder = [scenarios[0], scenarios[2], scenarios[1]]
 
-export default function Playground({ en }) {
-  const lang = Number(en)
+export default function Playground({ lang, liveUrl }) {
   const reduce = useReducedMotion()
   const [input, setInput] = useState('')
   const [run, setRun] = useState(null)
   const [cursor, setCursor] = useState(0)
-  const [busy, setBusy] = useState(false)
-  const transcript = useRef(null)
+  const [phase, setPhase] = useState('idle')
+  const result = useRef(null)
+  const inputRef = useRef(null)
+  const busy = phase === 'streaming'
 
   useEffect(() => {
-    if (!run || !busy) return
-    const timer = window.setTimeout(() => {
-      const end = Math.min(run.answer.length, cursor + 6)
-      setCursor(end)
-      if (end === run.answer.length) setBusy(false)
-    }, cursor === 0 ? 210 : 29)
+    if (!busy || !run) return
+    if (reduce || cursor === run.answer.length) {
+      setCursor(run.answer.length)
+      setPhase('done')
+      return
+    }
+    const timer = window.setTimeout(() => setCursor(Math.min(run.answer.length, cursor + 7)), cursor ? 32 : 220)
     return () => window.clearTimeout(timer)
-  }, [run, cursor, busy])
+  }, [busy, cursor, reduce, run])
 
   useEffect(() => {
-    if (transcript.current) transcript.current.scrollTop = transcript.current.scrollHeight
-  }, [cursor])
+    if (!run) return
+    const frame = requestAnimationFrame(() => {
+      const bounds = result.current.getBoundingClientRect()
+      const viewport = window.visualViewport
+      const viewportBottom = viewport ? viewport.height + viewport.offsetTop : window.innerHeight
+      if (phase === 'done' && (bounds.top >= viewportBottom || bounds.bottom <= (viewport?.offsetTop ?? 0))) return
+      if (bounds.bottom > viewportBottom - 16) result.current.scrollIntoView({ block: 'end' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [run, phase])
 
-  function ask(question, choice) {
+  function ask(question, selected) {
     const prompt = question.trim()
     if (!prompt || busy) return
-    const scenario = choice ?? scenarios.find(item => item.match.test(prompt))
+    const scenario = selected ?? matchScenario(prompt)
     const answer = scenario?.answer[lang] ?? fallback[lang]
-    setRun({ prompt, answer, scenario })
-    setCursor(reduce ? answer.length : 0)
-    setBusy(!reduce)
+    setRun({ prompt, answer, lang, scenario })
+    const immediate = reduce || !scenario
+    setCursor(immediate ? answer.length : 0)
+    setPhase(immediate ? 'done' : 'streaming')
     setInput('')
   }
+
+  const labels = {
+    idle: ['Contoh dan kolom pertanyaan siap dipakai.', 'Choose a topic or enter a question.'],
+    streaming: ['Sedang menulis jawaban…', 'Writing a reply…'],
+    done: ['Jawaban selesai.', 'Reply complete.'],
+    stopped: ['Jawaban dihentikan.', 'Reply stopped.'],
+  }
+  const status = labels[phase][lang]
 
   return (
     <section id="playground" tabIndex="-1" className="section playground-section" aria-labelledby="play-title">
       <div className="play-intro">
-        <div className="kicker"><Sparkles size={16} /> Interactive Playground</div>
-        <h2 id="play-title">{en ? 'Ask about Batam.' : 'Tanya soal Batam.'}</h2>
-        <p>{en ? 'Try a streaming travel answer without leaving the portfolio.' : 'Coba respons wisata yang muncul bertahap langsung di portofolio.'}</p>
-        <div className="scenario-list">
-          {scenarios.map(item => <button className="key scenario" type="button" disabled={busy}
-            key={item.id} onClick={() => ask(item.prompt[lang], item)}>
-            <MapPin size={16} /> {item.prompt[lang]} <ArrowRight size={15} className="ml-auto" />
-          </button>)}
-        </div>
+        <p className="eyebrow"><Sparkles size={16} /> Playground</p>
+        <h2 id="play-title">{lang ? 'Try the Batam travel assistant' : 'Coba asisten wisata Batam'}</h2>
+        <p>{lang ? 'Try three sample travel topics in this local simulation. The live app answers from its travel sources.' : 'Coba tiga topik perjalanan di simulasi lokal ini. Aplikasi asli menjawab dari sumber wisata yang dirujuk.'}</p>
+        <a className="text-link" href={liveUrl} target="_blank" rel="noreferrer">{lang ? 'Open the live app' : 'Buka aplikasi asli'} <ArrowUpRight size={17} /></a>
       </div>
       <div className="chat-shell">
         <div className="chat-header">
-          <div className="chat-icon"><Sparkles size={20} /></div>
-          <div><strong>Hallo Batam AI</strong><p>{en ? 'Local simulation · no API calls' : 'Simulasi lokal · tanpa panggilan API'}</p></div>
-          <span className="live-dot" aria-hidden="true" />
+          <div className="chat-icon"><Sparkles size={19} /></div>
+          <div><strong>Hallo Batam AI</strong><p>{lang ? 'Local simulation' : 'Simulasi lokal'}</p></div>
         </div>
-        <div className="transcript" ref={transcript} aria-label={en ? 'Conversation' : 'Percakapan'}>
-          <AnimatePresence mode="wait">
-            {run ? (
-              <motion.div key={run.prompt} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="messages">
-                <p className="question">{run.prompt}</p>
-                <p className="answer">{run.answer.slice(0, cursor)}{busy && <span className="typing-cursor" aria-hidden="true" />}</p>
-                {!busy && run.scenario && <a className="source-link" href="https://batamtes.vercel.app/" target="_blank" rel="noreferrer"><Database size={14} /> {en ? 'Open real application' : 'Buka aplikasi asli'} <ArrowRight size={14} /></a>}
-              </motion.div>
-            ) : <motion.div key="empty" className="chat-empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <MapPin size={29} /><p>{en ? 'Choose a prompt or write your own question.' : 'Pilih contoh pertanyaan atau tulis pertanyaan sendiri.'}</p>
-            </motion.div>}
-          </AnimatePresence>
+        <div className="scenario-list" role="group" aria-label={lang ? 'Sample topics' : 'Contoh topik'}>
+          {displayOrder.map(item => {
+            const Icon = icons[item.id]
+            return <button className="key scenario" type="button" aria-disabled={busy}
+              key={item.id} onClick={() => ask(item.prompt[lang], item)}>
+              <Icon size={16} /> {item.label[lang]}
+            </button>
+          })}
         </div>
-        <p className="sr-only" role="status">{busy ? (en ? 'Generating response' : 'Menyiapkan jawaban') : run?.answer.slice(0, cursor)}</p>
-        <form className="chat-form" onSubmit={event => { event.preventDefault(); ask(input) }}>
-          <input aria-label={en ? 'Your question' : 'Pertanyaan lo'} value={input} onChange={event => setInput(event.target.value)}
-            maxLength={240} placeholder={en ? 'Ask about Batam…' : 'Tanya soal Batam…'} />
-          {busy ? <button type="button" className="key icon-key" onClick={() => setBusy(false)} aria-label={en ? 'Stop streaming' : 'Hentikan respons'}><Square size={16} /></button>
-            : <button type="submit" className="key primary icon-key" disabled={!input.trim()} aria-label={en ? 'Send question' : 'Kirim pertanyaan'}><Send size={17} /></button>}
+        <form className="chat-form" onSubmit={event => {
+          event.preventDefault()
+          if (busy || !input.trim()) return
+          if (window.visualViewport?.height < window.innerHeight - 100) inputRef.current.blur()
+          ask(input)
+        }}>
+          <input ref={inputRef} aria-label={lang ? 'Your question' : 'Pertanyaan Anda'} value={input} onChange={event => setInput(event.target.value)}
+            maxLength={240} enterKeyHint="send" placeholder={lang ? 'Ask about Batam…' : 'Tanya soal Batam…'} />
+          {busy ? <button type="button" className="key icon-key" onClick={() => {
+            setPhase('stopped')
+            inputRef.current.focus({ preventScroll: true })
+          }} aria-label={lang ? 'Stop reply' : 'Hentikan respons'}><Square size={16} /></button>
+            : <button type="submit" className="key primary icon-key" disabled={!input.trim()} aria-label={lang ? 'Send question' : 'Kirim pertanyaan'}><Send size={17} /></button>}
         </form>
+        <div className="transcript" ref={result} aria-label={lang ? 'Conversation' : 'Percakapan'}>
+          {run ? (
+            <div className="messages">
+              <p className="question" dir="auto">{run.prompt}</p>
+              {cursor > 0 && <p className="answer" lang={run.lang ? 'en' : 'id'}>{run.answer.slice(0, cursor)}</p>}
+              {(busy || phase === 'stopped') && <p className="chat-state" aria-hidden="true">{busy && <span className="typing-dot" />}{status}</p>}
+            </div>
+          ) : <p className="chat-empty">{labels.idle[lang]}</p>}
+        </div>
+        <p className="sr-only" role="status" aria-atomic="true">
+          {busy || phase === 'stopped' ? status : phase === 'done' && <>
+            {status} <span lang={run.lang ? 'en' : 'id'}>{run.answer}</span>
+          </>}
+        </p>
       </div>
     </section>
   )

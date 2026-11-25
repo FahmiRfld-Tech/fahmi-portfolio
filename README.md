@@ -1,6 +1,6 @@
 # M Fahmi Rifaldi — Engineering Portfolio
 
-A bilingual (ID/EN) engineering portfolio built with React, Vite, Tailwind CSS, Framer Motion, and Lucide.
+A bilingual (ID/EN) portfolio built with React, Vite, Tailwind CSS, Framer Motion, and Lucide. The home page features a real Hallo Batam AI conversation, with supporting case studies, experience, and contact details.
 
 ## Local development
 
@@ -8,26 +8,25 @@ Use Node.js 22 and npm.
 
 ```sh
 npm ci
-npm run dev
+npm test
 npm run build
+npm run preview
 ```
 
-Vercel uses the Vite preset and publishes the generated `dist/` directory. No environment variables or API keys are required.
+Vercel builds with Vite and serves `dist/`. The portfolio needs no environment variables or API keys.
 
-## Interactive features
+## Interactions
 
-- **Cmd+K / Ctrl+K** opens the command palette. Find sections and projects, switch language, or copy the email address.
-- Project images open in a browser or portrait preview. The portrait view crops the original screenshot.
-- The interactive playground streams illustrative responses locally. It does not call OpenAI or the live Hallo Batam API.
-- Audio feedback is opt-in. Animation respects the operating system’s reduced-motion preference.
+- **Cmd+K / Ctrl+K** opens search for sections, projects, language, and contact actions.
+- Project images open a dialog with fit-to-screen and original-size views.
+- The Playground streams local sample answers for food, beaches, and one-day itineraries. Its live app link remains available throughout, and the language used for a reply stays fixed when it begins.
+- The OS reduced-motion preference disables streaming animation and reduces interface motion.
 
 ## Project imagery
 
-The screenshots were captured from the public project pages on November 25, 2026. The Batam backend frame shows its public GitHub README.
-
 | Asset | Source |
 | --- | --- |
-| batam.webp | https://batamtes.vercel.app/ |
-| cireundeu.webp | https://kampungcireundeu.kii.lat/ |
-| quran.webp | https://sahabatquran-phi.vercel.app/ |
-| rag.webp | https://github.com/FahmiRfld-Tech/wisatabatam-backend. |
+| `batam-chat.webp` | [Hallo Batam AI](https://batamtes.vercel.app/), a public chat about beaches in Nongsa |
+| `cireundeu.webp` | [Kampung Adat Cireundeu](https://kampungcireundeu.kii.lat/) |
+| `quran.webp` | [Sahabat Qur’an](https://sahabatquran-phi.vercel.app/) |
+| `rag.webp` | [Batam Django backend public README](https://github.com/FahmiRfld-Tech/wisatabatam-backend.) |
