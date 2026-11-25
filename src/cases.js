@@ -18,6 +18,20 @@ export const caseStudies = {
       copy: ['Saat ditanya tentang pantai tenang di Nongsa, aplikasi menyarankan destinasi, menautkan sumber, dan menjelaskan saat sumber belum bisa memastikan keramaian.', 'Asked about quiet beaches in Nongsa, the live app recommends places, links to sources, and flags when the sources cannot establish how busy a beach is.'],
     },
   ],
+  clipper: [
+    {
+      label: ['Masalah', 'Problem'],
+      copy: ['Meninjau video panjang dan menyiapkan cuplikan vertikal membutuhkan banyak langkah manual.', 'Reviewing long videos and preparing vertical clips takes several manual steps.'],
+    },
+    {
+      label: ['Alur aplikasi desktop', 'Desktop workflow'],
+      copy: ['Versi Windows mentranskrip video dengan Whisper, menilai kandidat lewat Ollama, dan merender cuplikan lewat FFmpeg. Antrean lokal menyimpan progres pekerjaan.', 'The Windows version transcribes with Whisper, ranks candidates with Ollama, and renders clips with FFmpeg. A local queue tracks job progress.'],
+    },
+    {
+      label: ['Demo interaktif', 'Interactive demo'],
+      copy: ['Versi web menjalankan Whisper Tiny di browser, memakai heuristik transkrip dari versi desktop, dan menghasilkan video 9:16 serta SRT. Video milik pengunjung tetap di perangkat.', 'The web version runs Whisper Tiny locally, applies transcript heuristics adapted from the desktop version, and exports 9:16 video plus SRT. Uploaded video stays on the visitor’s device.'],
+    },
+  ],
   cireundeu: [
     {
       label: ['Masalah', 'Problem'],

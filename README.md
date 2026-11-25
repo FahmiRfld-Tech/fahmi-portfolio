@@ -30,3 +30,12 @@ Vercel builds with Vite and serves `dist/`. The portfolio needs no environment v
 | `cireundeu.webp` | [Kampung Adat Cireundeu](https://kampungcireundeu.kii.lat/) |
 | `quran.webp` | [Sahabat Qur’an](https://sahabatquran-phi.vercel.app/) |
 | `rag.webp` | [Batam Django backend public README](https://github.com/FahmiRfld-Tech/wisatabatam-backend.) |
+
+## AI Video Clipper demo
+
+Open `/clipper/` for the browser adaptation of the Windows AI Video Clipper v3. The web demo starts with a synthetic robot-camera test video and a reference SRT. It also accepts local MP4/WebM files up to 90 seconds and 60 MB. The video stays in the browser.
+
+- The optional multilingual Whisper Tiny worker downloads its model weights from Hugging Face and runs inference on-device with Transformers.js and ONNX Runtime. Importing an SRT or using the included sample is an alternative to model inference.
+- Timestamped transcript ranking is adapted from the v3 desktop low-memory path. Its score represents transcript signals, and users can select a clip manually.
+- The browser exports 720 × 1280 clips with original audio using Canvas, Web Audio, and MediaRecorder, plus a separate rebased SRT. It uses MP4 where supported and falls back to WebM. Keep the tab open during real-time export.
+- The Windows app uses its own Ollama, FFmpeg, YouTube input, and Google Drive workflow. That runtime lives outside this repository.
