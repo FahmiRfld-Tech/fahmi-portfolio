@@ -1,0 +1,306 @@
+{
+  "projects": [
+    {
+      "id": "batam",
+      "name": [
+        "Hallo Batam AI",
+        "Hallo Batam AI"
+      ],
+      "category": [
+        "2026 / Web · AI Terapan",
+        "2026 / Web · Applied AI"
+      ],
+      "summary": [
+        "Asisten wisata bilingual untuk menjelajahi Batam lewat teks dan suara.",
+        "A bilingual assistant for exploring Batam through text and voice."
+      ],
+      "stack": [
+        "TypeScript",
+        "Supabase",
+        "PostgreSQL",
+        "OpenAI API"
+      ],
+      "link": "https://github.com/FahmiRfld-Tech/wisatabatam",
+      "preview": "https://batamtes.vercel.app/",
+      "alt": "Hallo Batam AI homepage",
+      "image": "/projects/batam.webp",
+      "width": 1021,
+      "height": 854
+    },
+    {
+      "id": "cireundeu",
+      "name": [
+        "Digitalisasi Cireundeu",
+        "Cireundeu Digitalization"
+      ],
+      "category": [
+        "2026 / Full-stack · CMS",
+        "2026 / Full stack · CMS"
+      ],
+      "summary": [
+        "Portal wisata dan CMS untuk pelaku UMKM Cireundeu.",
+        "A tourism portal and CMS for local businesses in Cireundeu."
+      ],
+      "stack": [
+        "React",
+        "TypeScript",
+        "Supabase"
+      ],
+      "link": "https://kampungcireundeu.kii.lat/",
+      "preview": "https://kampungcireundeu.kii.lat/",
+      "alt": "Kampung Adat Cireundeu homepage",
+      "image": "/projects/cireundeu.webp",
+      "width": 1320,
+      "height": 848
+    },
+    {
+      "id": "quran",
+      "name": [
+        "Sahabat Qur’an",
+        "Sahabat Qur’an"
+      ],
+      "category": [
+        "2026 / EdTech · Konsep 3D",
+        "2026 / EdTech · 3D Concept"
+      ],
+      "summary": [
+        "Konsep pembelajaran spasial untuk menghafal Juz 30.",
+        "A spatial learning concept for memorizing Juz 30."
+      ],
+      "stack": [
+        "Spatial Learning",
+        "Markdown"
+      ],
+      "link": "https://github.com/FahmiRfld-Tech/sahabatquran",
+      "preview": "https://sahabatquran-phi.vercel.app/",
+      "alt": "Sahabat Qur’an dashboard",
+      "image": "/projects/quran.webp",
+      "width": 1025,
+      "height": 755
+    },
+    {
+      "id": "rag",
+      "name": [
+        "Batam RAG Backend",
+        "Batam RAG Backend"
+      ],
+      "category": [
+        "2026 / Backend · Prototipe RAG",
+        "2026 / Backend · RAG Prototype"
+      ],
+      "summary": [
+        "Prototipe pencarian semantik untuk tanya jawab pariwisata.",
+        "A prototype exploring semantic retrieval for tourism Q&A."
+      ],
+      "stack": [
+        "Python",
+        "Django REST",
+        "ChromaDB"
+      ],
+      "link": "https://github.com/FahmiRfld-Tech/wisatabatam-backend.",
+      "preview": "https://github.com/FahmiRfld-Tech/wisatabatam-backend.#readme",
+      "alt": "Public Django backend README",
+      "image": "/projects/rag.webp",
+      "width": 905,
+      "height": 791
+    }
+  ],
+  "roles": [
+    {
+      "role": [
+        "Strategis Multimedia & Digital Lepas",
+        "Freelance Multimedia & Digital Strategist"
+      ],
+      "org": [
+        "Kedai Akoh 99 · Klien independen",
+        "Kedai Akoh 99 · Independent clients"
+      ],
+      "date": [
+        "Sep 2025–sekarang",
+        "Sep 2025–present"
+      ]
+    },
+    {
+      "role": [
+        "Project Manager & Full-Stack Developer",
+        "Project Manager & Full-Stack Developer"
+      ],
+      "org": [
+        "Proyek Digitalisasi Cireundeu",
+        "Cireundeu Digitalization Project"
+      ],
+      "date": [
+        "Feb–Jul 2026",
+        "Feb–Jul 2026"
+      ]
+    },
+    {
+      "role": [
+        "Koordinator Asisten Praktikum Teknis",
+        "Lead Technical Practicum Assistant"
+      ],
+      "org": [
+        "Fakultas Ilmu Terapan · Telkom University",
+        "Faculty of Applied Science · Telkom University"
+      ],
+      "date": [
+        "Sep 2024–Jan 2026",
+        "Sep 2024–Jan 2026"
+      ]
+    },
+    {
+      "role": [
+        "Wakil Ketua Senior Resident XIII & Kepala Asrama Putra",
+        "Vice President, Senior Resident XIII & Head of Male Dormitory"
+      ],
+      "org": [
+        "Asrama Telkom University",
+        "Telkom University Dormitory"
+      ],
+      "date": [
+        "Jun 2024–Jul 2026",
+        "Jun 2024–Jul 2026"
+      ]
+    },
+    {
+      "role": [
+        "Kepala Departemen Advokasi & Kesejahteraan Mahasiswa",
+        "Head of Student Advocacy & Welfare"
+      ],
+      "org": [
+        "Himpunan Mahasiswa Teknologi Rekayasa Multimedia",
+        "Multimedia Engineering Technology Student Association"
+      ],
+      "date": [
+        "Jan–Nov 2025",
+        "Jan–Nov 2025"
+      ]
+    },
+    {
+      "role": [
+        "Ketua Pelaksana Dorm Olympic",
+        "Dorm Olympic Event Director"
+      ],
+      "org": [
+        "Dorm Olympic 2025 · Telkom University",
+        "Dorm Olympic 2025 · Telkom University"
+      ],
+      "date": [
+        "Feb–Mei 2025",
+        "Feb–May 2025"
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "number": [
+        "13",
+        "13"
+      ],
+      "label": [
+        "Anggota Tim Cireundeu",
+        "Cireundeu team members"
+      ]
+    },
+    {
+      "number": [
+        "300+",
+        "300+"
+      ],
+      "label": [
+        "Mahasiswa Dibimbing",
+        "Students mentored"
+      ]
+    },
+    {
+      "number": [
+        "3.000+",
+        "3,000+"
+      ],
+      "label": [
+        "Penghuni Asrama",
+        "Dorm residents"
+      ]
+    }
+  ],
+  "info": [
+    {
+      "title": [
+        "Telkom University",
+        "Telkom University"
+      ],
+      "copy": [
+        "D4 Teknologi Rekayasa Multimedia · Sep 2023–sekarang · IPK 3,67/4,00",
+        "Applied Bachelor’s in Multimedia Engineering Technology · Sep 2023–present · GPA 3.67/4.00"
+      ],
+      "tags": []
+    },
+    {
+      "title": [
+        "GEMASTIK · Smart City",
+        "GEMASTIK · Smart City"
+      ],
+      "copy": [
+        "Peserta sejak April 2026. Memimpin perencanaan produk, prototipe UI/UX, dan penyusunan proposal.",
+        "Participant since April 2026. Led product planning, UI/UX prototyping, and proposal preparation."
+      ],
+      "tags": []
+    },
+    {
+      "title": [
+        "Sertifikasi & Pelatihan",
+        "Certifications & Training"
+      ],
+      "copy": null,
+      "tags": [
+        "Multimedia Designer · BNSP",
+        "Google AI Essentials",
+        "LKMM-TM"
+      ]
+    }
+  ],
+  "stack": [
+    {
+      "title": "Frontend & Backend",
+      "items": [
+        "React",
+        "TypeScript",
+        "JavaScript",
+        "Supabase",
+        "PostgreSQL",
+        "Laravel",
+        "Django REST",
+        "Python"
+      ]
+    },
+    {
+      "title": "AI & Multimedia",
+      "items": [
+        "RAG",
+        "Unity",
+        "C#",
+        "UI/UX",
+        "Motion Graphics",
+        "Video Editing"
+      ]
+    }
+  ],
+  "copy": {
+    "lead": [
+      "Full-stack developer dengan fokus pada AI terapan dan multimedia interaktif.",
+      "Full-stack developer focused on applied AI and interactive multimedia."
+    ],
+    "bio": [
+      "Mahasiswa tingkat akhir D4 Teknologi Rekayasa Multimedia di Telkom University. Saya membangun aplikasi web, asisten AI berbasis sumber, dan sistem pengelolaan konten.",
+      "Final-year Multimedia Engineering Technology student at Telkom University. I build web applications, source-grounded AI assistants, and tools for managing digital content."
+    ],
+    "availability": [
+      "Terbuka untuk peluang kerja dan kolaborasi",
+      "Open to job opportunities and collaboration"
+    ],
+    "contact": [
+      "Terbuka untuk peluang kerja dan kolaborasi di bidang software engineering, integrasi AI, dan desain produk digital.",
+      "Open to roles and collaborations in software engineering, AI integration, and digital product design."
+    ]
+  }
+}
