@@ -22,9 +22,16 @@ const nav = [
 const [flagship, ...otherProjects] = content.projects
 const projectActions = {
   batam: ['Buka aplikasi asli', 'Open the live app'],
+  clipper: ['Coba demo', 'Try demo'],
   cireundeu: ['Buka portal', 'Explore the portal'],
   quran: ['Lihat prototipe', 'Explore the prototype'],
   rag: ['Baca kode', 'Read the code'],
+}
+
+function ProjectLink({ project, lang, className = 'text-link', children }) {
+  const href = project.preview
+  if (href.startsWith('/')) return <a className={className} href={href + (lang ? '?lang=en' : '')}>{children}</a>
+  return <External className={className} href={href}>{children}</External>
 }
 
 function External({ href, children, className = 'text-link', ...props }) {
@@ -42,7 +49,7 @@ function ProjectScreenshot({ project, lang, open, featured = false }) {
       aria-label={(lang ? 'Enlarge screenshot: ' : 'Perbesar screenshot: ') + project.name[lang]}>
       <span className="browser-bar">
         <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
-        <span>{new URL(project.preview).hostname}</span><Maximize2 size={16} aria-hidden="true" />
+        <span>{project.preview.startsWith('/') ? project.preview : new URL(project.preview).hostname}</span><Maximize2 size={16} aria-hidden="true" />
       </span>
       <img src={project.image} alt="" width={project.width} height={project.height}
         loading={featured ? 'eager' : 'lazy'} fetchPriority={featured ? 'high' : 'auto'} decoding={featured ? 'auto' : 'async'} />
@@ -87,7 +94,7 @@ function ProjectCard({ project, lang, open }) {
         <p>{project.summary[lang]}</p>
         <p className="project-role">{project.role[lang]}</p>
         <div className="actions">
-          <External href={project.preview}>{projectActions[project.id][lang]} <ArrowUpRight size={16} /></External>
+          <ProjectLink {...{ project, lang }}>{projectActions[project.id][lang]} <ArrowUpRight size={16} /></ProjectLink>
           <button className="text-link subtle-link" type="button" onClick={() => open('case', project)}>{lang ? 'Details' : 'Detail'}</button>
         </div>
       </div>
@@ -138,7 +145,7 @@ function ProjectPreview({ project, lang }) {
             <ZoomIn size={17} /> {lang ? 'Original size' : 'Ukuran asli'}
           </button>
         </div>
-        <External href={project.preview}>{projectActions[project.id][lang]} <ArrowUpRight size={16} /></External>
+        <ProjectLink {...{ project, lang }}>{projectActions[project.id][lang]} <ArrowUpRight size={16} /></ProjectLink>
       </div>
       <div className={'zoom-image' + (fullSize ? ' original' : '')} tabIndex={fullSize ? 0 : undefined}
         role={fullSize ? 'region' : undefined} aria-label={fullSize ? title : undefined}>
@@ -194,7 +201,7 @@ function CommandPalette({ lang, commands, close }) {
 }
 
 export default function App() {
-  const [lang, setLang] = useState(0)
+  const [lang, setLang] = useState(() => new URLSearchParams(location.search).get('lang') === 'en' ? 1 : 0)
   const [overlay, setOverlay] = useState(null)
   const [toast, setToast] = useState(null)
   const timer = useRef(0)
@@ -365,7 +372,8 @@ export default function App() {
         <CaseDetails project={overlay.project} lang={lang} />
         {overlay.project.id === 'batam' && <p className="architecture-note">Vercel → Supabase Edge Function → PostgreSQL + OpenAI</p>}
         <div className="actions">
-          <External href={overlay.project.preview} className="key primary">{projectActions[overlay.project.id][lang]} <ArrowUpRight size={16} /></External>
+          <ProjectLink project={overlay.project} lang={lang} className="key primary">{projectActions[overlay.project.id][lang]} <ArrowUpRight size={16} /></ProjectLink>
+          {overlay.project.id === 'clipper' && <External href={GITHUB + '/fahmi-portfolio/tree/main/src/clipper'}>{lang ? 'Web source on GitHub' : 'Kode web di GitHub'} <ArrowUpRight size={16} /></External>}
           {overlay.project.id === 'batam' && <External href={flagship.link + '/blob/main/docs/ARCHITECTURE.md'}>{lang ? 'Architecture document' : 'Dokumen arsitektur'} <ArrowUpRight size={16} /></External>}
           {overlay.project.id === 'quran' && <External href={overlay.project.link}>{lang ? 'Concept documentation' : 'Dokumentasi konsep'} <ArrowUpRight size={16} /></External>}
         </div>

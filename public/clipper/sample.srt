@@ -1,0 +1,27 @@
+1
+00:00:00,000 --> 00:00:02,695
+This is a short test of a small robot camera.
+
+2
+00:00:03,250 --> 00:00:06,190
+Why did the camera stop just before the turn?
+
+3
+00:00:06,750 --> 00:00:09,515
+The bracket moved. The cable was pulled loose.
+
+4
+00:00:10,083 --> 00:00:13,303
+Wow, one loose cable changes the whole test.
+
+5
+00:00:13,833 --> 00:00:17,128
+Now hold the cable in place and run the test again.
+
+6
+00:00:17,667 --> 00:00:20,757
+Crazy how much steadier the picture looks now.
+
+7
+00:00:21,292 --> 00:00:24,457
+What should we measure next? Compare both runs.

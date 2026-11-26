@@ -31,6 +31,40 @@
       "height": 453
     },
     {
+      "id": "clipper",
+      "name": [
+        "AI Video Clipper",
+        "AI Video Clipper"
+      ],
+      "category": [
+        "2026 / AI Terapan · Multimedia",
+        "2026 / Applied AI · Multimedia"
+      ],
+      "summary": [
+        "Pilih momen dari transkrip dan ekspor cuplikan vertikal langsung di browser.",
+        "Find moments in a transcript and export vertical clips directly from the browser."
+      ],
+      "role": [
+        "Proyek desktop Windows dengan demo web interaktif.",
+        "Windows desktop project with an interactive web demo."
+      ],
+      "stack": [
+        "Whisper",
+        "Python",
+        "FFmpeg",
+        "React",
+        "Web Audio API"
+      ],
+      "preview": "/clipper/",
+      "alt": [
+        "Demo web AI Video Clipper dengan video sumber, transkrip, dan dua kandidat cuplikan.",
+        "AI Video Clipper web demo showing the source video and two transcript-based clip candidates."
+      ],
+      "image": "/projects/clipper.webp",
+      "width": 1080,
+      "height": 675
+    },
+    {
       "id": "cireundeu",
       "name": [
         "Digitalisasi Cireundeu",
