@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ArrowUpRight, Maximize2, Minus, Plus } from 'lucide-react'
 import { caseStudies } from '../cases'
 import { chapterNumber, projectActions } from './content'
@@ -72,22 +72,13 @@ export function CaseDetails({ project, lang, className = '', technicalStack }) {
   )
 }
 
-export function RevealRow({ id, anchorId, className = '', summary, children, hover = true }) {
-  const [pinned, setPinned] = useState(false)
+export function RevealRow({ id, className = '', summary, children, defaultOpen = false }) {
+  const [pinned, setPinned] = useState(defaultOpen)
   const [preview, setPreview] = useState(false)
   const open = pinned || preview
-  useEffect(() => {
-    if (!anchorId) return
-    function sync() {
-      if (location.hash === '#' + anchorId) setPinned(true)
-    }
-    sync()
-    window.addEventListener('hashchange', sync)
-    return () => window.removeEventListener('hashchange', sync)
-  }, [anchorId])
   return (
-    <li id={anchorId} tabIndex={anchorId ? -1 : undefined} className={'reveal-row glass ' + className} data-spotlight=""
-      onPointerEnter={event => { if (hover && event.pointerType === 'mouse' && matchMedia('(hover: hover)').matches) setPreview(true) }}
+    <li className={'reveal-row glass ' + className} data-spotlight=""
+      onPointerEnter={event => { if (event.pointerType === 'mouse' && matchMedia('(hover: hover)').matches) setPreview(true) }}
       onPointerLeave={event => {
         if (event.pointerType === 'mouse' && !event.currentTarget.querySelector('.reveal-panel')?.contains(document.activeElement)) setPreview(false)
       }}

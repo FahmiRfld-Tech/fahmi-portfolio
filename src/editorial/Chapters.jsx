@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Copy, ExternalLink, Minus, Plus } from 'lucide-react'
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Minus, Plus } from 'lucide-react'
 import Playground from '../Playground'
 import { HeroHeadline, HeroMetrics } from './HeroMotion'
-import LabPreview from './LabPreview'
 import content from '../content.json'
 import StackMatrix from './StackMatrix'
 import Workbench from './Workbench'
-import { chapterNumber, chapters, EMAIL, GITHUB, insights, labMeta, LINKEDIN } from './content'
+import { chapterNumber, chapters, insights } from './content'
 import { BrowserFrame, CaseDetails, ChapterHeader, External, ProjectLink, RevealRow, Screenshot, Tags } from './Shared'
 
 export function FloatingChapterDock({ lang, scrollRoot }) {
@@ -17,6 +16,7 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
   useEffect(() => {
     const root = scrollRoot.current
     const targets = chapters.map(({ id }) => document.getElementById(id))
+    const epilog = root.querySelector('.epilog')
     const footer = root.querySelector('.site-footer')
     const nav = dock.current
     let frame
@@ -36,11 +36,17 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
     function submit() {
       if (frame === undefined) frame = requestAnimationFrame(sync)
     }
-    const footerObserver = new IntersectionObserver(([entry]) => {
-      setRetired(entry.intersectionRatio >= .85)
-    }, { root, threshold: .85 })
+    const visibleEndSections = new Set()
+    const endObserver = new IntersectionObserver(entries => {
+      for (const { target, isIntersecting } of entries) {
+        if (isIntersecting) visibleEndSections.add(target)
+        else visibleEndSections.delete(target)
+      }
+      setRetired(visibleEndSections.size > 0)
+    }, { root })
     const resize = new ResizeObserver(submit)
-    footerObserver.observe(footer)
+    endObserver.observe(epilog)
+    endObserver.observe(footer)
     resize.observe(root)
     resize.observe(root.querySelector('main'))
     root.addEventListener('scroll', submit, { passive: true })
@@ -48,7 +54,7 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
     return () => {
       cancelAnimationFrame(frame)
       root.removeEventListener('scroll', submit)
-      footerObserver.disconnect()
+      endObserver.disconnect()
       resize.disconnect()
     }
   }, [scrollRoot])
@@ -193,7 +199,7 @@ export function LeadershipTimeline({ lang }) {
       <ChapterHeader chapter="experience" category="Leadership & Human Scale · 2024–2026" headingId="experience-title"
         title={lang ? 'Leadership that shaped how I work' : 'Kepemimpinan yang Membentuk Cara Kerja'} />
       <ol className="timeline">
-        {content.roles.map(({ role, org, date }, index) => <RevealRow key={role[0]} id={'role-' + index} className="timeline-row"
+        {content.roles.map(({ role, org, date }, index) => <RevealRow key={role[0]} id={'role-' + index} className="timeline-row" defaultOpen={index < 2}
           summary={<><span className="row-number">0{index + 1}</span><span className="row-identity"><strong>{role[lang]}</strong><span>{org[lang]}</span></span><span className="date">{date[lang]}</span></>}>
           <p className="narrative timeline-insight">{insights[index][lang]}</p>
         </RevealRow>)}
@@ -208,53 +214,6 @@ export function LeadershipTimeline({ lang }) {
           </article>)}</div>
         </div>
       </div>
-    </section>
-  )
-}
-
-export function LabIndexTable({ projects, lang, open }) {
-  return (
-    <section id="lab" tabIndex="-1" className="chapter" aria-labelledby="lab-title">
-      <ChapterHeader chapter="lab" category="Laboratory & Explorations" title={lang ? 'Lab & explorations' : 'Laboratorium & Eksplorasi'} headingId="lab-title" />
-      <ol className="lab-index">
-        {projects.map((project, index) => <RevealRow key={project.id} id={'lab-' + project.id + '-panel'} anchorId={'lab-' + project.id} className="lab-row" hover={false}
-          summary={<><span className="row-number">0{index + 1}</span><span className="lab-title">{project.name[lang]}</span><span className="lab-meta">{labMeta[project.id][lang]}</span><span className="date lab-year">{project.category[lang].split(' / ')[0]}</span></>}>
-          <div className="lab-preview">
-            <LabPreview {...{ project, lang, open }} />
-            <div>
-              <p className="narrative">{project.summary[lang]}</p>
-              <p className="lab-role">{project.role[lang]}</p>
-              <Tags items={project.stack} />
-              <div className="actions">
-                <ProjectLink project={project} lang={lang} />
-                {project.id === 'quran' && <External href={project.link}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>}
-                {project.id === 'clipper' && <External href={GITHUB + '/fahmi-portfolio/tree/main/src/clipper'}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>}
-                <button className="text-link" type="button" onClick={() => open('case', project)}>{lang ? 'Technical details' : 'Detail teknis'} <ArrowRight size={16} aria-hidden="true" /></button>
-              </div>
-            </div>
-          </div>
-        </RevealRow>)}
-      </ol>
-    </section>
-  )
-}
-
-export function EditorialContact({ lang, copyEmail, openCommand }) {
-  return (
-    <section id="contact" tabIndex="-1" className="chapter epilog" aria-labelledby="contact-title">
-      <p className="eyebrow chapter-label">{lang ? 'Epilogue' : 'Epilog'}</p>
-      <h2 id="contact-title">{lang ? 'Let’s build something people can use.' : 'Mari bangun sesuatu yang berguna.'}</h2>
-      <p className="narrative">{lang
-        ? 'I’m open to working together on applied AI, full-stack engineering, and multimedia systems.'
-        : 'Saya terbuka untuk berkolaborasi dalam AI terapan, rekayasa full-stack, dan sistem multimedia.'}</p>
-      <p className="eyebrow contact-status"><i className="live-dot" aria-hidden="true" /> {content.copy.availability[lang]}</p>
-      <div className="actions contact-actions">
-        <button className="key primary" type="button" onClick={copyEmail}><Copy size={16} aria-hidden="true" /> {lang ? 'Copy email' : 'Salin email'}</button>
-        <External href={GITHUB}>GitHub <ExternalLink size={15} aria-hidden="true" /></External>
-        <External href={LINKEDIN}>LinkedIn <ExternalLink size={15} aria-hidden="true" /></External>
-        <button className="text-link contact-command" onClick={openCommand} type="button" aria-label={lang ? 'Open command palette' : 'Buka palet perintah'}><kbd>⌘ K</kbd></button>
-      </div>
-      <a className="email-address" href={'mailto:' + EMAIL}>{EMAIL}</a>
     </section>
   )
 }

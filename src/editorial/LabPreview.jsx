@@ -109,13 +109,15 @@ function ProjectWalkthrough({ project, lang }) {
   )
 }
 
-export default function LabPreview({ project, lang, open }) {
+export default function LabPreview({ project, lang, open, screenshotFirst = false }) {
   const interactive = project.id === 'clipper'
     ? ['Scrubber klip', 'Clip scrubber'] : ['Alur interaktif', 'Interactive flow']
+  const screenshot = lang ? 'Screenshot' : 'Tangkapan layar'
+  const labels = screenshotFirst ? [screenshot, interactive[lang]] : [interactive[lang], screenshot]
   return (
     <div className="lab-interactive glass">
-      <SegmentTabs label={lang ? 'Project preview' : 'Pratinjau proyek'} items={[interactive[lang], lang ? 'Screenshot' : 'Tangkapan layar']}>
-        {mode => mode === 1 ? <Screenshot {...{ project, lang, open }} />
+      <SegmentTabs label={lang ? 'Project preview' : 'Pratinjau proyek'} items={labels}>
+        {mode => mode === (screenshotFirst ? 0 : 1) ? <Screenshot {...{ project, lang, open }} />
           : project.id === 'clipper' ? <ClipperPreview lang={lang} /> : <ProjectWalkthrough {...{ project, lang }} />}
       </SegmentTabs>
     </div>

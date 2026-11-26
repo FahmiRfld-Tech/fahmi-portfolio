@@ -5,11 +5,13 @@ import content from './content.json'
 import { caseStudies } from './cases'
 import Dialog from './Dialog'
 import CommandPalette from './editorial/CommandPalette'
-import { CireundeuShowcase, EditorialContact, EditorialProlog, FloatingChapterDock, HalloBatamStage, LabIndexTable, LeadershipTimeline } from './editorial/Chapters'
+import { CireundeuShowcase, EditorialProlog, FloatingChapterDock, HalloBatamStage, LeadershipTimeline } from './editorial/Chapters'
 import { chapters, EMAIL, GITHUB, projectActions } from './editorial/content'
 import { CaseDetails, External, ProjectLink, projectUrl } from './editorial/Shared'
 import useSpotlights from './editorial/useSpotlights'
 import { EditorialTicker } from './editorial/HeroMotion'
+import EditorialContact from './editorial/EditorialContact'
+import LabIndexTable from './editorial/LabIndexTable'
 
 const [flagship] = content.projects
 const community = content.projects.find(project => project.id === 'cireundeu')
@@ -72,6 +74,7 @@ export default function App() {
   const [overlay, setOverlay] = useState(null)
   const [toast, setToast] = useState(null)
   const timer = useRef(0)
+  const copyAttempt = useRef(0)
   const scrollRoot = useRef(null)
   useSpotlights(scrollRoot)
   const closeLabel = lang ? 'Close' : 'Tutup'
@@ -112,15 +115,16 @@ export default function App() {
     target?.focus({ preventScroll: true })
   }
 
-  async function copyEmail() {
+  async function copyText(value, kind) {
+    const attempt = ++copyAttempt.current
     let success = false
     try {
-      await navigator.clipboard.writeText(EMAIL)
+      await navigator.clipboard.writeText(value)
       success = true
     } catch {
       const field = document.createElement('textarea')
       const trigger = document.activeElement
-      field.value = EMAIL
+      field.value = value
       field.readOnly = true
       field.style.cssText = 'position:fixed;top:0;left:0;opacity:0'
       document.body.append(field)
@@ -128,10 +132,15 @@ export default function App() {
       catch { /* The toast displays the address for manual copying. */ }
       finally { field.remove(); trigger?.focus({ preventScroll: true }) }
     }
-    setToast({ success, key: Date.now() })
+    if (attempt !== copyAttempt.current) return
+    setToast({ success, value, kind, key: attempt })
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setToast(null), 3200)
   }
+
+  const toastMessage = toast?.kind === 'draft'
+    ? (toast.success ? (lang ? 'Message draft copied' : 'Draf pesan disalin') : (lang ? 'Could not copy the draft. Select the text to copy it.' : 'Draf gagal disalin. Pilih teks draf untuk menyalinnya.'))
+    : (toast?.success ? (lang ? 'Email copied to clipboard' : 'Email disalin ke clipboard') : EMAIL)
 
   const open = (type, project) => setOverlay({ type, project })
   const close = () => setOverlay(null)
@@ -150,7 +159,7 @@ export default function App() {
       },
     })),
     { id: 'commit', name: lang ? 'Open Hallo Batam AI commit' : 'Lihat commit Hallo Batam AI', keywords: 'github commit contribution', Icon: GitCommitHorizontal, run: () => window.open(commitLink, '_blank', 'noopener,noreferrer') },
-    { id: 'copy', name: lang ? 'Copy email' : 'Salin email', Icon: Copy, run: copyEmail },
+    { id: 'copy', name: lang ? 'Copy email' : 'Salin email', Icon: Copy, run: () => copyText(EMAIL, 'email') },
     { id: 'language', name: lang ? 'Gunakan Bahasa Indonesia' : 'Switch to English', Icon: Command, run: () => setLang(1 - lang) },
   ]
 
@@ -167,7 +176,7 @@ export default function App() {
             <CireundeuShowcase project={community} {...{ lang, open }} />
             <LeadershipTimeline lang={lang} />
             <LabIndexTable projects={lab} {...{ lang, open }} />
-            <EditorialContact {...{ lang, copyEmail, openCommand }} />
+            <EditorialContact {...{ lang, copyText, openCommand }} copied={toast?.success ? toast : null} />
           </main>
           <footer className="wrap site-footer"><span>M. Fahmi Rifaldi</span><span><MapPin size={15} aria-hidden="true" /> Bandung, Indonesia</span></footer>
         </div>
@@ -177,7 +186,7 @@ export default function App() {
       <AnimatePresence>
         {toast && <m.div className="toast" role="status" key={toast.key}
           initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}>
-          {toast.success && <Check size={18} aria-hidden="true" />}{toast.success ? (lang ? 'Email copied to clipboard' : 'Email disalin ke clipboard') : EMAIL}
+          {toast.success && <Check size={18} aria-hidden="true" />}{toastMessage}
         </m.div>}
       </AnimatePresence>
       {overlay?.type === 'command' && <Dialog key="command" className="command-dialog" title={lang ? 'Command palette' : 'Palet perintah'} {...{ closeLabel, close }}>
