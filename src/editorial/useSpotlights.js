@@ -19,6 +19,8 @@ export default function useSpotlights(root) {
       card?.removeAttribute('data-lit')
       card?.style.removeProperty('--tilt-x')
       card?.style.removeProperty('--tilt-y')
+      card?.style.removeProperty('--magnet-x')
+      card?.style.removeProperty('--magnet-y')
       card = null
       tiltX = 0
       tiltY = 0
@@ -26,7 +28,7 @@ export default function useSpotlights(root) {
 
     function track(event) {
       if (event.pointerType !== 'mouse' || motion.matches) return
-      const target = event.target.closest('[data-spotlight]')
+      const target = event.target.closest('[data-spotlight], [data-magnetic]')
       if (target !== card) {
         clear()
         if (!target) return
@@ -44,6 +46,11 @@ export default function useSpotlights(root) {
     function paint() {
       frame = undefined
       if (!card) return
+      if (card.hasAttribute('data-magnetic')) {
+        card.style.setProperty('--magnet-x', ((x - 0.5) * 8) + 'px')
+        card.style.setProperty('--magnet-y', ((y - 0.5) * 8) + 'px')
+        return
+      }
       card.style.setProperty('--mouse-x', x * 100 + '%')
       card.style.setProperty('--mouse-y', y * 100 + '%')
       if (card.hasAttribute('data-tilt')) {

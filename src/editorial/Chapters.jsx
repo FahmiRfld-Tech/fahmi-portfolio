@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Copy, ExternalLink, Minus, Plus } from 'lucide-react'
 import Playground from '../Playground'
+import { HeroHeadline, HeroMetrics } from './HeroMotion'
 import LabPreview from './LabPreview'
 import content from '../content.json'
 import StackMatrix from './StackMatrix'
 import Workbench from './Workbench'
-import { chapters, EMAIL, GITHUB, insights, labMeta, LINKEDIN } from './content'
+import { chapterNumber, chapters, EMAIL, GITHUB, insights, labMeta, LINKEDIN } from './content'
 import { BrowserFrame, CaseDetails, ChapterHeader, External, ProjectLink, RevealRow, Screenshot, Tags } from './Shared'
 
 export function FloatingChapterDock({ lang, scrollRoot }) {
@@ -55,9 +56,9 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
   return (
     <nav ref={dock} className="chapter-dock glass" data-retired={retired} inert={retired} aria-label={lang ? 'Chapters' : 'Navigasi bab'}>
       <span className="dock-progress" aria-hidden="true" />
-      {chapters.map(({ id, label }, index) => (
+      {chapters.map(({ id, label }) => (
         <a key={id} href={'#' + id} aria-current={id === active ? 'location' : undefined}>
-          {id === 'contact' ? <ArrowUpRight size={13} aria-hidden="true" /> : <span className="dock-index">0{index + 1}</span>}
+          {id === 'contact' ? <ArrowUpRight size={13} aria-hidden="true" /> : <span className="dock-index">{chapterNumber(id)}</span>}
           <span>{label[lang]}</span>
         </a>
       ))}
@@ -75,24 +76,19 @@ export function EditorialProlog({ lang, openCommand, project, evidence }) {
   return (
     <section id="prolog" className="prolog" aria-labelledby="thesis" tabIndex="-1">
       <div className="prolog-heading">
-        <p className="eyebrow hero-kicker"><i className="live-dot" aria-hidden="true" /> Multimedia Engineering &amp; Applied AI</p>
-        <h1 id="thesis">{lang
-          ? <>Building <em>verified</em> AI systems and <em>grounded</em> technology for people.</>
-          : <>Membangun sistem AI yang <em>terverifikasi</em> dan teknologi yang <em>membumi</em> bagi manusia.</>}
-        </h1>
+        <p className="eyebrow hero-kicker"><span className="prolog-number">{chapterNumber('prolog')}</span><i className="live-dot" aria-hidden="true" /> Multimedia Engineering &amp; Applied AI</p>
+        <HeroHeadline lang={lang} />
         <p className="narrative thesis-copy">{lang
           ? 'Leading a residence community of more than 3,000 people taught me how decisions play out on the ground. I bring that habit to software, from a travel assistant with checkable sources to a portal local businesses can update themselves.'
           : 'Memimpin komunitas asrama dengan lebih dari 3.000 penghuni mengajarkan saya melihat bagaimana keputusan bekerja di lapangan. Kebiasaan itu saya bawa ke rekayasa perangkat lunak, mulai dari asisten wisata dengan sumber yang bisa diperiksa hingga portal yang bisa diperbarui pengelola UMKM.'}
         </p>
         <div className="hero-actions">
-          <a className="key start-link" href="#hallo-batam">{lang ? 'Read the AI case study' : 'Mulai dari studi kasus AI'} <ArrowDownRight size={17} aria-hidden="true" /></a>
+          <a className="key start-link" href="#hallo-batam" data-magnetic="">{lang ? 'Read the AI case study' : 'Mulai dari studi kasus AI'} <ArrowDownRight size={17} aria-hidden="true" /></a>
           <button className="key hero-command" type="button" onClick={openCommand} aria-label={lang ? 'Open command palette' : 'Buka palet perintah'}>⌘ K</button>
         </div>
       </div>
       <Workbench {...{ lang, project, evidence }} />
-      <dl className="metrics" aria-label={lang ? 'Impact in numbers' : 'Dampak dalam angka'}>
-        {metrics.map(({ number, label }) => <div key={number[0]} className="glass" data-spotlight="" data-tilt=""><dt>{label[lang]}</dt><dd>{number[lang]}</dd></div>)}
-      </dl>
+      <HeroMetrics {...{ metrics, lang }} />
     </section>
   )
 }
@@ -146,7 +142,7 @@ export function HalloBatamStage({ project, lang, open }) {
   return (
     <section id="hallo-batam" className="chapter" aria-labelledby="batam-title" tabIndex="-1">
       <span className="anchor-alias" id="projects" tabIndex="-1" />
-      <ChapterHeader number="01" category="Applied AI & RAG Architecture" title={project.name[lang]} headingId="batam-title">
+      <ChapterHeader chapter="hallo-batam" category="Applied AI & RAG Architecture" title={project.name[lang]} headingId="batam-title">
         <p className="narrative">{lang
           ? 'Batam’s tourism information is scattered, so an AI answer can sound confident even when reliable data is scarce. Hallo Batam AI cites official sources and says when the evidence cannot establish a detail, such as how crowded Nongsa Beach is.'
           : 'Informasi wisata Batam tersebar di banyak situs. Jawaban AI bisa terdengar yakin padahal datanya terbatas. Hallo Batam AI menautkan rujukan resmi dan menjelaskan ketika data belum cukup, misalnya untuk memastikan keramaian di Pantai Nongsa.'}</p>
@@ -173,7 +169,7 @@ export function HalloBatamStage({ project, lang, open }) {
 export function CireundeuShowcase({ project, lang, open }) {
   return (
     <section id="cireundeu" tabIndex="-1" className="chapter" aria-labelledby="cireundeu-title">
-      <ChapterHeader number="02" category="Community & Full-Stack Systems" title={project.name[lang]} headingId="cireundeu-title" />
+      <ChapterHeader chapter="cireundeu" category="Community & Full-Stack Systems" title={project.name[lang]} headingId="cireundeu-title" />
       <div className="cireundeu-story">
         <p className="eyebrow project-role">{project.role[lang]}</p>
         <p className="narrative">{lang
@@ -194,7 +190,7 @@ export function CireundeuShowcase({ project, lang, open }) {
 export function LeadershipTimeline({ lang }) {
   return (
     <section id="experience" tabIndex="-1" className="chapter" aria-labelledby="experience-title">
-      <ChapterHeader number="03" category="Leadership & Human Scale · 2024–2026" headingId="experience-title"
+      <ChapterHeader chapter="experience" category="Leadership & Human Scale · 2024–2026" headingId="experience-title"
         title={lang ? 'Leadership that shaped how I work' : 'Kepemimpinan yang Membentuk Cara Kerja'} />
       <ol className="timeline">
         {content.roles.map(({ role, org, date }, index) => <RevealRow key={role[0]} id={'role-' + index} className="timeline-row"
@@ -219,7 +215,7 @@ export function LeadershipTimeline({ lang }) {
 export function LabIndexTable({ projects, lang, open }) {
   return (
     <section id="lab" tabIndex="-1" className="chapter" aria-labelledby="lab-title">
-      <ChapterHeader number="04" category="Laboratory & Explorations" title={lang ? 'Lab & explorations' : 'Laboratorium & Eksplorasi'} headingId="lab-title" />
+      <ChapterHeader chapter="lab" category="Laboratory & Explorations" title={lang ? 'Lab & explorations' : 'Laboratorium & Eksplorasi'} headingId="lab-title" />
       <ol className="lab-index">
         {projects.map((project, index) => <RevealRow key={project.id} id={'lab-' + project.id + '-panel'} anchorId={'lab-' + project.id} className="lab-row" hover={false}
           summary={<><span className="row-number">0{index + 1}</span><span className="lab-title">{project.name[lang]}</span><span className="lab-meta">{labMeta[project.id][lang]}</span><span className="date lab-year">{project.category[lang].split(' / ')[0]}</span></>}>

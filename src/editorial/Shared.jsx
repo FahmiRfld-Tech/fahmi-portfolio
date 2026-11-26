@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, Maximize2, Minus, Plus } from 'lucide-react'
 import { caseStudies } from '../cases'
-import { projectActions } from './content'
+import { chapterNumber, projectActions } from './content'
 
 export function External({ href, children, className = 'text-link', ...props }) {
   return <a className={className} href={href} rel="noopener noreferrer" target="_blank" {...props}>{children}</a>
@@ -22,10 +22,10 @@ export function Tags({ items }) {
   return <ul className="tags">{items.map(item => <li key={item}>{item}</li>)}</ul>
 }
 
-export function ChapterHeader({ number, category, title, children, headingId }) {
+export function ChapterHeader({ chapter, category, title, children, headingId }) {
   return (
     <header className="chapter-header">
-      <p className="eyebrow chapter-label"><span>{number}</span> / {category}</p>
+      <p className="eyebrow chapter-label"><span>{chapterNumber(chapter)}</span> / {category}</p>
       <h2 id={headingId}>{title}</h2>
       {children}
     </header>
@@ -34,7 +34,7 @@ export function ChapterHeader({ number, category, title, children, headingId }) 
 
 export function BrowserFrame({ project, children, actions }) {
   return (
-    <div className="browser-frame glass" data-project={project.id} data-spotlight="" data-tilt="">
+    <div className="browser-frame glass alabaster" data-project={project.id} data-spotlight="" data-tilt="">
       <div className="browser-bar">
         <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
         <span className="browser-address">{project.preview.startsWith('/') ? project.preview : new URL(project.preview).hostname}</span>
@@ -63,7 +63,7 @@ export function CaseDetails({ project, lang, className = '', technicalStack }) {
           <dt>{label[lang]}</dt>
           <dd>
             {copy[lang]}
-            {evidence && <External href={evidence.href}>{evidence.label[lang]} <ArrowUpRight size={15} aria-hidden="true" /></External>}
+            {evidence && <External href={evidence.href} className="text-link evidence-link">{evidence.label[lang]} <ArrowUpRight size={15} aria-hidden="true" /></External>}
             {technicalStack && index === 2 && <Tags items={technicalStack} />}
           </dd>
         </div>

@@ -11,6 +11,10 @@ export const chapters = [
   { id: 'contact', label: ['Kontak', 'Contact'] },
 ]
 
+export function chapterNumber(id) {
+  return String(chapters.findIndex(chapter => chapter.id === id) + 1).padStart(2, '0')
+}
+
 export const projectActions = {
   batam: ['Buka aplikasi asli', 'Open the live app'],
   clipper: ['Coba demo', 'Try the demo'],

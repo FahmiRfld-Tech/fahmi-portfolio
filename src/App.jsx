@@ -9,6 +9,7 @@ import { CireundeuShowcase, EditorialContact, EditorialProlog, FloatingChapterDo
 import { chapters, EMAIL, GITHUB, projectActions } from './editorial/content'
 import { CaseDetails, External, ProjectLink, projectUrl } from './editorial/Shared'
 import useSpotlights from './editorial/useSpotlights'
+import { EditorialTicker } from './editorial/HeroMotion'
 
 const [flagship] = content.projects
 const community = content.projects.find(project => project.id === 'cireundeu')
@@ -161,6 +162,7 @@ export default function App() {
           <TopBar {...{ lang, setLang, openCommand }} />
           <main className="wrap" id="main" tabIndex="-1">
             <EditorialProlog {...{ lang, openCommand }} project={flagship} evidence={batamEvidence} />
+            <EditorialTicker lang={lang} />
             <HalloBatamStage project={flagship} {...{ lang, open }} />
             <CireundeuShowcase project={community} {...{ lang, open }} />
             <LeadershipTimeline lang={lang} />

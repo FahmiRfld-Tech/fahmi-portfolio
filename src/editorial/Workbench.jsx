@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
-import { ArrowUpRight, AudioLines, Database, GitCommitHorizontal, Search, ShieldCheck, Ship, Sparkles, Umbrella, Utensils, Workflow } from 'lucide-react'
+import { ArrowUpRight, AudioLines, Database, GitCommitHorizontal, Pause, Play, Search, ShieldCheck, Ship, Sparkles, Umbrella, Utensils, Workflow } from 'lucide-react'
 import { batamExamples } from './batam-examples'
 import { External } from './Shared'
 import SegmentTabs from './SegmentTabs'
@@ -45,13 +45,13 @@ function ChatPreview({ example, text, done, lang }) {
         <div>
           <strong>Hallo Batam AI</strong>
           <p className="hero-answer-text" aria-hidden={!done}>
-            {text}
-            {!done && <span className="stream-caret" aria-hidden="true" />}
+            <span className="reply-measure" aria-hidden="true">{example.answer[lang]}</span>
+            <span>{text}{!done && <span className="stream-caret" aria-hidden="true" />}</span>
           </p>
-          {done && <>
+          <div className="reply-sources" data-ready={done} inert={!done}>
             <p className="answer-note"><ShieldCheck size={15} aria-hidden="true" /> {example.limit[lang]}</p>
             <SourceLinks {...{ example, lang }} />
-          </>}
+          </div>
         </div>
       </div>
     </div>
@@ -76,14 +76,16 @@ function TracePreview({ example, lang, evidence }) {
         <p>{example.chunk[lang]}</p>
         <SourceLinks {...{ example, lang }} />
       </div>
-      <External href={evidence.href}><GitCommitHorizontal size={17} aria-hidden="true" /> {evidence.label[lang]} <ArrowUpRight size={14} aria-hidden="true" /></External>
+      <External href={evidence.href} className="text-link evidence-link"><GitCommitHorizontal size={17} aria-hidden="true" /> {evidence.label[lang]} <ArrowUpRight size={14} aria-hidden="true" /></External>
     </div>
   )
 }
 
 export default function Workbench({ lang, project, evidence }) {
   const [selected, setSelected] = useState(0)
-  const [position, setPosition] = useState(Infinity)
+  const [position, setPosition] = useState(0)
+  const [playing, setPlaying] = useState(() => !matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const cycle = useRef(null)
   const reduce = useReducedMotion()
   const example = batamExamples[selected]
   const answer = example.answer[lang]
@@ -95,13 +97,53 @@ export default function Workbench({ lang, project, evidence }) {
     return () => window.clearTimeout(timer)
   }, [example, position, done])
 
+  useEffect(() => {
+    if (!playing) return
+    function step() {
+      setPosition(0)
+      setSelected(current => (current + 1) % batamExamples.length)
+      schedule()
+    }
+    function schedule() {
+      window.clearTimeout(cycle.current)
+      if (!document.hidden) cycle.current = window.setTimeout(step, 4500)
+    }
+    schedule()
+    document.addEventListener('visibilitychange', schedule)
+    return () => {
+      window.clearTimeout(cycle.current)
+      document.removeEventListener('visibilitychange', schedule)
+    }
+  }, [playing])
+
+  useEffect(() => {
+    const motion = matchMedia('(prefers-reduced-motion: reduce)')
+    function respect(event) {
+      if (event.matches) {
+        window.clearTimeout(cycle.current)
+        setPlaying(false)
+        setPosition(Infinity)
+      }
+    }
+    motion.addEventListener('change', respect)
+    return () => motion.removeEventListener('change', respect)
+  }, [])
+
+  function stop() {
+    window.clearTimeout(cycle.current)
+    setPlaying(false)
+  }
+
   function run(index) {
+    stop()
     setPosition(0)
     setSelected(index)
   }
 
+  const PlaybackIcon = playing ? Pause : Play
+
   return (
-    <aside className="workbench glass" data-spotlight="" data-tilt="" aria-label={lang ? 'Hallo Batam AI interactive demo' : 'Demo interaktif Hallo Batam AI'}>
+    <aside className="workbench glass alabaster" data-spotlight="" data-tilt="" onFocus={event => { if (event.target.closest('.source-chip')) stop() }} aria-label={lang ? 'Hallo Batam AI interactive demo' : 'Demo interaktif Hallo Batam AI'}>
       <div className="workbench-top">
         <div className="workbench-location">
           <p className="workbench-label"><i className="live-dot" aria-hidden="true" /> Bandung, ID <span aria-hidden="true">·</span> <BandungTime /></p>
@@ -109,11 +151,20 @@ export default function Workbench({ lang, project, evidence }) {
         </div>
         <span className="workbench-demo"><AudioLines size={14} aria-hidden="true" /> {lang ? 'Local simulation' : 'Simulasi lokal'}</span>
       </div>
-      <SegmentTabs label={lang ? 'Demo mode' : 'Mode demo'}
+      <SegmentTabs onSelect={stop} label={lang ? 'Demo mode' : 'Mode demo'}
         items={[<><Sparkles size={15} aria-hidden="true" /> Live Chat</>, <><Workflow size={15} aria-hidden="true" /> RAG Trace</>]}>
         {mode => mode === 0 ? <ChatPreview {...{ example, lang, done }} text={done ? answer : answer.slice(0, position)} />
           : <TracePreview {...{ example, lang, evidence }} />}
       </SegmentTabs>
+      <div className="demo-playback" data-playing={playing}>
+        <button className="demo-toggle" type="button" onClick={() => playing ? stop() : setPlaying(true)}
+          aria-label={playing ? (lang ? 'Pause auto-demo' : 'Jeda auto-demo') : (lang ? 'Resume auto-demo' : 'Lanjutkan auto-demo')}>
+          <i className="live-dot" aria-hidden="true" /> Auto-Demo <PlaybackIcon size={14} aria-hidden="true" />
+        </button>
+        <div className="retrieval-pulse" key={selected} aria-hidden="true">
+          {vector.slice(0, 12).map((height, index) => <i key={index} style={{ '--bar': height / 100, '--beat': index }} />)}
+        </div>
+      </div>
       <div className="hero-prompts" role="group" aria-label={lang ? 'Try a question' : 'Coba pertanyaan'}>
         {batamExamples.map(({ icon, prompt, short }, index) => {
           const Icon = icons[icon]
@@ -124,7 +175,7 @@ export default function Workbench({ lang, project, evidence }) {
         })}
       </div>
       <p className="workbench-note">{lang ? 'Simulated responses and trace values with links to official sources.' : 'Contoh jawaban dan angka trace disimulasikan, dengan tautan ke rujukan resmi.'}</p>
-      <p className="sr-only" role="status">{done ? answer + ' ' + example.limit[lang] : (lang ? 'Writing a reply…' : 'Sedang menulis jawaban…')}</p>
+      <p className="sr-only" aria-live={playing ? 'off' : 'polite'}>{done ? answer + ' ' + example.limit[lang] : (lang ? 'Writing a reply…' : 'Sedang menulis jawaban…')}</p>
     </aside>
   )
 }
