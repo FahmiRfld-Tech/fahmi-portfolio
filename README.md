@@ -1,6 +1,6 @@
 # M Fahmi Rifaldi — Engineering Portfolio
 
-A bilingual (ID/EN) portfolio built with React, Vite, Tailwind CSS, Framer Motion, and Lucide. The home page features a real Hallo Batam AI conversation, with supporting case studies, experience, and contact details.
+A bilingual (ID/EN) portfolio built with React, Vite, Tailwind CSS, Framer Motion, and Lucide. The Editorial Engine opens with a real Hallo Batam AI conversation, followed by the Cireundeu case study, a leadership timeline, and an index of technical explorations.
 
 ## Local development
 
@@ -17,8 +17,10 @@ Vercel builds with Vite and serves `dist/`. The portfolio needs no environment v
 
 ## Interactions
 
-- **Cmd+K / Ctrl+K** opens search for sections, projects, language, and contact actions.
+- **Cmd+K / Ctrl+K** finds chapters, project demos, the Hallo Batam commit, language, and contact actions.
+- The chapter dock follows scroll position and supports direct links, including the existing project and Playground anchors.
 - Project images open a dialog with fit-to-screen and original-size views.
+- The Batam stage offers an original capture and a portfolio-side demo because the live app blocks framing. The source links and production and vector-retrieval diagrams describe the audited architecture and an optional design path separately.
 - The Playground streams local sample answers for food, beaches, and one-day itineraries. Its live app link remains available throughout, and the language used for a reply stays fixed when it begins.
 - The OS reduced-motion preference disables streaming animation and reduces interface motion.
 
