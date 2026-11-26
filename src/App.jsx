@@ -8,6 +8,7 @@ import CommandPalette from './editorial/CommandPalette'
 import { CireundeuShowcase, EditorialContact, EditorialProlog, FloatingChapterDock, HalloBatamStage, LabIndexTable, LeadershipTimeline } from './editorial/Chapters'
 import { chapters, EMAIL, GITHUB, projectActions } from './editorial/content'
 import { CaseDetails, External, ProjectLink, projectUrl } from './editorial/Shared'
+import useSpotlights from './editorial/useSpotlights'
 
 const [flagship] = content.projects
 const community = content.projects.find(project => project.id === 'cireundeu')
@@ -69,6 +70,8 @@ export default function App() {
   const [overlay, setOverlay] = useState(null)
   const [toast, setToast] = useState(null)
   const timer = useRef(0)
+  const scrollRoot = useRef(null)
+  useSpotlights(scrollRoot)
   const closeLabel = lang ? 'Close' : 'Tutup'
 
   useLayoutEffect(() => {
@@ -152,17 +155,21 @@ export default function App() {
   return (
     <>
       <a className="skip key" href="#main">{lang ? 'Skip to content' : 'Langsung ke konten'}</a>
-      <TopBar {...{ lang, setLang, openCommand }} />
-      <main className="wrap" id="main" tabIndex="-1">
-        <EditorialProlog lang={lang} />
-        <HalloBatamStage project={flagship} {...{ lang, open }} />
-        <CireundeuShowcase project={community} {...{ lang, open }} />
-        <LeadershipTimeline lang={lang} />
-        <LabIndexTable projects={lab} {...{ lang, open }} />
-        <EditorialContact {...{ lang, copyEmail, openCommand }} />
-      </main>
-      <footer className="wrap site-footer"><span>M. Fahmi Rifaldi</span><span><MapPin size={15} aria-hidden="true" /> Bandung, Indonesia</span></footer>
-      <FloatingChapterDock lang={lang} />
+      <div className="portfolio-shell">
+        <div className="portfolio-scroll" ref={scrollRoot}>
+          <TopBar {...{ lang, setLang, openCommand }} />
+          <main className="wrap" id="main" tabIndex="-1">
+            <EditorialProlog {...{ lang, openCommand }} />
+            <HalloBatamStage project={flagship} {...{ lang, open }} />
+            <CireundeuShowcase project={community} {...{ lang, open }} />
+            <LeadershipTimeline lang={lang} />
+            <LabIndexTable projects={lab} {...{ lang, open }} />
+            <EditorialContact {...{ lang, copyEmail, openCommand }} />
+          </main>
+          <footer className="wrap site-footer"><span>M. Fahmi Rifaldi</span><span><MapPin size={15} aria-hidden="true" /> Bandung, Indonesia</span></footer>
+        </div>
+        <div className="dock-lane"><FloatingChapterDock {...{ lang, scrollRoot }} /></div>
+      </div>
 
       <AnimatePresence>
         {toast && <m.div className="toast" role="status" key={toast.key}

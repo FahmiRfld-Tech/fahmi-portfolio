@@ -33,8 +33,8 @@ export default function Playground({ lang, liveUrl }) {
       const bounds = result.current.getBoundingClientRect()
       const viewport = window.visualViewport
       const visibleBottom = viewport ? viewport.height + viewport.offsetTop : window.innerHeight
-      const dock = document.querySelector('.chapter-dock')?.getBoundingClientRect()
-      const viewportBottom = dock && dock.bottom <= visibleBottom ? dock.top : visibleBottom
+      const readingArea = result.current.closest('.portfolio-scroll')?.getBoundingClientRect()
+      const viewportBottom = Math.min(visibleBottom, readingArea?.bottom ?? visibleBottom)
       if (phase === 'done' && (bounds.top >= viewportBottom || bounds.bottom <= (viewport?.offsetTop ?? 0))) return
       if (bounds.bottom > viewportBottom - 16) result.current.scrollIntoView({ block: 'end', behavior: 'instant' })
     })

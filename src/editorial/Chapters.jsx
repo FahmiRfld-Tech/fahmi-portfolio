@@ -2,43 +2,48 @@ import { useEffect, useState } from 'react'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Copy, ExternalLink, Minus, Plus } from 'lucide-react'
 import Playground from '../Playground'
 import content from '../content.json'
+import StackMatrix from './StackMatrix'
+import Workbench from './Workbench'
 import { chapters, EMAIL, GITHUB, insights, labMeta, LINKEDIN } from './content'
 import { BrowserFrame, CaseDetails, ChapterHeader, External, ProjectLink, RevealRow, Screenshot, Tags } from './Shared'
 
-export function FloatingChapterDock({ lang }) {
+export function FloatingChapterDock({ lang, scrollRoot }) {
   const [active, setActive] = useState('prolog')
+  const [retired, setRetired] = useState(false)
+
   useEffect(() => {
-    const targets = chapters.map(({ id }) => document.getElementById(id)).filter(Boolean)
-    const footer = document.querySelector('.site-footer')
+    const root = scrollRoot.current
+    const targets = chapters.map(({ id }) => document.getElementById(id))
+    const footer = root.querySelector('.site-footer')
     let observer
-    let footerVisible = false
     function sync() {
-      const readingLine = window.innerHeight * .38
+      const readingLine = root.getBoundingClientRect().top + root.clientHeight * .38
       const found = targets.filter(target => target.getBoundingClientRect().top <= readingLine).at(-1)
-      setActive(footerVisible ? 'contact' : found?.id ?? chapters[0].id)
+      setActive(found?.id ?? chapters[0].id)
     }
     function observe() {
       observer?.disconnect()
-      observer = new IntersectionObserver(sync, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * .62) + 'px 0px' })
+      const bottom = Math.round(root.clientHeight * .62)
+      observer = new IntersectionObserver(sync, { root, rootMargin: '0px 0px -' + bottom + 'px 0px' })
       targets.forEach(target => observer.observe(target))
       sync()
     }
     const footerObserver = new IntersectionObserver(([entry]) => {
-      footerVisible = entry.intersectionRatio >= .85
-      sync()
-    }, { threshold: .85 })
-    if (footer) footerObserver.observe(footer)
-    window.addEventListener('resize', observe)
-    observe()
+      setRetired(entry.intersectionRatio >= .85)
+    }, { root, threshold: .85 })
+    const resize = new ResizeObserver(observe)
+    footerObserver.observe(footer)
+    resize.observe(root)
     return () => {
-      observer.disconnect()
+      observer?.disconnect()
       footerObserver.disconnect()
-      window.removeEventListener('resize', observe)
+      resize.disconnect()
     }
-  }, [])
+  }, [scrollRoot])
+
   const current = chapters.findIndex(({ id }) => id === active)
   return (
-    <nav className="chapter-dock" aria-label={lang ? 'Chapters' : 'Navigasi bab'}>
+    <nav className="chapter-dock" data-retired={retired} inert={retired} aria-label={lang ? 'Chapters' : 'Navigasi bab'}>
       <span className="dock-progress" aria-hidden="true" style={{ '--progress': (current + 1) / chapters.length }} />
       {chapters.map(({ id, label }, index) => (
         <a key={id} href={'#' + id} aria-current={id === active ? 'location' : undefined}>
@@ -50,7 +55,7 @@ export function FloatingChapterDock({ lang }) {
   )
 }
 
-export function EditorialProlog({ lang }) {
+export function EditorialProlog({ lang, openCommand }) {
   const metrics = [
     { number: content.metrics[2].number, label: ['Penghuni Asrama Dipimpin', 'Dormitory Residents Led'] },
     { number: content.metrics[1].number, label: ['Mahasiswa & Praktikan Dibimbing', 'Students Mentored'] },
@@ -62,8 +67,8 @@ export function EditorialProlog({ lang }) {
       <div className="prolog-heading">
         <p className="eyebrow hero-kicker">Multimedia Engineering &amp; Applied AI</p>
         <h1 id="thesis">{lang
-          ? <>Building verified AI systems and <em>grounded technology</em> for people.</>
-          : <>Membangun sistem AI yang terverifikasi dan <em>teknologi yang membumi</em> bagi manusia.</>}
+          ? <>Building <em>verified</em> AI systems and <em>grounded</em> technology for people.</>
+          : <>Membangun sistem AI yang <em>terverifikasi</em> dan teknologi yang <em>membumi</em> bagi manusia.</>}
         </h1>
         <p className="narrative thesis-copy">{lang
           ? 'Leading a residence community of more than 3,000 people taught me how decisions play out on the ground. I bring that habit to software, from a travel assistant with checkable sources to a portal local businesses can update themselves.'
@@ -71,6 +76,7 @@ export function EditorialProlog({ lang }) {
         </p>
         <a className="text-link start-link" href="#hallo-batam">{lang ? 'Read the first case study' : 'Mulai dari studi kasus AI'} <ArrowDownRight size={17} aria-hidden="true" /></a>
       </div>
+      <Workbench {...{ lang, openCommand }} />
       <dl className="metrics" aria-label={lang ? 'Impact in numbers' : 'Dampak dalam angka'}>
         {metrics.map(({ number, label }) => <div key={number[0]}><dt>{label[lang]}</dt><dd>{number[lang]}</dd></div>)}
       </dl>
@@ -186,7 +192,7 @@ export function LeadershipTimeline({ lang }) {
       <div id="stack" tabIndex="-1" className="profile-details">
         <h3>{lang ? 'Tools, education & achievements' : 'Teknologi, pendidikan & pencapaian'}</h3>
         <div className="info-grid">
-          <div>{content.stack.map(group => <div className="tag-group" key={group.title}><p className="eyebrow">{group.title}</p><Tags items={group.items} /></div>)}</div>
+          <StackMatrix lang={lang} />
           <div>{content.info.map(item => <article key={item.title[0]} className="education-item">
             <h4>{item.title[lang]}</h4>{item.copy && <p>{item.copy[lang]}</p>}
             {!!item.tags.length && <Tags items={item.tags} />}
