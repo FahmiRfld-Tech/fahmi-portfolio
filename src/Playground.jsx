@@ -32,9 +32,11 @@ export default function Playground({ lang, liveUrl }) {
     const frame = requestAnimationFrame(() => {
       const bounds = result.current.getBoundingClientRect()
       const viewport = window.visualViewport
-      const viewportBottom = viewport ? viewport.height + viewport.offsetTop : window.innerHeight
+      const visibleBottom = viewport ? viewport.height + viewport.offsetTop : window.innerHeight
+      const dock = document.querySelector('.chapter-dock')?.getBoundingClientRect()
+      const viewportBottom = dock && dock.bottom <= visibleBottom ? dock.top : visibleBottom
       if (phase === 'done' && (bounds.top >= viewportBottom || bounds.bottom <= (viewport?.offsetTop ?? 0))) return
-      if (bounds.bottom > viewportBottom - 16) result.current.scrollIntoView({ block: 'end' })
+      if (bounds.bottom > viewportBottom - 16) result.current.scrollIntoView({ block: 'end', behavior: 'instant' })
     })
     return () => cancelAnimationFrame(frame)
   }, [run, phase])
@@ -60,7 +62,7 @@ export default function Playground({ lang, liveUrl }) {
   const status = labels[phase][lang]
 
   return (
-    <section id="playground" tabIndex="-1" className="section playground-section" aria-labelledby="play-title">
+    <section id="playground" tabIndex="-1" className="playground-section" aria-labelledby="play-title">
       <div className="play-intro">
         <p className="eyebrow"><Sparkles size={16} /> Playground</p>
         <h2 id="play-title">{lang ? 'Try the Batam travel assistant' : 'Coba asisten wisata Batam'}</h2>

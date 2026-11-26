@@ -24,7 +24,7 @@ export default function Dialog({ title, closeLabel, close, children, className =
         animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.2 }}>
         <div className="dialog-top">
           <h2>{title}</h2>
-          <button type="button" className="key icon-key" onClick={close} aria-label={closeLabel}><X size={19} /></button>
+          <button type="button" className="key icon-key" onClick={close} aria-label={closeLabel}><X size={19} aria-hidden="true" /></button>
         </div>
         {children}
       </m.div>
