@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowUpRight, Maximize2, Minus, Plus } from 'lucide-react'
 import { caseStudies } from '../cases'
 import { projectActions } from './content'
@@ -34,7 +34,7 @@ export function ChapterHeader({ number, category, title, children, headingId }) 
 
 export function BrowserFrame({ project, children, actions }) {
   return (
-    <div className="browser-frame" data-project={project.id} data-spotlight="">
+    <div className="browser-frame glass" data-project={project.id} data-spotlight="" data-tilt="">
       <div className="browser-bar">
         <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
         <span className="browser-address">{project.preview.startsWith('/') ? project.preview : new URL(project.preview).hostname}</span>
@@ -72,12 +72,21 @@ export function CaseDetails({ project, lang, className = '', technicalStack }) {
   )
 }
 
-export function RevealRow({ id, className = '', summary, children, hover = true }) {
+export function RevealRow({ id, anchorId, className = '', summary, children, hover = true }) {
   const [pinned, setPinned] = useState(false)
   const [preview, setPreview] = useState(false)
   const open = pinned || preview
+  useEffect(() => {
+    if (!anchorId) return
+    function sync() {
+      if (location.hash === '#' + anchorId) setPinned(true)
+    }
+    sync()
+    window.addEventListener('hashchange', sync)
+    return () => window.removeEventListener('hashchange', sync)
+  }, [anchorId])
   return (
-    <li className={'reveal-row ' + className} data-spotlight={className === 'timeline-row' ? '' : undefined}
+    <li id={anchorId} tabIndex={anchorId ? -1 : undefined} className={'reveal-row glass ' + className} data-spotlight=""
       onPointerEnter={event => { if (hover && event.pointerType === 'mouse' && matchMedia('(hover: hover)').matches) setPreview(true) }}
       onPointerLeave={event => {
         if (event.pointerType === 'mouse' && !event.currentTarget.querySelector('.reveal-panel')?.contains(document.activeElement)) setPreview(false)

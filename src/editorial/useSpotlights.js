@@ -1,40 +1,66 @@
 import { useEffect } from 'react'
 
+const tiltLimit = 3.5
+
 export default function useSpotlights(root) {
   useEffect(() => {
     const area = root.current
     const motion = matchMedia('(prefers-reduced-motion: reduce)')
     let frame
-    let current
-    let position
+    let card
+    let untransformed
+    let x, y, nextX, nextY
+    let tiltX = 0
+    let tiltY = 0
+
+    function clear() {
+      cancelAnimationFrame(frame)
+      frame = undefined
+      card?.removeAttribute('data-lit')
+      card?.style.removeProperty('--tilt-x')
+      card?.style.removeProperty('--tilt-y')
+      card = null
+      tiltX = 0
+      tiltY = 0
+    }
+
     function track(event) {
       if (event.pointerType !== 'mouse' || motion.matches) return
       const target = event.target.closest('[data-spotlight]')
-      if (current !== target) {
-        current?.removeAttribute('data-lit')
-        current = target
+      if (target !== card) {
+        clear()
+        if (!target) return
+        card = target
+        untransformed = target.getBoundingClientRect()
       }
-      position = { x: event.clientX, y: event.clientY }
-      if (!frame && target) frame = requestAnimationFrame(paint)
+      if (!card) return
+      x = Math.min(1, Math.max(0, (event.clientX - untransformed.left) / untransformed.width))
+      y = Math.min(1, Math.max(0, (event.clientY - untransformed.top) / untransformed.height))
+      nextX = (0.5 - y) * 2 * tiltLimit
+      nextY = (x - 0.5) * 2 * tiltLimit
+      if (frame === undefined) frame = requestAnimationFrame(paint)
     }
+
     function paint() {
       frame = undefined
-      if (!current) return
-      const bounds = current.getBoundingClientRect()
-      current.style.setProperty('--mouse-x', position.x - bounds.left + 'px')
-      current.style.setProperty('--mouse-y', position.y - bounds.top + 'px')
-      current.setAttribute('data-lit', '')
+      if (!card) return
+      card.style.setProperty('--mouse-x', x * 100 + '%')
+      card.style.setProperty('--mouse-y', y * 100 + '%')
+      if (card.hasAttribute('data-tilt')) {
+        tiltX += (nextX - tiltX) * .23
+        tiltY += (nextY - tiltY) * .23
+        card.style.setProperty('--tilt-x', tiltX + 'deg')
+        card.style.setProperty('--tilt-y', tiltY + 'deg')
+        if (Math.abs(nextX - tiltX) + Math.abs(nextY - tiltY) > .025) frame = requestAnimationFrame(paint)
+      }
+      card.setAttribute('data-lit', '')
     }
-    function clear() {
-      current?.removeAttribute('data-lit')
-      current = null
-    }
+
     area.addEventListener('pointermove', track, { passive: true })
     area.addEventListener('pointerleave', clear)
-    area.addEventListener('scroll', clear)
+    area.addEventListener('scroll', clear, { passive: true })
     motion.addEventListener('change', clear)
     return () => {
-      cancelAnimationFrame(frame)
       area.removeEventListener('pointermove', track)
       area.removeEventListener('pointerleave', clear)
       area.removeEventListener('scroll', clear)

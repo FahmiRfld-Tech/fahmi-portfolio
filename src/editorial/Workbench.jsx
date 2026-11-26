@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
-import { ArrowDownRight, ArrowUpRight, Check, Clock3, Command, Database, Search, ShieldCheck, Signal } from 'lucide-react'
-import content from '../content.json'
+import { useEffect, useState } from 'react'
+import { useReducedMotion } from 'framer-motion'
+import { ArrowUpRight, AudioLines, Database, GitCommitHorizontal, Search, ShieldCheck, Ship, Sparkles, Umbrella, Utensils, Workflow } from 'lucide-react'
+import { batamExamples } from './batam-examples'
+import { External } from './Shared'
+import SegmentTabs from './SegmentTabs'
 
-const lenses = [
-  { label: ['AI RAG', 'AI RAG'], target: 'hallo-batam' },
-  { label: ['Komunitas', 'Community'], target: 'cireundeu' },
-  { label: ['Kepemimpinan', 'Leadership'], target: 'experience' },
-]
+const icons = { beach: Umbrella, food: Utensils, ferry: Ship }
+const vector = [21, 64, 43, 89, 51, 72, 34, 59, 95, 42, 66, 31, 75, 55, 86, 48]
+const bandungClock = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+})
 
-function BandungTime({ lang }) {
-  const format = new Intl.DateTimeFormat(lang ? 'en-GB' : 'id-ID', {
-    timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
-  })
+function BandungTime() {
   const [now, setNow] = useState(() => new Date())
   useEffect(() => {
     let timer
@@ -23,86 +23,108 @@ function BandungTime({ lang }) {
     tick()
     return () => window.clearTimeout(timer)
   }, [])
-  const parts = format.formatToParts(now)
-  const value = parts.filter(part => part.type === 'hour' || part.type === 'minute').map(part => part.value).join(':')
-  return <span className="workbench-time"><Clock3 size={13} aria-hidden="true" /> <time dateTime={now.toISOString()}>{value} WIB</time><span>UTC+7</span></span>
+  return <time dateTime={now.toISOString()}>{bandungClock.format(now)} WIB</time>
 }
 
-function RagLens({ lang }) {
+function SourceLinks({ example, lang }) {
   return (
-    <>
-      <p className="workbench-label">{lang ? 'Hallo Batam AI · Example trace' : 'Hallo Batam AI · Contoh alur'}</p>
-      <div className="trace">
-        <div className="trace-row"><Search size={17} aria-hidden="true" /><div><span>{lang ? 'Query' : 'Pertanyaan'}</span><strong>{lang ? 'Quiet beaches in Nongsa?' : 'Pantai tenang di Nongsa?'}</strong></div></div>
-        <div className="trace-row"><Database size={17} aria-hidden="true" /><div><span>pgvector similarity · {lang ? 'simulated' : 'simulasi'}</span><strong className="trace-score">{lang ? '0.89' : '0,89'}</strong></div></div>
-        <div className="trace-row"><ShieldCheck size={17} aria-hidden="true" /><div><span>{lang ? 'Source check' : 'Pemeriksaan sumber'}</span><strong className="trace-verified">{lang ? 'BP Batam · Verified' : 'BP Batam · Terverifikasi'}</strong></div></div>
+    <div className="hero-sources" role="group" aria-label={lang ? 'Official references' : 'Rujukan resmi'}>
+      {example.sources.map(([name, href]) => <External key={href} href={href} className="source-chip">
+        <ShieldCheck size={14} aria-hidden="true" /> {name} <ArrowUpRight size={12} aria-hidden="true" />
+      </External>)}
+    </div>
+  )
+}
+
+function ChatPreview({ example, text, done, lang }) {
+  return (
+    <div className="hero-conversation">
+      <p className="hero-question"><Search size={14} aria-hidden="true" /> {example.prompt[lang]}</p>
+      <div className="hero-answer">
+        <span className="answer-icon"><Sparkles size={15} aria-hidden="true" /></span>
+        <div>
+          <strong>Hallo Batam AI</strong>
+          <p className="hero-answer-text" aria-hidden={!done}>
+            {text}
+            {!done && <span className="stream-caret" aria-hidden="true" />}
+          </p>
+          {done && <>
+            <p className="answer-note"><ShieldCheck size={15} aria-hidden="true" /> {example.limit[lang]}</p>
+            <SourceLinks {...{ example, lang }} />
+          </>}
+        </div>
       </div>
-      <p className="workbench-note"><span className="workbench-guardrail"><ShieldCheck size={13} aria-hidden="true" /> {lang ? 'Crowd data: unverified → disclosed' : 'Data keramaian: belum terverifikasi → diungkapkan'}</span></p>
-    </>
+    </div>
   )
 }
 
-function CommunityLens({ lang }) {
-  const portal = content.projects.find(project => project.id === 'cireundeu')
+function TracePreview({ example, lang, evidence }) {
   return (
-    <>
-      <p className="workbench-label">Digitalisasi Cireundeu</p>
-      <div className="trace">
-        <div className="trace-row"><Signal size={17} aria-hidden="true" /><div><span>{lang ? 'Public portal' : 'Portal publik'}</span><a href={portal.preview} target="_blank" rel="noopener noreferrer">kampungcireundeu.kii.lat <ArrowUpRight size={13} aria-hidden="true" /></a></div></div>
-        <div className="trace-row"><span className="trace-metric">13</span><div><strong>{lang ? 'Cross-functional team members' : 'Anggota tim lintas disiplin'}</strong><span>Project Manager &amp; Full-Stack Developer</span></div></div>
-        <div className="trace-row"><Check size={17} aria-hidden="true" /><div><span>{lang ? 'CMS module' : 'Modul CMS'}</span><strong>{lang ? 'Self-service updates for local businesses' : 'Pembaruan konten mandiri untuk UMKM'}</strong></div></div>
+    <div className="inspector">
+      <p className="hero-question"><Search size={14} aria-hidden="true" /> {example.prompt[lang]}</p>
+      <div className="inspector-vector">
+        <span className="workbench-label"><Workflow size={14} aria-hidden="true" /> Query embedding</span>
+        <span>{lang ? 'Vektor contoh terbentuk' : 'Sample vector ready'}</span>
+        <div className="vector-wave" aria-hidden="true">{vector.map((height, index) => <i key={index} style={{ '--bar': height + '%' }} />)}</div>
       </div>
-    </>
+      <dl className="inspector-metrics">
+        <div><dt>pgvector · {lang ? 'Kemiripan kosinus' : 'Cosine similarity'}</dt><dd>{example.score}</dd></div>
+        <div><dt>{lang ? 'Latensi pengambilan' : 'Retrieval latency'}</dt><dd>{example.latency}<small> ms</small></dd></div>
+      </dl>
+      <div className="inspector-chunk">
+        <p className="workbench-label"><Database size={14} aria-hidden="true" /> PostgreSQL · {lang ? 'Contoh potongan dokumen' : 'Sample document chunk'}</p>
+        <p>{example.chunk[lang]}</p>
+        <SourceLinks {...{ example, lang }} />
+      </div>
+      <External href={evidence.href}><GitCommitHorizontal size={17} aria-hidden="true" /> {evidence.label[lang]} <ArrowUpRight size={14} aria-hidden="true" /></External>
+    </div>
   )
 }
 
-function LeadershipLens({ lang }) {
-  return (
-    <>
-      <p className="workbench-label">{lang ? 'Leadership in numbers' : 'Skala kepemimpinan'}</p>
-      <ul className="workbench-scale">
-        <li><strong>{content.metrics[2].number[lang]}</strong><span>{lang ? 'Dormitory residents managed' : 'Penghuni asrama dikelola'}</span><i aria-hidden="true" style={{ '--measure': '100%' }} /></li>
-        <li><strong>{content.metrics[1].number[lang]}</strong><span>{lang ? 'Lab students mentored across 5 computing courses' : 'Mahasiswa praktikum dibimbing di 5 mata kuliah komputasi'}</span><i aria-hidden="true" style={{ '--measure': '10%' }} /></li>
-      </ul>
-      <p className="workbench-note"><Check size={15} aria-hidden="true" /> {lang ? 'Dorm Olympic 2025 · Event operations' : 'Dorm Olympic 2025 · Operasional acara'}</p>
-    </>
-  )
-}
+export default function Workbench({ lang, project, evidence }) {
+  const [selected, setSelected] = useState(0)
+  const [position, setPosition] = useState(Infinity)
+  const reduce = useReducedMotion()
+  const example = batamExamples[selected]
+  const answer = example.answer[lang]
+  const done = !!reduce || position >= answer.length
 
-const panels = [RagLens, CommunityLens, LeadershipLens]
+  useEffect(() => {
+    if (done) return
+    const timer = window.setTimeout(() => setPosition(current => current + 5), 28)
+    return () => window.clearTimeout(timer)
+  }, [example, position, done])
 
-export default function Workbench({ lang, openCommand }) {
-  const [active, setActive] = useState(0)
-  const tabs = useRef([])
-  function navigate(event, index) {
-    const next = { ArrowLeft: (index + lenses.length - 1) % lenses.length, ArrowRight: (index + 1) % lenses.length, Home: 0, End: lenses.length - 1 }[event.key]
-    if (next === undefined) return
-    event.preventDefault()
-    setActive(next)
-    tabs.current[next]?.focus()
+  function run(index) {
+    setPosition(0)
+    setSelected(index)
   }
-  const Panel = panels[active]
+
   return (
-    <aside className="workbench" data-spotlight="" aria-label={lang ? 'Interactive workbench' : 'Workbench interaktif'}>
-      <div className="workbench-top"><span className="workbench-label"><i className="live-dot" aria-hidden="true" /> Workbench</span><BandungTime lang={lang} /></div>
-      <p className="workbench-status">{lang ? 'Open to Applied AI & Full-Stack' : 'Terbuka untuk AI Terapan & Full-Stack'}</p>
-      <div className="workbench-tabs" role="tablist" aria-label={lang ? 'Project lenses' : 'Perspektif proyek'}>
-        {lenses.map(({ label }, index) => (
-          <button key={label[0]} type="button" role="tab" id={'lens-tab-' + index} aria-controls={'lens-panel-' + index}
-            aria-selected={active === index} tabIndex={active === index ? 0 : -1} ref={element => { tabs.current[index] = element }}
-            onClick={() => setActive(index)} onKeyDown={event => navigate(event, index)}>
-            <span aria-hidden="true">0{index + 1}.</span> {label[lang]}
+    <aside className="workbench glass" data-spotlight="" data-tilt="" aria-label={lang ? 'Hallo Batam AI interactive demo' : 'Demo interaktif Hallo Batam AI'}>
+      <div className="workbench-top">
+        <div className="workbench-location">
+          <p className="workbench-label"><i className="live-dot" aria-hidden="true" /> Bandung, ID <span aria-hidden="true">·</span> <BandungTime /></p>
+          <External href={project.preview} className="workbench-domain">batamtes.vercel.app <ArrowUpRight size={13} aria-hidden="true" /></External>
+        </div>
+        <span className="workbench-demo"><AudioLines size={14} aria-hidden="true" /> {lang ? 'Local simulation' : 'Simulasi lokal'}</span>
+      </div>
+      <SegmentTabs label={lang ? 'Demo mode' : 'Mode demo'}
+        items={[<><Sparkles size={15} aria-hidden="true" /> Live Chat</>, <><Workflow size={15} aria-hidden="true" /> RAG Trace</>]}>
+        {mode => mode === 0 ? <ChatPreview {...{ example, lang, done }} text={done ? answer : answer.slice(0, position)} />
+          : <TracePreview {...{ example, lang, evidence }} />}
+      </SegmentTabs>
+      <div className="hero-prompts" role="group" aria-label={lang ? 'Try a question' : 'Coba pertanyaan'}>
+        {batamExamples.map(({ icon, prompt, short }, index) => {
+          const Icon = icons[icon]
+          return <button type="button" key={icon} aria-label={prompt[lang]} aria-pressed={selected === index}
+            title={prompt[lang]} onClick={() => run(index)}>
+            <Icon size={15} aria-hidden="true" /> {short[lang]}
           </button>
-        ))}
+        })}
       </div>
-      {lenses.map(({ target }, index) => <div className="workbench-panel" role="tabpanel" id={'lens-panel-' + index}
-        key={target} aria-labelledby={'lens-tab-' + index} hidden={active !== index} tabIndex={0}>
-        {active === index && <Panel lang={lang} />}
-      </div>)}
-      <div className="workbench-footer">
-        <a className="text-link" href={'#' + lenses[active].target}>{lang ? 'Explore this chapter' : 'Lihat bab ini'} <ArrowDownRight size={16} aria-hidden="true" /></a>
-        <button className="key workbench-command" type="button" onClick={openCommand} aria-label={lang ? 'Open command palette' : 'Buka palet perintah'}><Command size={14} aria-hidden="true" /> K</button>
-      </div>
+      <p className="workbench-note">{lang ? 'Simulated responses and trace values with links to official sources.' : 'Contoh jawaban dan angka trace disimulasikan, dengan tautan ke rujukan resmi.'}</p>
+      <p className="sr-only" role="status">{done ? answer + ' ' + example.limit[lang] : (lang ? 'Writing a reply…' : 'Sedang menulis jawaban…')}</p>
     </aside>
   )
 }

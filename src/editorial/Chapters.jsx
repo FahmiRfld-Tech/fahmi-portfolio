@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Copy, ExternalLink, Minus, Plus } from 'lucide-react'
 import Playground from '../Playground'
+import LabPreview from './LabPreview'
 import content from '../content.json'
 import StackMatrix from './StackMatrix'
 import Workbench from './Workbench'
@@ -10,41 +11,52 @@ import { BrowserFrame, CaseDetails, ChapterHeader, External, ProjectLink, Reveal
 export function FloatingChapterDock({ lang, scrollRoot }) {
   const [active, setActive] = useState('prolog')
   const [retired, setRetired] = useState(false)
+  const dock = useRef(null)
 
   useEffect(() => {
     const root = scrollRoot.current
     const targets = chapters.map(({ id }) => document.getElementById(id))
     const footer = root.querySelector('.site-footer')
-    let observer
+    const shell = root.parentElement
+    const nav = dock.current
+    let frame
+    let activeChapter
     function sync() {
+      frame = undefined
+      const range = root.scrollHeight - root.clientHeight
+      nav.style.setProperty('--progress', range > 0 ? Math.min(1, Math.max(0, root.scrollTop / range)) : 0)
       const readingLine = root.getBoundingClientRect().top + root.clientHeight * .38
-      const found = targets.filter(target => target.getBoundingClientRect().top <= readingLine).at(-1)
-      setActive(found?.id ?? chapters[0].id)
+      const found = targets.findLast(target => target.getBoundingClientRect().top <= readingLine)
+      const next = found?.id ?? chapters[0].id
+      if (next !== activeChapter) {
+        shell.dataset.chapter = next
+        setActive(next)
+        activeChapter = next
+      }
     }
-    function observe() {
-      observer?.disconnect()
-      const bottom = Math.round(root.clientHeight * .62)
-      observer = new IntersectionObserver(sync, { root, rootMargin: '0px 0px -' + bottom + 'px 0px' })
-      targets.forEach(target => observer.observe(target))
-      sync()
+    function submit() {
+      if (frame === undefined) frame = requestAnimationFrame(sync)
     }
     const footerObserver = new IntersectionObserver(([entry]) => {
       setRetired(entry.intersectionRatio >= .85)
     }, { root, threshold: .85 })
-    const resize = new ResizeObserver(observe)
+    const resize = new ResizeObserver(submit)
     footerObserver.observe(footer)
     resize.observe(root)
+    resize.observe(root.querySelector('main'))
+    root.addEventListener('scroll', submit, { passive: true })
+    sync()
     return () => {
-      observer?.disconnect()
+      cancelAnimationFrame(frame)
+      root.removeEventListener('scroll', submit)
       footerObserver.disconnect()
       resize.disconnect()
     }
   }, [scrollRoot])
 
-  const current = chapters.findIndex(({ id }) => id === active)
   return (
-    <nav className="chapter-dock" data-retired={retired} inert={retired} aria-label={lang ? 'Chapters' : 'Navigasi bab'}>
-      <span className="dock-progress" aria-hidden="true" style={{ '--progress': (current + 1) / chapters.length }} />
+    <nav ref={dock} className="chapter-dock glass" data-retired={retired} inert={retired} aria-label={lang ? 'Chapters' : 'Navigasi bab'}>
+      <span className="dock-progress" aria-hidden="true" />
       {chapters.map(({ id, label }, index) => (
         <a key={id} href={'#' + id} aria-current={id === active ? 'location' : undefined}>
           {id === 'contact' ? <ArrowUpRight size={13} aria-hidden="true" /> : <span className="dock-index">0{index + 1}</span>}
@@ -55,7 +67,7 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
   )
 }
 
-export function EditorialProlog({ lang, openCommand }) {
+export function EditorialProlog({ lang, openCommand, project, evidence }) {
   const metrics = [
     { number: content.metrics[2].number, label: ['Penghuni Asrama Dipimpin', 'Dormitory Residents Led'] },
     { number: content.metrics[1].number, label: ['Mahasiswa & Praktikan Dibimbing', 'Students Mentored'] },
@@ -65,7 +77,7 @@ export function EditorialProlog({ lang, openCommand }) {
   return (
     <section id="prolog" className="prolog" aria-labelledby="thesis" tabIndex="-1">
       <div className="prolog-heading">
-        <p className="eyebrow hero-kicker">Multimedia Engineering &amp; Applied AI</p>
+        <p className="eyebrow hero-kicker"><i className="live-dot" aria-hidden="true" /> Multimedia Engineering &amp; Applied AI</p>
         <h1 id="thesis">{lang
           ? <>Building <em>verified</em> AI systems and <em>grounded</em> technology for people.</>
           : <>Membangun sistem AI yang <em>terverifikasi</em> dan teknologi yang <em>membumi</em> bagi manusia.</>}
@@ -74,11 +86,14 @@ export function EditorialProlog({ lang, openCommand }) {
           ? 'Leading a residence community of more than 3,000 people taught me how decisions play out on the ground. I bring that habit to software, from a travel assistant with checkable sources to a portal local businesses can update themselves.'
           : 'Memimpin komunitas asrama dengan lebih dari 3.000 penghuni mengajarkan saya melihat bagaimana keputusan bekerja di lapangan. Kebiasaan itu saya bawa ke rekayasa perangkat lunak, mulai dari asisten wisata dengan sumber yang bisa diperiksa hingga portal yang bisa diperbarui pengelola UMKM.'}
         </p>
-        <a className="text-link start-link" href="#hallo-batam">{lang ? 'Read the first case study' : 'Mulai dari studi kasus AI'} <ArrowDownRight size={17} aria-hidden="true" /></a>
+        <div className="hero-actions">
+          <a className="key start-link" href="#hallo-batam">{lang ? 'Read the AI case study' : 'Mulai dari studi kasus AI'} <ArrowDownRight size={17} aria-hidden="true" /></a>
+          <button className="key hero-command" type="button" onClick={openCommand} aria-label={lang ? 'Open command palette' : 'Buka palet perintah'}>⌘ K</button>
+        </div>
       </div>
-      <Workbench {...{ lang, openCommand }} />
+      <Workbench {...{ lang, project, evidence }} />
       <dl className="metrics" aria-label={lang ? 'Impact in numbers' : 'Dampak dalam angka'}>
-        {metrics.map(({ number, label }) => <div key={number[0]}><dt>{label[lang]}</dt><dd>{number[lang]}</dd></div>)}
+        {metrics.map(({ number, label }) => <div key={number[0]} className="glass" data-spotlight="" data-tilt=""><dt>{label[lang]}</dt><dd>{number[lang]}</dd></div>)}
       </dl>
     </section>
   )
@@ -208,16 +223,18 @@ export function LabIndexTable({ projects, lang, open }) {
     <section id="lab" tabIndex="-1" className="chapter" aria-labelledby="lab-title">
       <ChapterHeader number="04" category="Laboratory & Explorations" title={lang ? 'Lab & explorations' : 'Laboratorium & Eksplorasi'} headingId="lab-title" />
       <ol className="lab-index">
-        {projects.map((project, index) => <RevealRow key={project.id} id={'lab-' + project.id} className="lab-row"
+        {projects.map((project, index) => <RevealRow key={project.id} id={'lab-' + project.id + '-panel'} anchorId={'lab-' + project.id} className="lab-row" hover={false}
           summary={<><span className="row-number">0{index + 1}</span><span className="lab-title">{project.name[lang]}</span><span className="lab-meta">{labMeta[project.id][lang]}</span><span className="date lab-year">{project.category[lang].split(' / ')[0]}</span></>}>
           <div className="lab-preview">
-            <Screenshot project={project} lang={lang} open={open} />
+            <LabPreview {...{ project, lang, open }} />
             <div>
               <p className="narrative">{project.summary[lang]}</p>
               <p className="lab-role">{project.role[lang]}</p>
               <Tags items={project.stack} />
               <div className="actions">
                 <ProjectLink project={project} lang={lang} />
+                {project.id === 'quran' && <External href={project.link}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>}
+                {project.id === 'clipper' && <External href={GITHUB + '/fahmi-portfolio/tree/main/src/clipper'}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>}
                 <button className="text-link" type="button" onClick={() => open('case', project)}>{lang ? 'Technical details' : 'Detail teknis'} <ArrowRight size={16} aria-hidden="true" /></button>
               </div>
             </div>

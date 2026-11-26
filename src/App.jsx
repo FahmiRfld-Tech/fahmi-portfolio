@@ -13,7 +13,8 @@ import useSpotlights from './editorial/useSpotlights'
 const [flagship] = content.projects
 const community = content.projects.find(project => project.id === 'cireundeu')
 const lab = content.projects.filter(project => project !== flagship && project !== community)
-const commitLink = caseStudies.batam.find(item => item.evidence).evidence.href
+const batamEvidence = caseStudies.batam.find(item => item.evidence).evidence
+const commitLink = batamEvidence.href
 
 function ProjectPreview({ project, lang }) {
   const [fullSize, setFullSize] = useState(false)
@@ -156,10 +157,13 @@ export default function App() {
     <>
       <a className="skip key" href="#main">{lang ? 'Skip to content' : 'Langsung ke konten'}</a>
       <div className="portfolio-shell">
+        <div className="chapter-atmosphere" aria-hidden="true">
+          {chapters.slice(0, 5).map(({ id }) => <div key={id} className="chapter-aurora" data-palette={id} />)}
+        </div>
         <div className="portfolio-scroll" ref={scrollRoot}>
           <TopBar {...{ lang, setLang, openCommand }} />
           <main className="wrap" id="main" tabIndex="-1">
-            <EditorialProlog {...{ lang, openCommand }} />
+            <EditorialProlog {...{ lang, openCommand }} project={flagship} evidence={batamEvidence} />
             <HalloBatamStage project={flagship} {...{ lang, open }} />
             <CireundeuShowcase project={community} {...{ lang, open }} />
             <LeadershipTimeline lang={lang} />
