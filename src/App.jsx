@@ -373,6 +373,7 @@ export default function App() {
         {overlay.project.id === 'batam' && <p className="architecture-note">Vercel → Supabase Edge Function → PostgreSQL + OpenAI</p>}
         <div className="actions">
           <ProjectLink project={overlay.project} lang={lang} className="key primary">{projectActions[overlay.project.id][lang]} <ArrowUpRight size={16} /></ProjectLink>
+          {overlay.project.id === 'clipper' && <External href={GITHUB + '/fahmi-portfolio/tree/main/src/clipper'}>{lang ? 'Web source on GitHub' : 'Kode web di GitHub'} <ArrowUpRight size={16} /></External>}
           {overlay.project.id === 'batam' && <External href={flagship.link + '/blob/main/docs/ARCHITECTURE.md'}>{lang ? 'Architecture document' : 'Dokumen arsitektur'} <ArrowUpRight size={16} /></External>}
           {overlay.project.id === 'quran' && <External href={overlay.project.link}>{lang ? 'Concept documentation' : 'Dokumentasi konsep'} <ArrowUpRight size={16} /></External>}
         </div>

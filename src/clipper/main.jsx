@@ -301,7 +301,11 @@ function App() {
         <section className="panel monitor" aria-labelledby="monitor-title">
           <div className="panel-header">
             <h2 id="monitor-title"><Video size={17} /> {t('media')}</h2>
-            <span className="time">{clock(duration)}</span>
+            <span className="time" role="status">
+              {selected
+                ? (lang ? 'Clip ' : 'Klip ') + clock(selected.start) + '–' + clock(selected.end)
+                : clock(duration)}
+            </span>
           </div>
           <div className={'theater' + (portrait ? ' portrait' : '')}>
             <video key={source.url} ref={video} src={source.url} preload="metadata" playsInline controls

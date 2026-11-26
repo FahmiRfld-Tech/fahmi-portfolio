@@ -33,9 +33,16 @@ Vercel builds with Vite and serves `dist/`. The portfolio needs no environment v
 
 ## AI Video Clipper demo
 
-Open `/clipper/` for the browser adaptation of the Windows AI Video Clipper v3. The web demo starts with a synthetic robot-camera test video and a reference SRT. It also accepts local MP4/WebM files up to 90 seconds and 60 MB. The video stays in the browser.
+Open `/clipper/` for the browser adaptation of the verified November 17, 2026 Windows AI Video Clipper v3 release. See [release provenance](#clipper-release-provenance) for the exact source reference. The web demo starts with a synthetic robot-camera test video and a reference SRT. It also accepts local MP4/WebM files up to 90 seconds and 60 MB. The video stays in the browser.
 
 - The optional multilingual Whisper Tiny worker downloads its model weights from Hugging Face and runs inference on-device with Transformers.js and ONNX Runtime. Importing an SRT or using the included sample is an alternative to model inference.
 - Timestamped transcript ranking is adapted from the v3 desktop low-memory path. Its score represents transcript signals, and users can select a clip manually.
 - The browser exports 720 × 1280 clips with original audio using Canvas, Web Audio, and MediaRecorder, plus a separate rebased SRT. It uses MP4 where supported and falls back to WebM. Keep the tab open during real-time export.
 - The Windows app uses its own Ollama, FFmpeg, YouTube input, and Google Drive workflow. That runtime lives outside this repository.
+
+
+### Clipper release provenance
+
+The reference is the November 17, 2026 `AI_Video_Clipper_Final_Source.zip` archive (SHA-256 `cd4cbd6acf6762b9373fe177b91e6b194bd48353a58169a9d276e4ce3c77e6c3`). The archive records 79 passing desktop tests, one skipped face-fixture test, six local MP4 exports, and six verified Drive uploads for a desktop job. These are historical results for the Windows release.
+
+The web selector adapts that archive's `lean_analysis.py` and the non-overlap check in `media.py`, with shorter duration defaults for the browser. The separate resume patch was shipped as source only and had not been tested with the Windows executable or a live Drive upload. MotionKlip was a separate gaming fork labeled source preview.

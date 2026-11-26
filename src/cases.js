@@ -25,7 +25,7 @@ export const caseStudies = {
     },
     {
       label: ['Alur aplikasi desktop', 'Desktop workflow'],
-      copy: ['Versi Windows mentranskrip video dengan Whisper, menilai kandidat lewat Ollama, dan merender cuplikan lewat FFmpeg. Antrean lokal menyimpan progres pekerjaan.', 'The Windows version transcribes with Whisper, ranks candidates with Ollama, and renders clips with FFmpeg. A local queue tracks job progress.'],
+      copy: ['Rilis Windows v3 yang terverifikasi pada 17 November 2026 memakai Whisper untuk transkripsi, Ollama untuk menilai kandidat, dan FFmpeg untuk ekspor. Antrean lokal menyimpan progres pekerjaan.', 'The verified November 17, 2026 Windows v3 release uses Whisper for transcription, Ollama to rank candidates, and FFmpeg for export. A local queue tracks job progress.'],
     },
     {
       label: ['Demo interaktif', 'Interactive demo'],
