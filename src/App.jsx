@@ -157,9 +157,6 @@ export default function App() {
     <>
       <a className="skip key" href="#main">{lang ? 'Skip to content' : 'Langsung ke konten'}</a>
       <div className="portfolio-shell">
-        <div className="chapter-atmosphere" aria-hidden="true">
-          {chapters.slice(0, 5).map(({ id }) => <div key={id} className="chapter-aurora" data-palette={id} />)}
-        </div>
         <div className="portfolio-scroll" ref={scrollRoot}>
           <TopBar {...{ lang, setLang, openCommand }} />
           <main className="wrap" id="main" tabIndex="-1">

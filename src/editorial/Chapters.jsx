@@ -17,7 +17,6 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
     const root = scrollRoot.current
     const targets = chapters.map(({ id }) => document.getElementById(id))
     const footer = root.querySelector('.site-footer')
-    const shell = root.parentElement
     const nav = dock.current
     let frame
     let activeChapter
@@ -29,7 +28,6 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
       const found = targets.findLast(target => target.getBoundingClientRect().top <= readingLine)
       const next = found?.id ?? chapters[0].id
       if (next !== activeChapter) {
-        shell.dataset.chapter = next
         setActive(next)
         activeChapter = next
       }
