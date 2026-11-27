@@ -6,6 +6,7 @@ import ClipperInspector from './ClipperInspector'
 import { domain, impact } from './clipper-story'
 import './clipper-inspector.css'
 import { ChapterHeader, External, ProjectLink, Tags } from './Shared'
+import { ResearchTradeoff } from './EngineeringNotes'
 
 const desktopGallery = matchMedia('(min-width: 901px)')
 function subscribeGallery(notify) {
@@ -24,6 +25,7 @@ function LabPanel({ project, lang, open, desktop }) {
         {clipper && <p className="eyebrow clipper-domain">{domain}</p>}
         <p className="narrative">{project.summary[lang]}</p>
         <p className="lab-role">{project.role[lang]}</p>
+        {project.id === 'rag' && <ResearchTradeoff lang={lang} />}
         {clipper && <dl className="clipper-impact">
           {impact.map(({ value, label }) => <div key={value[0]}><dt>{label[lang]}</dt><dd>{value[lang]}</dd></div>)}
         </dl>}

@@ -7,6 +7,7 @@ import StackMatrix from './StackMatrix'
 import Workbench from './Workbench'
 import { chapterNumber, chapters, insights } from './content'
 import { BrowserFrame, CaseDetails, ChapterHeader, External, ProjectLink, RevealRow, Screenshot, Tags } from './Shared'
+import { BATAM_RAG_NOTES, CireundeuDecisions, GroundingPreview, RetrievalComparison } from './EngineeringNotes'
 
 export function FloatingChapterDock({ lang, scrollRoot }) {
   const [active, setActive] = useState('prolog')
@@ -102,11 +103,11 @@ export function EditorialProlog({ lang, openCommand, project, evidence }) {
 function RagArchitectureDrawer({ project, lang }) {
   const [open, setOpen] = useState(false)
   const production = lang
-    ? ['User query', 'Supabase Edge Function', 'PostgreSQL source selection', 'Verified source check', 'Grounded OpenAI response']
-    : ['Pertanyaan pengguna', 'Supabase Edge Function', 'Seleksi sumber PostgreSQL', 'Cek sumber terverifikasi', 'Jawaban OpenAI berbasis sumber']
+    ? ['Area/category filters', 'Exact-query cache', 'tsvector ranking', 'Entity reranking', 'Grounded JSON + Evidence Gap']
+    : ['Filter kawasan/kategori', 'Cache kueri identik', 'Peringkat tsvector', 'Reranking entitas', 'JSON grounded + Evidence Gap']
   const vector = lang
-    ? ['User query', 'Embedding', 'PostgreSQL pgvector similarity search', 'Verified source check', 'Grounded LLM response']
-    : ['Pertanyaan pengguna', 'Embedding', 'Pencarian kemiripan PostgreSQL pgvector', 'Cek sumber terverifikasi', 'Jawaban LLM berbasis sumber']
+    ? ['Compatible embedding', 'Semantic cache ≥0.94', 'Area/category filters', 'Lexical + pgvector RRF', 'Grounded JSON']
+    : ['Embedding kompatibel', 'Cache semantik ≥0,94', 'Filter kawasan/kategori', 'Lexical + RRF pgvector', 'JSON grounded']
   return (
     <div className="architecture">
       <button className="architecture-trigger" type="button" aria-expanded={open} aria-controls="rag-drawer" onClick={() => setOpen(!open)}>
@@ -121,10 +122,10 @@ function RagArchitectureDrawer({ project, lang }) {
             <p className="eyebrow">{lang ? 'Vector retrieval design' : 'Rancangan pencarian vektor'}</p>
             <ol className="architecture-flow vector">{vector.map(step => <li key={step}>{step}</li>)}</ol>
             <p className="narrative">{lang
-              ? 'The database audit found pgvector installed and no populated embeddings. The vector route describes a design option. The production route above follows the audited public architecture.'
-              : 'Audit basis data menemukan pgvector sudah terpasang dan kolom embedding belum terisi. Alur vektor menggambarkan opsi rancangan. Alur produksi di atas mengikuti arsitektur publik yang diaudit.'}</p>
+              ? 'The migration adds RRF and model-matched vector cache logic. The current corpus has zero populated embeddings, so real requests use the production path above.'
+              : 'Migrasi menambahkan logika RRF dan cache vektor dari model yang sama. Korpus saat ini masih memiliki nol embedding terisi, sehingga permintaan riil memakai jalur produksi di atas.'}</p>
             <div className="actions">
-              <External href={project.link + '/blob/main/docs/ARCHITECTURE.md'}>{lang ? 'Architecture document' : 'Dokumen arsitektur'} <ArrowUpRight size={15} aria-hidden="true" /></External>
+              <External href={BATAM_RAG_NOTES}>{lang ? 'Architecture document' : 'Dokumen arsitektur'} <ArrowUpRight size={15} aria-hidden="true" /></External>
               <External href={project.link + '/blob/main/docs/DATABASE.md'}>{lang ? 'Database audit' : 'Audit basis data'} <ArrowUpRight size={15} aria-hidden="true" /></External>
             </div>
           </div>
@@ -167,6 +168,8 @@ export function HalloBatamStage({ project, lang, open }) {
         </div>
       </BrowserFrame>
       <CaseDetails project={project} lang={lang} className="swiss-spec" technicalStack={[...project.stack, 'RAG']} />
+      <RetrievalComparison lang={lang} />
+      <GroundingPreview lang={lang} />
       <RagArchitectureDrawer project={project} lang={lang} />
     </section>
   )
@@ -189,6 +192,7 @@ export function CireundeuShowcase({ project, lang, open }) {
         <Tags items={project.stack} />
         <button className="text-link" type="button" onClick={() => open('case', project)}>{lang ? 'Read the technical case study' : 'Baca studi kasus teknis'} <ArrowRight size={16} aria-hidden="true" /></button>
       </div>
+      <CireundeuDecisions lang={lang} />
     </section>
   )
 }

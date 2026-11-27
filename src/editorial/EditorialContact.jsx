@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { ArrowUpRight, Check, Copy } from 'lucide-react'
+import { ArrowUpRight, Check, Copy, FileText } from 'lucide-react'
 import content from '../content.json'
 import { EMAIL, GITHUB, LINKEDIN } from './content'
 import SegmentTabs from './SegmentTabs'
+import { resumeLabel } from './Resume'
 import { External } from './Shared'
 
 const briefs = [
@@ -54,7 +55,7 @@ function QuickBrief({ lang, copied, copyText }) {
   )
 }
 
-export default function EditorialContact({ lang, copied, copyText, openCommand }) {
+export default function EditorialContact({ lang, copied, copyText, openCommand, openResume }) {
   const emailCopied = copied?.kind === 'email'
   const EmailIcon = emailCopied ? Check : Copy
   return (
@@ -73,6 +74,7 @@ export default function EditorialContact({ lang, copied, copyText, openCommand }
           <div className="contact-secondary">
             <External className="key" href={GITHUB}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>
             <External className="key" href={LINKEDIN}>LinkedIn <ArrowUpRight size={15} aria-hidden="true" /></External>
+            <button className="key resume-action" type="button" onClick={openResume}><FileText size={16} aria-hidden="true" /> {resumeLabel[lang]}</button>
             <button className="key contact-command" onClick={openCommand} type="button" aria-label={lang ? 'Open command palette' : 'Buka palet perintah'}>⌘ K</button>
           </div>
         </div>

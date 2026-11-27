@@ -140,8 +140,8 @@
         "2026 / Backend · RAG Prototype"
       ],
       "summary": [
-        "Prototipe pencarian semantik untuk tanya jawab pariwisata.",
-        "A prototype exploring semantic retrieval for tourism Q&A."
+        "Sandbox Python dan Django REST untuk membandingkan chunking, pembobotan retrieval hybrid BM25 + pgvector RRF, dan evaluasi anti-halusinasi. Implementasi prototipe menggunakan FastEmbed dan ChromaDB.",
+        "An isolated Python and Django REST sandbox for comparing chunking, BM25 + pgvector RRF weighting, and anti-hallucination evaluation. The implemented prototype uses FastEmbed and ChromaDB."
       ],
       "stack": [
         "Python",

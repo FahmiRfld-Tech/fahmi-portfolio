@@ -13,7 +13,7 @@ export const caseStudies = {
     },
     {
       label: ['Keputusan teknis', 'Technical decision'],
-      copy: ['Supabase mengambil dokumen PostgreSQL yang sudah diperiksa sebelum OpenAI menyusun jawaban. Pengguna dapat memeriksa rujukan dari jawaban tersebut.', 'Supabase retrieves reviewed PostgreSQL documents before OpenAI generates a response, allowing users to check the references behind the answer.'],
+      copy: ['Supabase menyaring kawasan dan kategori, lalu memberi peringkat dokumen tsvector dan mereranking nama tempat. JSON grounding menampilkan kutipan serta batas bukti.', 'Supabase filters by area and category, ranks tsvector documents, and reranks place names. Grounded JSON exposes citations and evidence gaps.'],
     },
     {
       label: ['Bukti fitur', 'Feature in use'],
