@@ -26,6 +26,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+        env:
+          # The site bundles ONNX Runtime Web; the build runner does not need CUDA.
+          ONNXRUNTIME_NODE_INSTALL_CUDA: skip
       - run: npm test
       - run: npm run build
         env:
