@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDownRight, ArrowUpRight, Layers3 } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, FileText, Layers3 } from 'lucide-react'
 import Playground from '../Playground'
-import CommandTrigger from './CommandTrigger'
-import { IdentityTrigger } from './IdentityPass'
+import RowDeckIndex from './RowDeckIndex'
 import { HeroHeadline, HeroMetrics } from './HeroMotion'
 import content from '../content.json'
 import Workbench from './Workbench'
@@ -25,7 +24,9 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
     function sync() {
       frame = undefined
       const range = root.scrollHeight - root.clientHeight
-      nav.style.setProperty('--progress', range > 0 ? Math.min(1, Math.max(0, root.scrollTop / range)) : 0)
+      const progress = range > 0 ? Math.min(1, Math.max(0, root.scrollTop / range)) : 0
+      nav.style.setProperty('--progress', progress)
+      root.parentElement.style.setProperty('--page-progress', progress)
       const readingLine = root.getBoundingClientRect().top + root.clientHeight * .38
       const found = targets.findLast(target => target.getBoundingClientRect().top <= readingLine)
       const next = found?.id ?? chapters[0].id
@@ -73,7 +74,7 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
   )
 }
 
-export function EditorialProlog({ lang, openCommand, openIdentity, project, evidence }) {
+export function EditorialProlog({ lang, openResume, project, evidence }) {
   const metrics = [
     { number: content.metrics[2].number, label: ['Penghuni Asrama Dipimpin', 'Dormitory Residents Led'] },
     { number: content.metrics[1].number, label: ['Mahasiswa & Praktikan Dibimbing', 'Students Mentored'] },
@@ -90,9 +91,12 @@ export function EditorialProlog({ lang, openCommand, openIdentity, project, evid
           : 'Saya merancang AI dengan jawaban yang bisa diperiksa dan produk web yang bisa dikelola komunitas sendiri.'}
         </p>
         <div className="hero-actions">
-          <a className="key start-link" href="#hallo-batam" data-magnetic="">{lang ? 'Read the AI case study' : 'Mulai dari studi kasus AI'} <ArrowDownRight size={17} aria-hidden="true" /></a>
-          <IdentityTrigger lang={lang} onClick={openIdentity} />
-          <CommandTrigger className="hero-command" lang={lang} onClick={openCommand} />
+          <a className="key start-link" href="#hallo-batam" data-magnetic="">
+            {lang ? 'Explore Work' : 'Eksplorasi Karya'} <ArrowDown size={17} aria-hidden="true" />
+          </a>
+          <button className="key hero-resume" type="button" aria-haspopup="dialog" onClick={openResume}>
+            <FileText size={16} aria-hidden="true" /> {lang ? 'Download CV (PDF)' : 'Unduh CV (PDF)'}
+          </button>
         </div>
       </div>
       <Workbench {...{ lang, project, evidence }} />
@@ -103,9 +107,9 @@ export function EditorialProlog({ lang, openCommand, openIdentity, project, evid
 
 const projectSignals = {
   batam: [
-    ['2', 'Mode: teks & suara', 'Modes: text & voice'],
+    ['2', 'Teks & suara', 'Text & voice'],
     ['ID / EN', 'Bahasa', 'Languages'],
-    ['X-Ray', 'Kutipan sumber', 'Source citations'],
+    ['X-Ray', 'Sumber', 'Sources'],
   ],
   cireundeu: [
     ['13', 'Anggota tim', 'Team members'],
@@ -173,31 +177,13 @@ export function CireundeuShowcase({ project, lang, open }) {
   )
 }
 
-const roleLabels = [
-  ['Strategi multimedia', 'Multimedia strategy'],
-  ['Pemimpin proyek Cireundeu', 'Cireundeu project lead'],
-  ['Koordinator praktikum', 'Practicum coordinator'],
-  ['Pimpinan asrama', 'Residence leadership'],
-  ['Advokasi mahasiswa', 'Student advocacy'],
-  ['Ketua Dorm Olympic', 'Dorm Olympic lead'],
-]
-
 export function LeadershipTimeline({ lang, open }) {
   return (
     <section id="experience" tabIndex="-1" className="chapter" aria-labelledby="experience-title">
       <ChapterHeader chapter="experience" category="2024–2026" headingId="experience-title"
-        title={lang ? 'Leadership' : 'Kepemimpinan'} />
-      <ol className="timeline">
-        {content.roles.map(({ role, org, date }, index) => <li key={role[0]} className="timeline-row glass" data-spotlight="">
-          <button className="row-trigger" aria-haspopup="dialog" type="button" onClick={() => open('leadership', index)}>
-            <span className="row-number">0{index + 1}</span>
-            <strong>{roleLabels[index][lang]}</strong>
-            <span className="role-org">{org[lang]}</span>
-            <span className="date">{date[lang]}</span>
-            <ArrowUpRight className="row-icon" size={17} aria-hidden="true" />
-          </button>
-        </li>)}
-      </ol>
+        title={lang ? 'Leadership & Experience' : 'Kepemimpinan & Pengalaman'} />
+      <RowDeckIndex className="timeline" rowClassName="timeline-row" onOpen={index => open('leadership', index)}
+        rows={content.roles.map(({ role, org, date }) => ({ title: role, subtitle: org[lang], date: date[lang] }))} />
       <div id="stack" className="chapter-actions">
         <button className="key" type="button" aria-haspopup="dialog" onClick={() => open('stack')}>
           <Layers3 size={16} aria-hidden="true" />{lang ? 'Tools & education' : 'Teknologi & pendidikan'}

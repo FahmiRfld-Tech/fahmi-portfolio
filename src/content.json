@@ -195,87 +195,254 @@
   ],
   "roles": [
     {
-      "role": [
-        "Strategis Multimedia & Digital Lepas",
-        "Freelance Multimedia & Digital Strategist"
-      ],
+      "role": "Head of Boys' Dormitory & Vice Chair Senior Resident XIII",
       "org": [
-        "Kedai Akoh 99 · Klien independen",
-        "Kedai Akoh 99 · Independent clients"
+        "Telkom University · 3.000+ Penghuni",
+        "Telkom University · 3,000+ Residents"
       ],
       "date": [
-        "Sep 2025–sekarang",
-        "Sep 2025–present"
+        "Jun 2024 – Jul 2026",
+        "Jun 2024 – Jul 2026"
+      ],
+      "stats": [
+        {
+          "value": 3000,
+          "label": [
+            "Penghuni",
+            "Residents"
+          ],
+          "suffix": "+"
+        },
+        {
+          "value": "XIII",
+          "label": [
+            "Angkatan Senior Resident",
+            "Senior Resident cohort"
+          ]
+        }
+      ],
+      "impact": [
+        [
+          "Memimpin komunitas asrama dan mengoordinasikan penanganan isu penghuni.",
+          "Led the dormitory community and coordinated responses to residents’ concerns."
+        ],
+        [
+          "Menetapkan penanggung jawab dan mendokumentasikan tindak lanjut.",
+          "Assigned ownership and documented follow-through."
+        ]
       ]
     },
     {
-      "role": [
-        "Project Manager & Full-Stack Developer",
-        "Project Manager & Full-Stack Developer"
-      ],
+      "role": "Technical Practicum Lab Coordinator",
       "org": [
-        "Proyek Digitalisasi Cireundeu",
-        "Cireundeu Digitalization Project"
+        "Fakultas Ilmu Terapan, Telkom University · 300+ Mahasiswa",
+        "Faculty of Applied Sciences, Telkom University · 300+ Students"
       ],
       "date": [
-        "Feb–Jul 2026",
-        "Feb–Jul 2026"
+        "Sep 2024 – Jan 2026",
+        "Sep 2024 – Jan 2026"
+      ],
+      "stats": [
+        {
+          "value": 300,
+          "label": [
+            "Mahasiswa dibimbing",
+            "Students mentored"
+          ],
+          "suffix": "+"
+        },
+        {
+          "value": 5,
+          "label": [
+            "Mata kuliah",
+            "Courses"
+          ]
+        }
+      ],
+      "impact": [
+        [
+          "Mendampingi praktikan di lima mata kuliah komputasi dan multimedia.",
+          "Mentored students across five computing and multimedia courses."
+        ],
+        [
+          "Membimbing praktikan mereproduksi masalah dan menjelaskan alasan di balik perbaikan teknis.",
+          "Guided students through reproducing issues and explaining why a technical fix worked."
+        ]
       ]
     },
     {
-      "role": [
-        "Koordinator Asisten Praktikum Teknis",
-        "Lead Technical Practicum Assistant"
-      ],
+      "role": "Project Manager & Full-Stack Lead",
       "org": [
-        "Fakultas Ilmu Terapan · Telkom University",
-        "Faculty of Applied Science · Telkom University"
+        "KKN Tematik Digitalisasi Cireundeu · 13 Anggota Tim",
+        "Cireundeu Digitalization Thematic KKN · 13 Team Members"
       ],
       "date": [
-        "Sep 2024–Jan 2026",
-        "Sep 2024–Jan 2026"
+        "Feb – Jul 2026",
+        "Feb – Jul 2026"
+      ],
+      "stats": [
+        {
+          "value": 13,
+          "label": [
+            "Anggota tim",
+            "Team members"
+          ]
+        },
+        {
+          "value": 2026,
+          "label": [
+            "Siklus proyek",
+            "Project cycle"
+          ]
+        }
+      ],
+      "impact": [
+        [
+          "Mengoordinasikan frontend, backend, konten, dan uji penerimaan di lapangan.",
+          "Coordinated frontend, backend, content, and field acceptance testing."
+        ],
+        [
+          "Membangun portal wisata dan CMS mandiri bersama pengelola UMKM setempat.",
+          "Built the tourism portal and self-service CMS with local business operators."
+        ]
       ]
     },
     {
-      "role": [
-        "Wakil Ketua Senior Resident XIII & Kepala Asrama Putra",
-        "Vice President, Senior Resident XIII & Head of Male Dormitory"
-      ],
+      "role": "Web & Digital Systems Intern",
       "org": [
-        "Asrama Telkom University",
-        "Telkom University Dormitory"
+        "Center of Excellence (CoE) GreenTech, Telkom University",
+        "Center of Excellence (CoE) GreenTech, Telkom University"
       ],
       "date": [
-        "Jun 2024–Jul 2026",
-        "Jun 2024–Jul 2026"
+        "2025 – 2026",
+        "2025 – 2026"
+      ],
+      "stats": [
+        {
+          "value": 2025,
+          "label": [
+            "Mulai",
+            "Started"
+          ]
+        },
+        {
+          "value": 2026,
+          "label": [
+            "Selesai",
+            "Finished"
+          ]
+        }
+      ],
+      "impact": [
+        [
+          "Mendukung pekerjaan web dan sistem digital di CoE GreenTech.",
+          "Supported web and digital systems work at CoE GreenTech."
+        ]
       ]
     },
     {
-      "role": [
-        "Kepala Departemen Advokasi & Kesejahteraan Mahasiswa",
-        "Head of Student Advocacy & Welfare"
+      "role": "Freelance Multimedia & Digital Strategist",
+      "org": [
+        "Kedai Akoh 99",
+        "Kedai Akoh 99"
       ],
+      "date": [
+        "Sep 2025 – Sekarang",
+        "Sep 2025 – Present"
+      ],
+      "stats": [
+        {
+          "value": 2025,
+          "label": [
+            "Tahun mulai",
+            "Start year"
+          ]
+        },
+        {
+          "value": [
+            "Aktif",
+            "Active"
+          ],
+          "label": [
+            "Status",
+            "Status"
+          ]
+        }
+      ],
+      "impact": [
+        [
+          "Menerjemahkan arahan klien menjadi keputusan kreatif dan kebutuhan yang bisa diuji.",
+          "Translated client briefs into creative decisions and testable requirements."
+        ]
+      ]
+    },
+    {
+      "role": "Head of Advocacy & Student Welfare Dept.",
       "org": [
         "Himpunan Mahasiswa Teknologi Rekayasa Multimedia",
         "Multimedia Engineering Technology Student Association"
       ],
       "date": [
-        "Jan–Nov 2025",
-        "Jan–Nov 2025"
+        "Jan – Nov 2025",
+        "Jan – Nov 2025"
+      ],
+      "stats": [
+        {
+          "value": "Jan ’25",
+          "label": [
+            "Mulai",
+            "Started"
+          ]
+        },
+        {
+          "value": "Nov ’25",
+          "label": [
+            "Selesai",
+            "Finished"
+          ]
+        }
+      ],
+      "impact": [
+        [
+          "Mendengar kebutuhan mahasiswa dan mengoordinasikan tindak lanjut isu kesejahteraan.",
+          "Listened to student needs and coordinated follow-up on welfare issues."
+        ]
       ]
     },
     {
-      "role": [
-        "Ketua Pelaksana Dorm Olympic",
-        "Dorm Olympic Event Director"
-      ],
+      "role": "Project Leader — Dorm Olympic 2025",
       "org": [
-        "Dorm Olympic 2025 · Telkom University",
-        "Dorm Olympic 2025 · Telkom University"
+        "Telkom University",
+        "Telkom University"
       ],
       "date": [
-        "Feb–Mei 2025",
-        "Feb–May 2025"
+        "Feb – Mei 2025",
+        "Feb – May 2025"
+      ],
+      "stats": [
+        {
+          "value": 2025,
+          "label": [
+            "Edisi",
+            "Edition"
+          ]
+        },
+        {
+          "value": [
+            "Feb–Mei",
+            "Feb–May"
+          ],
+          "label": [
+            "Periode",
+            "Project window"
+          ]
+        }
+      ],
+      "impact": [
+        [
+          "Menyusun dependensi, risiko, dan rencana cadangan sebelum hari pelaksanaan.",
+          "Mapped dependencies, risks, and contingencies ahead of the event."
+        ]
       ]
     }
   ],

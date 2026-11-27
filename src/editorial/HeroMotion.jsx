@@ -1,9 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Pause, Play } from 'lucide-react'
 
+function EditorialAccent({ children }) {
+  return <span className="headline-accent">
+    <em>{children}</em>
+    <svg viewBox="0 0 164 10" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M2 7C40 3 98 1 160 4M12 8C61 4 125 3 162 5" />
+    </svg>
+  </span>
+}
+
 const headline = [
-  [<>Membangun sistem AI</>, <>yang <em>terverifikasi</em> dan</>, <>teknologi yang</>, <><em>membumi</em> bagi manusia.</>],
-  [<>Building <em>verified</em> AI</>, <>systems and <em>grounded</em></>, <>technology for people.</>],
+  [<>Membangun sistem AI</>, <>yang <EditorialAccent>terverifikasi</EditorialAccent> dan</>, <>teknologi yang</>, <><EditorialAccent>membumi</EditorialAccent> bagi manusia.</>],
+  [<>Building <EditorialAccent>verified</EditorialAccent> AI</>, <>systems and <EditorialAccent>grounded</EditorialAccent></>, <>technology for people.</>],
 ]
 const domains = [
   'Applied AI Systems',
@@ -20,15 +29,15 @@ export function HeroHeadline({ lang }) {
     </span>)}</h1>
 }
 
-export function HeroMetrics({ metrics, lang }) {
+export function useCountUp(delay = 0, duration = 680) {
   const [progress, setProgress] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0)
   useEffect(() => {
     const motion = matchMedia('(prefers-reduced-motion: reduce)')
     if (motion.matches) return
     let frame
-    const start = performance.now() + 280
+    const start = performance.now() + delay
     function step(now) {
-      const elapsed = Math.min(1, Math.max(0, (now - start) / 780))
+      const elapsed = Math.min(1, Math.max(0, (now - start) / duration))
       setProgress(1 - (1 - elapsed) ** 3)
       if (elapsed < 1) frame = requestAnimationFrame(step)
     }
@@ -43,8 +52,13 @@ export function HeroMetrics({ metrics, lang }) {
       cancelAnimationFrame(frame)
       motion.removeEventListener('change', finish)
     }
-  }, [])
+  }, [delay, duration])
 
+  return progress
+}
+
+export function HeroMetrics({ metrics, lang }) {
+  const progress = useCountUp(280, 780)
   const format = new Intl.NumberFormat(lang ? 'en-US' : 'id-ID')
   return <dl className="metrics" aria-label={lang ? 'Impact in numbers' : 'Dampak dalam angka'}>
     {metrics.map(({ number, label }) => {

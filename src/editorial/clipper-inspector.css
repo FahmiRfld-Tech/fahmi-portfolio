@@ -1,8 +1,7 @@
 
-.lab-gallery-preview, .segment-sizing { display: grid; min-width: 0; }
-.lab-gallery-layer, .segment-sizing > .segment-panel { grid-area: 1 / 1; min-width: 0; align-self: start; }
-.lab-gallery-layer[data-inactive], .segment-sizing > .segment-panel[data-inactive] { visibility: hidden; pointer-events: none; }
-.lab-gallery-layer:not([data-inactive]) { animation: panel-in .28s var(--ease) both; }
+.segment-sizing { display: grid; min-width: 0; }
+.segment-sizing > .segment-panel { grid-area: 1 / 1; min-width: 0; align-self: start; }
+.segment-sizing > .segment-panel[data-inactive] { visibility: hidden; pointer-events: none; }
 
 .clipper-inspector {
   --color-ink: #f3f1ec;

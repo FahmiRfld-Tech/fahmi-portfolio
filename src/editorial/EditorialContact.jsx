@@ -3,7 +3,6 @@ import { ArrowUpRight, Check, Copy, FileText } from 'lucide-react'
 import content from '../content.json'
 import { EMAIL, GITHUB, LINKEDIN } from './content'
 import SegmentTabs from './SegmentTabs'
-import CommandTrigger from './CommandTrigger'
 import { resumeLabel } from './Resume'
 import { External } from './Shared'
 
@@ -56,7 +55,7 @@ function QuickBrief({ lang, copied, copyText }) {
   )
 }
 
-export default function EditorialContact({ lang, copied, copyText, openCommand, openResume }) {
+export default function EditorialContact({ lang, copied, copyText, openResume }) {
   const emailCopied = copied?.kind === 'email'
   const EmailIcon = emailCopied ? Check : Copy
   return (
@@ -64,19 +63,15 @@ export default function EditorialContact({ lang, copied, copyText, openCommand, 
       <div className="epilog-pitch">
         <p className="eyebrow chapter-label">06 / {lang ? 'Epilogue' : 'Epilog'}</p>
         <h2 id="contact-title">{lang ? 'Let’s build something useful.' : 'Mari bangun sesuatu yang berguna.'}</h2>
-        <p className="narrative">{lang
-          ? 'I’m open to working together on applied AI, full-stack engineering, and multimedia systems.'
-          : 'Saya terbuka untuk berkolaborasi dalam AI terapan, rekayasa full-stack, dan sistem multimedia.'}</p>
         <p className="eyebrow contact-status"><i className="live-dot" aria-hidden="true" /> {content.copy.availability[lang]}</p>
         <div className="actions contact-actions">
-          <button className="key primary" type="button" onClick={() => copyText(EMAIL, 'email')}>
+          <button className="key primary" data-magnetic="" type="button" onClick={() => copyText(EMAIL, 'email')}>
             <EmailIcon size={17} aria-hidden="true" /> {emailCopied ? (lang ? 'Email copied' : 'Email disalin') : (lang ? 'Copy email' : 'Salin email')}
           </button>
           <div className="contact-secondary">
             <External className="key" href={GITHUB}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>
             <External className="key" href={LINKEDIN}>LinkedIn <ArrowUpRight size={15} aria-hidden="true" /></External>
             <button className="key resume-action" type="button" onClick={openResume}><FileText size={16} aria-hidden="true" /> {resumeLabel[lang]}</button>
-            <CommandTrigger className="contact-command" lang={lang} onClick={openCommand} />
           </div>
         </div>
         <a className="email-address" href={'mailto:' + EMAIL}>{EMAIL}</a>

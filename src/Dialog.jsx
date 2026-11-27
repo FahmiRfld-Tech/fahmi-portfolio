@@ -1,10 +1,11 @@
 import { useEffect, useId, useRef } from 'react'
 import { X } from 'lucide-react'
 
-export default function Dialog({ title, closeLabel, close, children, className = '', eyebrow, footer }) {
+export default function Dialog({ title, closeLabel, close, children, className = '', eyebrow, footer, headDetails, contentKey, onKeyDown }) {
   const ref = useRef(null)
   const sheet = useRef(null)
   const drag = useRef(null)
+  const scroll = useRef(null)
   const titleId = useId()
 
   useEffect(() => {
@@ -17,6 +18,10 @@ export default function Dialog({ title, closeLabel, close, children, className =
       if (trigger instanceof HTMLElement && trigger.isConnected) trigger.focus({ preventScroll: true })
     }
   }, [])
+
+  useEffect(() => {
+    scroll.current.scrollTop = 0
+  }, [contentKey])
 
   function startDrag(event) {
     if (event.button !== 0) return
@@ -40,7 +45,7 @@ export default function Dialog({ title, closeLabel, close, children, className =
   }
 
   return (
-    <dialog ref={ref} className={'dialog tactile-dialog ' + className} aria-labelledby={titleId}
+    <dialog ref={ref} className={'dialog tactile-dialog ' + className} aria-labelledby={titleId} onKeyDown={onKeyDown}
       onCancel={event => { event.preventDefault(); close() }}
       onClick={event => { if (event.target === event.currentTarget) close() }}>
       <div className="dialog-panel" ref={sheet}>
@@ -50,8 +55,9 @@ export default function Dialog({ title, closeLabel, close, children, className =
         <header className="dialog-top">
           <div>{eyebrow && <p className="eyebrow">{eyebrow}</p>}<h2 id={titleId}>{title}</h2></div>
           <button type="button" className="key icon-key" onClick={close} aria-label={closeLabel}><X size={19} aria-hidden="true" /></button>
+          {headDetails}
         </header>
-        <div className="dialog-scroll">{children}</div>
+        <div className="dialog-scroll" ref={scroll}>{children}</div>
         {footer && <footer className="dossier-actions">{footer}</footer>}
       </div>
     </dialog>

@@ -1,13 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { AnimatePresence, m } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, Check, Command, Copy, FileText, GitCommitHorizontal, Images, MapPin, Monitor, ZoomIn, Zap } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Command, Copy, FileText, GitCommitHorizontal, Images, MapPin, Monitor, ZoomIn, Zap } from 'lucide-react'
 import content from './content.json'
 import { caseStudies } from './cases'
 import Dialog from './Dialog'
 import CommandPalette from './editorial/CommandPalette'
 import CommandTrigger from './editorial/CommandTrigger'
 import IdentityPass, { IdentityTrigger } from './editorial/IdentityPass'
-import { LeadershipDossier, ProjectDossier, ProjectDossierActions, StackDossier } from './editorial/Dossiers'
+import { ProjectDossier, ProjectDossierActions, StackDossier } from './editorial/Dossiers'
 import { CireundeuShowcase, EditorialProlog, FloatingChapterDock, HalloBatamStage, LeadershipTimeline } from './editorial/Chapters'
 import { chapters, chapterNumber, EMAIL, GITHUB, LINKEDIN, projectActions } from './editorial/content'
 import { ProjectLink, projectUrl } from './editorial/Shared'
@@ -15,6 +14,8 @@ import useSpotlights from './editorial/useSpotlights'
 import { EditorialTicker } from './editorial/HeroMotion'
 import EditorialContact from './editorial/EditorialContact'
 import LabIndexTable from './editorial/LabIndexTable'
+import StudioDeck from './editorial/StudioDeck'
+import CopyToast from './editorial/CopyToast'
 import Resume, { PrintResume, resumeLabel } from './editorial/Resume'
 import { BATAM_UPGRADE } from './editorial/EngineeringNotes'
 import './editorial/recruiter.css'
@@ -86,14 +87,16 @@ export default function App() {
   useLayoutEffect(() => {
     function highlightHash() {
       const id = location.hash.slice(1)
+      const labIndex = lab.findIndex(project => id === 'lab-' + project.id)
+      if (labIndex !== -1) setOverlay({ type: 'lab', project: labIndex })
       if (id === 'batam-xray') {
         document.getElementById('hallo-batam')?.scrollIntoView({ behavior: 'instant' })
         setOverlay({ type: 'case', project: flagship, initialTab: 2 })
       }
     }
     const id = location.hash.slice(1)
-    if (id === 'batam-xray') highlightHash()
-    else if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
+    if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
+    highlightHash()
     window.addEventListener('hashchange', highlightHash)
     return () => window.removeEventListener('hashchange', highlightHash)
   }, [])
@@ -126,7 +129,7 @@ export default function App() {
       if (!target) return
       if (location.hash !== '#' + id) history.pushState(null, '', '#' + id)
       window.dispatchEvent(new HashChangeEvent('hashchange'))
-      // Let the lab accordion or hero trace activate before reading its layout.
+      // Let the target view activate before reading its layout.
       requestAnimationFrame(() => {
         target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
         target.focus({ preventScroll: true })
@@ -152,19 +155,16 @@ export default function App() {
       catch { /* The toast displays the address for manual copying. */ }
       finally { field.remove(); trigger?.focus({ preventScroll: true }) }
     }
-    if (attempt !== copyAttempt.current || kind === 'identity') return success
+    if (attempt !== copyAttempt.current) return success
     setToast({ success, value, kind, key: attempt })
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setToast(null), 3200)
     return success
   }
 
-  const toastMessage = toast?.kind === 'draft'
-    ? (toast.success ? (lang ? 'Message draft copied' : 'Draf pesan disalin') : (lang ? 'Could not copy the draft. Select the text to copy it.' : 'Draf gagal disalin. Pilih teks draf untuk menyalinnya.'))
-    : (toast?.success ? (lang ? 'Email copied to clipboard' : 'Email disalin ke clipboard') : EMAIL)
-
   const open = (type, project, initialTab) => setOverlay({ type, project, initialTab })
-  const close = () => setOverlay(null)
+  const close = () => setOverlay(current => current?.previous ?? null)
+  const openLabPreview = (_, project) => setOverlay(previous => ({ type: 'preview', project, previous }))
   const openCommand = () => open('command')
   const openResume = () => open('resume')
   const openIdentity = () => open('identity')
@@ -212,7 +212,11 @@ export default function App() {
     ...content.projects.map(project => ({ id: 'case-' + project.id, name: project.name[lang] + (lang ? ' · case study' : ' · studi kasus'), keywords: project.name.join(' ') + ' ' + project.stack.join(' '), Icon: Images,
       stat: project.stack[0],
       summary: project.summary[lang],
-      run: () => open('case', project) })),
+      run: () => {
+        const index = lab.indexOf(project)
+        if (index === -1) open('case', project)
+        else open('lab', index)
+      } })),
   ]
   const demos = [
     ...content.projects.map(project => ({
@@ -255,28 +259,23 @@ export default function App() {
     <>
       <a className="skip key" href="#main">{lang ? 'Skip to content' : 'Langsung ke konten'}</a>
       <div className="portfolio-shell">
+        <div className="top-scroll-progress" aria-hidden="true" />
         <div className="portfolio-scroll" ref={scrollRoot}>
           <TopBar {...{ lang, setLang, openCommand, openIdentity }} />
           <main className="wrap" id="main" tabIndex="-1">
-            <EditorialProlog {...{ lang, openCommand, openIdentity }} project={flagship} evidence={batamEvidence} />
+            <EditorialProlog {...{ lang, openResume }} project={flagship} evidence={batamEvidence} />
             <EditorialTicker lang={lang} />
             <HalloBatamStage project={flagship} {...{ lang, open }} />
             <CireundeuShowcase project={community} {...{ lang, open }} />
             <LeadershipTimeline {...{ lang, open }} />
             <LabIndexTable projects={lab} {...{ lang, open }} />
-            <EditorialContact {...{ lang, copyText, openCommand, openResume }} copied={toast?.success ? toast : null} />
+            <EditorialContact {...{ lang, copyText, openResume }} copied={toast?.success ? toast : null} />
           </main>
           <footer className="wrap site-footer"><span>M. Fahmi Rifaldi</span><span><MapPin size={15} aria-hidden="true" /> Bandung, Indonesia</span></footer>
         </div>
         <div className="dock-lane"><FloatingChapterDock {...{ lang, scrollRoot }} /></div>
       </div>
 
-      <AnimatePresence>
-        {toast && <m.div className="toast" role="status" key={toast.key}
-          initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}>
-          {toast.success && <Check size={18} aria-hidden="true" />}{toastMessage}
-        </m.div>}
-      </AnimatePresence>
       {overlay?.type === 'command' && <Dialog key="command" className="command-dialog" title={lang ? 'Spotlight' : 'Menu Cepat'} {...{ closeLabel, close }}>
         <CommandPalette {...{ lang, groups, close }} />
       </Dialog>}
@@ -291,10 +290,10 @@ export default function App() {
         title={lang ? '15s Vibe Pass' : 'Kenalan 15 Detik'} eyebrow="DIGITAL ID" {...{ closeLabel, close }}>
         <IdentityPass lang={lang} copyEmail={() => copyText(EMAIL, 'identity')} />
       </Dialog>}
-      {overlay?.type === 'leadership' && <Dialog key="leadership" className="leadership-dialog paper-dialog"
-        title={content.roles[overlay.project].role[lang]} eyebrow={'04 / ' + (lang ? 'LEADERSHIP' : 'KEPEMIMPINAN')} {...{ closeLabel, close }}>
-        <LeadershipDossier index={overlay.project} lang={lang} />
-      </Dialog>}
+      {(overlay?.type === 'leadership' || overlay?.type === 'lab') && <StudioDeck key={overlay.type}
+        type={overlay.type} index={overlay.project} entries={overlay.type === 'lab' ? lab : content.roles}
+        {...{ lang, closeLabel, close }} openPreview={openLabPreview}
+        onChange={index => open(overlay.type, index)} />}
       {overlay?.type === 'stack' && <Dialog key="stack" className="case-dialog paper-dialog"
         title={lang ? 'Tools & education' : 'Teknologi & pendidikan'} {...{ closeLabel, close }}>
         <StackDossier lang={lang} navigate={id => { close(); go(id) }} />
@@ -303,6 +302,7 @@ export default function App() {
         eyebrow={lang ? 'CASE STUDY' : 'STUDI KASUS'} footer={<ProjectDossierActions project={overlay.project} lang={lang} />} {...{ closeLabel, close }}>
         <ProjectDossier project={overlay.project} lang={lang} initialTab={overlay.initialTab} />
       </Dialog>}
+      <CopyToast {...{ lang, toast }} />
     </>
   )
 }
