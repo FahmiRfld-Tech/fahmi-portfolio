@@ -15,6 +15,13 @@ npm run preview
 
 ## Cloudflare Pages
 
+GitHub Actions builds, tests and deploys the existing `fahmirifaldi` Pages project after each push to `main`. To enable publishing, add these values in the repository's **Settings → Secrets and variables → Actions**:
+
+- Repository variable `CLOUDFLARE_ACCOUNT_ID`: ID of the account that owns the Pages project.
+- Repository secret `CLOUDFLARE_API_TOKEN`: Cloudflare custom API token with **Account → Cloudflare Pages → Edit**, limited to that account.
+
+Run **Actions → Deploy Cloudflare Pages → Run workflow** on `main` for the first deployment. The workflow defaults to `https://fahmirifaldi.pages.dev` for public metadata. To change it after a custom domain is active, set the optional repository variable `PORTFOLIO_SITE_URL` to that HTTPS origin.
+
 Deploy the built output from `dist/`. `site.config.js` defaults to `https://fahmirifaldi.is-a.dev`. Set the optional public build variable `PORTFOLIO_SITE_URL` to use another HTTPS origin, such as `https://fahmirifaldi.pages.dev` before the custom domain is active. The build uses that same origin for canonical metadata, social images, the resume, robots.txt and sitemap.xml.
 
 ```sh
