@@ -10,6 +10,7 @@ Fahmi is studying D4 Teknologi Rekayasa Multimedia at Telkom University. His por
 - [ClipForge / AI Video Clipper](https://fahmi-portfolio-sand.vercel.app/clipper/): Local-first vertical video export. The [Multimodal Pipeline Inspector](https://fahmi-portfolio-sand.vercel.app/#lab-clipper) illustrates segment-ID validation, silence snapping, and EMA-based reframing with sample data.
 - [Digitalisasi Cireundeu](https://kampungcireundeu.kii.lat/): Full-stack tourism portal and self-service CMS for local businesses. Fahmi led a cross-functional team of 13.
 - [Batam RAG Backend](https://fahmi-portfolio-sand.vercel.app/#lab-rag): Separate Python/Django REST research prototype with FastEmbed and ChromaDB for embedding-based retrieval experiments.
+- [PromptGate](https://fahmi-portfolio-sand.vercel.app/#lab-promptgate): Dependency-free Python middleware for deterministic prompt-injection screening, request-local PII masking, and syntax-only JSON auto-repair. The TypeScript sandbox runs sample cases entirely in the browser. [Repository](https://github.com/FahmiRfld-Tech/promptgate)
 
 ## Technical stack
 

@@ -21,6 +21,7 @@ export const projectActions = {
   cireundeu: ['Buka portal', 'Explore the portal'],
   quran: ['Lihat prototipe', 'Explore the prototype'],
   rag: ['Baca kode', 'Read the code'],
+  promptgate: ['Lihat repositori', 'View repository'],
 }
 
 export const insights = [
@@ -36,4 +37,5 @@ export const labMeta = {
   clipper: ['AI Terapan · Multimedia', 'Applied AI · Multimedia'],
   quran: ['EdTech · Prototipe Web 3D', 'EdTech · 3D Web Prototype'],
   rag: ['Backend · Pencarian Semantik', 'Backend · Semantic Search'],
+  promptgate: ['Keamanan & Keandalan AI · Middleware', 'AI Security & Reliability · Middleware'],
 }

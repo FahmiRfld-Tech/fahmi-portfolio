@@ -118,4 +118,24 @@ export const caseStudies = {
       copy: ['Ini prototipe backend terpisah. Aplikasi Hallo Batam AI yang tersedia untuk publik menggunakan Supabase sebagai endpoint chat.', 'This is a separate backend prototype. The public Hallo Batam AI app uses a Supabase chat endpoint.'],
     },
   ],
+  promptgate: [
+    {
+      label: ['Penyaringan input', 'Input screening'],
+      lead: ['Risiko terukur per aturan', 'Explainable rule-based risk scoring'],
+      copy: ['Aturan memberi skor pada pola pengambilalihan instruksi, permintaan pengungkapan system prompt, delimiter role, dan Base64 yang berisi pola serupa.', 'Rules score instruction overrides, system-prompt disclosure requests, role delimiters, and Base64 carrying matching signatures.'],
+      plain: ['Aplikasi bisa menjelaskan alasan sebuah pesan dihentikan.', 'The app can explain why it stopped a message.'],
+    },
+    {
+      label: ['Redaksi PII', 'PII redaction'],
+      lead: ['Data asli tersimpan lokal per permintaan', 'Original values stay local to each request'],
+      copy: ['Redaktor menyamarkan pola NIK, nomor HP Indonesia, email, dan kartu pembayaran. Pipeline menyimpan pasangan token dan nilai asli di vault per permintaan.', 'The redactor masks NIK, Indonesian mobile numbers, email addresses, and payment-card candidates. The pipeline keeps token-to-value mappings in a request-scoped vault.'],
+      plain: ['Layanan eksternal menerima token pengganti; aplikasi bisa memulihkan nilai asli untuk penerima lokal yang berwenang.', 'External services receive placeholders. The app can restore original values for authorized local recipients.'],
+    },
+    {
+      label: ['Keandalan output', 'Output reliability'],
+      lead: ['Perbaikan sintaks dengan log yang bisa diaudit', 'Syntax repair with an auditable log'],
+      copy: ['Pemindaian berbasis struktur memperbaiki pembungkus, koma akhir, kutip kunci, dan kurung penutup. Parser menolak JSON ambigu atau tetap tidak valid.', 'A structure-aware scanner repairs wrappers, trailing commas, key quotes, and missing closers. The parser rejects ambiguous or still-invalid JSON.'],
+      plain: ['Aplikasi mendapat data yang bisa dibaca dan daftar perubahan untuk diperiksa sebelum menggunakan hasilnya.', 'The app gets readable data and a change log to inspect before using the result.'],
+    },
+  ],
 }

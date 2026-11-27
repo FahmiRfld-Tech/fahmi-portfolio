@@ -3,6 +3,7 @@ import { ArrowRight, ArrowUpRight, Minus, Plus } from 'lucide-react'
 import { GITHUB, labMeta } from './content'
 import LabPreview from './LabPreview'
 import ClipperInspector from './ClipperInspector'
+import PromptGateSandbox from './PromptGateSandbox'
 import { domain, impact } from './clipper-story'
 import './clipper-inspector.css'
 import { ChapterHeader, External, ProjectLink, Tags } from './Shared'
@@ -17,14 +18,17 @@ const galleryIsWide = () => desktopGallery.matches
 
 function LabPanel({ project, lang, open, desktop }) {
   const clipper = project.id === 'clipper'
+  const promptgate = project.id === 'promptgate'
   return (
     <div className="lab-preview">
-      {clipper ? <ClipperInspector lang={lang} />
+      {promptgate ? <PromptGateSandbox lang={lang} /> : clipper ? <ClipperInspector lang={lang} />
         : <LabPreview {...{ project, lang, open }} screenshotFirst={desktop && project.id !== 'rag'} />}
       <div className="lab-description">
         {clipper && <p className="eyebrow clipper-domain">{domain}</p>}
+        {project.lead && <strong className="case-lead">{project.lead[lang]}</strong>}
         <p className="narrative">{project.summary[lang]}</p>
-        <p className="lab-role">{project.role[lang]}</p>
+        {project.plain && <p className="plain-translation">{project.plain[lang]}</p>}
+        {project.role && <p className="lab-role">{project.role[lang]}</p>}
         {project.id === 'rag' && <ResearchTradeoff lang={lang} />}
         {clipper && <dl className="clipper-impact">
           {impact.map(({ value, label }) => <div key={value[0]}><dt>{label[lang]}</dt><dd>{value[lang]}</dd></div>)}
@@ -32,7 +36,7 @@ function LabPanel({ project, lang, open, desktop }) {
         <Tags items={project.stack} />
         <div className="actions">
           <ProjectLink project={project} lang={lang}>
-            {project.id === 'rag' ? (lang ? 'View on GitHub' : 'Lihat GitHub') : (lang ? 'Open demo' : 'Buka Demo')}
+            {(project.id === 'rag' || promptgate) ? (lang ? 'View on GitHub' : 'Lihat GitHub') : (lang ? 'Open demo' : 'Buka Demo')}
             <ArrowUpRight size={16} aria-hidden="true" />
           </ProjectLink>
           {project.id === 'quran' && <External href={project.link}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>}

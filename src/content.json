@@ -247,6 +247,36 @@
         "Feb–Mei 2025",
         "Feb–May 2025"
       ]
+    },
+    {
+      "id": "promptgate",
+      "name": [
+        "PromptGate",
+        "PromptGate"
+      ],
+      "category": [
+        "2026 / Keamanan & Keandalan AI · Middleware",
+        "2026 / AI Security & Reliability · Middleware"
+      ],
+      "lead": [
+        "Lapisan keamanan deterministik dan perbaikan JSON otomatis untuk sistem AI produksi.",
+        "Deterministic security firewall and automated JSON repair middleware for production AI."
+      ],
+      "summary": [
+        "Mendeteksi pola prompt injection, menyamarkan NIK, email, dan nomor HP sebelum dikirim ke API, lalu memperbaiki sintaks JSON keluaran model.",
+        "Detects prompt injection signatures, masks NIK, email addresses, and phone numbers before external API calls, and repairs malformed model JSON."
+      ],
+      "plain": [
+        "Pesan mencurigakan bisa dihentikan, data pribadi tetap di aplikasi, dan keluaran terstruktur bisa dibaca kembali. Overhead benchmark lokal: <2 ms pada p95 untuk sampel pendek.",
+        "Suspicious messages can be stopped, private values stay in the app, and structured output becomes readable again. Local benchmark overhead: <2 ms at p95 on short samples."
+      ],
+      "stack": [
+        "Python stdlib",
+        "TypeScript",
+        "JSON"
+      ],
+      "link": "https://github.com/FahmiRfld-Tech/promptgate",
+      "preview": "https://github.com/FahmiRfld-Tech/promptgate"
     }
   ],
   "metrics": [

@@ -26,6 +26,7 @@ const projects = [
   ['batam', ['Pencarian terfilter, pemetaan bukti ke kutipan X-Ray, dan pengungkapan batas bukti. RRF dan cache semantik pgvector disiapkan di SQL.','Filtered search, evidence mapped to X-Ray citations, and evidence-gap disclosure. pgvector RRF and semantic caching are prepared in SQL.']],
   ['clipper', ['Ekspor video vertikal lokal. Inspector ClipForge memperagakan pemetaan ID segmen, VAD silence-snapping, dan reframing EMA 9:16.','Local vertical video export. The ClipForge inspector demonstrates segment-ID mapping, VAD silence-snapping, and EMA 9:16 reframing.']],
   ['cireundeu', ['Portal wisata, CMS mandiri UMKM, optimasi gambar di browser, dan koordinasi tim lintas fungsi 13 orang.','Tourism portal, self-service small-business CMS, browser-side image optimization, and leadership of a 13-person cross-functional team.']],
+  ['promptgate', ['Middleware Python tanpa dependensi untuk menyaring prompt injection, menyamarkan PII, dan memperbaiki sintaks JSON secara deterministik.', 'Dependency-free Python middleware for prompt injection screening, PII redaction, and deterministic JSON auto-repair.']],
 ]
 
 export const resumeLabel = ['Lihat / Unduh CV (PDF)', 'View / Download CV (PDF)']
