@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Minus, Plus } from 'lucide-react'
 import Playground from '../Playground'
+import CommandTrigger from './CommandTrigger'
 import { HeroHeadline, HeroMetrics } from './HeroMotion'
 import content from '../content.json'
 import StackMatrix from './StackMatrix'
@@ -83,7 +84,7 @@ export function EditorialProlog({ lang, openCommand, project, evidence }) {
   return (
     <section id="prolog" className="prolog" aria-labelledby="thesis" tabIndex="-1">
       <div className="prolog-heading">
-        <p className="eyebrow hero-kicker"><span className="prolog-number">{chapterNumber('prolog')}</span><i className="live-dot" aria-hidden="true" /> Multimedia Engineering &amp; Applied AI</p>
+        <p className="eyebrow hero-kicker"><span className="prolog-number">{chapterNumber('prolog')}</span><i className="live-dot" aria-hidden="true" /> {lang ? 'Applied AI & Full-Stack Engineer · Multimedia Systems' : 'Rekayasa AI Terapan & Full-Stack · Sistem Multimedia'}</p>
         <HeroHeadline lang={lang} />
         <p className="narrative thesis-copy">{lang
           ? 'Leading a residence community of more than 3,000 people taught me how decisions play out on the ground. I bring that habit to software, from a travel assistant with checkable sources to a portal local businesses can update themselves.'
@@ -91,7 +92,7 @@ export function EditorialProlog({ lang, openCommand, project, evidence }) {
         </p>
         <div className="hero-actions">
           <a className="key start-link" href="#hallo-batam" data-magnetic="">{lang ? 'Read the AI case study' : 'Mulai dari studi kasus AI'} <ArrowDownRight size={17} aria-hidden="true" /></a>
-          <button className="key hero-command" type="button" onClick={openCommand} aria-label={lang ? 'Open command palette' : 'Buka palet perintah'}>⌘ K</button>
+          <CommandTrigger className="hero-command" lang={lang} onClick={openCommand} />
         </div>
       </div>
       <Workbench {...{ lang, project, evidence }} />

@@ -5,8 +5,10 @@
 .lab-gallery-layer:not([data-inactive]) { animation: panel-in .28s var(--ease) both; }
 
 .clipper-inspector {
+  --color-ink: #f3f1ec;
   min-width: 0; padding: clamp(10px, 1.4vw, 17px);
-  background: var(--color-surface); border: 1px solid white; border-radius: 12px;
+  background: var(--color-surface); color: var(--color-ink);
+  border: 1px solid var(--color-chrome-border); border-radius: 12px;
 }
 .pipeline-header {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
@@ -15,7 +17,7 @@
 .pipeline-header h3 { font: 700 clamp(1.05rem, 2vw, 1.36rem)/1.15 var(--font-display); letter-spacing: -.02em; }
 .pipeline-header > span { color: var(--color-muted-text); }
 .pipeline-code, .pipeline-badge { font: 500 .68rem/1.45 var(--font-mono); }
-.clipper-inspector .segment-tabs button { flex-basis: 0; min-height: 42px; line-height: 1.25; font-size: .72rem; }
+.clipper-inspector .segment-tabs button { flex-basis: 0; min-height: 44px; line-height: 1.25; font-size: .72rem; }
 .pipeline-step { display: grid; gap: 9px; padding-top: 10px; }
 .pipeline-badge, .pipeline-state {
   color: var(--color-verified); background: color-mix(in srgb, var(--color-verified) 8%, var(--color-surface));
@@ -39,7 +41,7 @@
 .pipeline-wave { width: 100%; height: auto; border-radius: 7px; background: var(--color-pill); border: 1px solid var(--color-hairline); }
 .wave-axis { stroke: #817b72; stroke-width: .5; }
 .wave-silence { fill: var(--color-verified); opacity: .12; }
-.wave-speech { fill: #6e6a63; }
+.wave-speech { fill: #a39f98; }
 .wave-quiet { fill: var(--color-verified); }
 .wave-marker { fill: var(--color-brand); stroke: var(--color-brand); transition: transform .38s var(--ease), stroke .25s, fill .25s; }
 .audio-step[data-snapped="true"] .wave-marker { fill: var(--color-verified); stroke: var(--color-verified); }
@@ -66,3 +68,11 @@
   .clipper-inspector .segment-tabs button { padding: 4px; }
   .clipper-inspector .segment-tabs svg { display: none; }
 }
+
+.clipper-inspector .segment-tabs button[aria-selected="true"] { color: var(--color-tech); border-color: var(--color-control-border); }
+.clipper-inspector :focus-visible { outline-color: var(--color-tech); }
+.clipper-inspector .clipper-mode-switch .key { min-height: 44px; }
+.pipeline-explainer { font-size: .78rem; line-height: 1.45; margin: 0; }
+.pipeline-explainer strong { display: block; color: var(--color-ink); font-size: .86rem; }
+.pipeline-explainer p { margin-top: 4px; color: var(--color-narrative); }
+.pipeline-explainer p:last-child { color: var(--color-ink); }

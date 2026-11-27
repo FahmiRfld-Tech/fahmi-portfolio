@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import { AudioLines, Braces, Focus } from 'lucide-react'
 import SegmentTabs from './SegmentTabs'
+import { architecture } from './clipper-story'
 import { alpha, audioEnergy, deadZone, faceSamples, findSilenceSnap, frameMs, hookResult, rawBoundary, resolveSegmentIds, smoothCenters, timestamp, transcript, waveformStart } from './clipper-pipeline'
 
 const range = resolveSegmentIds(hookResult)
@@ -16,8 +17,17 @@ function ModeSwitch({ options, selected, onSelect, label }) {
   </div>
 }
 
+function PipelineExplainer({ decision, lang }) {
+  return <div className="pipeline-explainer">
+    <strong>{decision.lead[lang]}</strong>
+    <p>{decision.copy[lang]}</p>
+    <p>{decision.plain[lang]}</p>
+  </div>
+}
+
 function HookScoring({ lang }) {
   return <div className="pipeline-step hook-step">
+    <PipelineExplainer decision={architecture[0]} lang={lang} />
     <p className="pipeline-badge"><Braces size={15} aria-hidden="true" /> Hook Score: 94/100 · {lang ? 'High retention contrast' : 'Kontras retensi tinggi'}</p>
     <ol className="pipeline-transcript">
       {transcript.map(row => <li key={row.id} data-selected={range.ids.includes(row.id)}>
@@ -37,6 +47,7 @@ function AudioSnap({ lang }) {
   const [mode, setMode] = useState(0)
   const boundary = mode ? snap.cut : rawBoundary
   return <div className="pipeline-step audio-step" data-snapped={!!mode}>
+    <PipelineExplainer decision={architecture[1]} lang={lang} />
     <ModeSwitch selected={mode} onSelect={setMode} label={lang ? 'Cut boundary' : 'Batas potong'}
       options={lang ? ['Raw LLM Boundary', 'VAD Silence-Snapped (+180 ms)'] : ['Batas LLM mentah', 'VAD Silence-Snapped (+180 ms)']} />
     <svg className="pipeline-wave" viewBox="0 0 320 110" aria-hidden="true">
@@ -78,6 +89,7 @@ function SmartReframe({ lang }) {
   const left = Math.max(0, Math.min(320 - width, smoothed[frame] - width / 2))
   const shift = x => ({ transform: 'translateX(' + x + 'px)' })
   return <div className="pipeline-step reframe-step" data-fallback={!!mode}>
+    <PipelineExplainer decision={architecture[2]} lang={lang} />
     <ModeSwitch selected={mode} onSelect={setMode} label={lang ? 'Reframing mode' : 'Mode reframing'}
       options={lang ? ['Speaker Mode · 9:16 crop', 'Screen / Gameplay · Fallback'] : ['Mode pembicara · Crop 9:16', 'Layar / Gim · Fallback']} />
     <div className="reframe-view">
@@ -115,7 +127,7 @@ export default function ClipperInspector({ lang }) {
     [AudioLines, 'VAD Audio Snap'],
     [Focus, '9:16 Smart Reframe'],
   ]
-  return <section className="clipper-inspector alabaster" aria-labelledby={heading}>
+  return <section className="clipper-inspector" aria-labelledby={heading}>
     <header className="pipeline-header">
       <h3 id={heading}>Multimodal Pipeline Inspector</h3>
       <span className="pipeline-code">{lang ? 'Simulation' : 'Simulasi'}</span>

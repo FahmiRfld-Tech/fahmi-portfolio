@@ -3,6 +3,8 @@ export const domain = 'Multimodal AI · Multimedia Systems · 2026'
 export const architecture = [
   {
     label: ['Indeks segmen antirekaan', 'Anti-hallucination segment indexing'],
+    lead: ['0 timestamp rekaan pada contoh pemetaan ID', '0 invented timestamps in the ID-mapping example'],
+    plain: ['Model memilih bagian transkrip yang sudah ada; waktu persisnya diambil dari transkrip.', 'The model selects existing transcript sections and the transcript supplies the exact times.'],
     copy: [
       'LLM menilai pasangan ID segmen transkrip dalam skema JSON ketat. Validator menolak ID asing, urutan terbalik, dan timestamp mentah. Batas waktu berasal dari indeks transkrip dalam milidetik. Pada input bertanda waktu per kata, rentang mengikuti kata pertama dan terakhir.',
       'The LLM ranks transcript segment IDs in a strict JSON schema. A validator rejects unknown IDs, reversed ranges, and raw timestamps. The transcript index supplies the boundary milliseconds. On word-timestamped input, the span follows the first and last words.',
@@ -10,6 +12,8 @@ export const architecture = [
   },
   {
     label: ['VAD silence-snapping dan GOP', 'VAD silence-snapping and GOP-aware cuts'],
+    lead: ['+180 ms ke jeda suara pada contoh', '+180 ms into a speech gap in the example'],
+    plain: ['Potongan jatuh di jeda napas agar suara pembicara tidak terpenggal.', 'The cut lands in a breath gap so the speaker is not cut off mid-word.'],
     copy: [
       'Geser batas ke bagian dalam jeda suara lebih dari 250 ms. Untuk stream-copy, pilih keyframe yang masih berada dalam jeda. Jika tidak ada keyframe yang cocok, encode ulang tepi GOP agar titik potong audio tetap akurat.',
       'Move the boundary into a speech gap longer than 250 ms. For stream-copy, use a keyframe inside that gap. If none fits, re-encode the GOP edge to preserve the audio-aligned cut.',
@@ -17,6 +21,8 @@ export const architecture = [
   },
   {
     label: ['Reframing 9:16 dengan EMA', 'EMA-smoothed 9:16 reframing'],
+    lead: ['Bingkai 9:16 mengikuti pembicara', 'The 9:16 frame follows the speaker'],
+    plain: ['Bingkai mengikuti wajah dengan mulus dan mempertahankan layar utuh saat tidak ada wajah.', 'The frame follows the face smoothly and keeps the full screen visible when there is no face.'],
     copy: [
       'Pusat crop mengikuti posisi pembicara dengan EMA dan zona toleransi untuk menahan getaran kecil. Saat tidak ada wajah, keluaran vertikal mempertahankan seluruh gambar 16:9 di atas latar blur.',
       'The crop center follows the speaker through an EMA and dead zone that ignore small jitters. With zero faces, the vertical output preserves the complete 16:9 image over a blurred backdrop.',

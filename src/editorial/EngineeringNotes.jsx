@@ -7,18 +7,21 @@ export const BATAM_RAG_NOTES = 'https://github.com/FahmiRfld-Tech/wisatabatam/bl
 const fieldDecisions = [
   {
     Icon: Image,
-    title: ['Kompresi gambar di browser', 'Client-side image compression'],
-    copy: ['Foto produk di-resize dan dikompresi sebelum unggah untuk mengurangi beban halaman di jaringan seluler terbatas.', 'Resize and compress product photos before upload to reduce page weight on constrained mobile connections.'],
+    title: ['Kompresi aset otomatis di browser', 'Automatic asset compression in the browser'],
+    copy: ['Browser mengubah ukuran dan mengompresi foto produk sebelum diunggah ke penyimpanan.', 'The browser resizes and compresses product photos before uploading them to storage.'],
+    plain: ['Foto yang lebih kecil menghemat kuota dan lebih cepat dimuat di jaringan seluler yang lambat.', 'Smaller photos use less mobile data and load faster on slow connections.'],
   },
   {
     Icon: ShieldCheck,
-    title: ['Guardrail CMS dan validasi skema', 'CMS guardrails and schema validation'],
-    copy: ['Akses admin berbasis peran, skema input, batas panjang karakter, dan fallback tampilan membantu pengelola memperbarui profil budaya serta katalog secara mandiri.', 'Role-based admin access, input schemas, character bounds, and layout fallbacks let operators update cultural profiles and catalogs independently.'],
+    title: ['Katalog mandiri dengan validasi CMS', 'Self-service catalogs with CMS validation'],
+    copy: ['CMS membatasi akses berdasarkan peran, memvalidasi skema input dan panjang karakter, serta menyediakan tampilan cadangan.', 'The CMS restricts access by role, validates input schemas and character limits, and provides layout fallbacks.'],
+    plain: ['Pengelola bisa memperbarui profil budaya dan katalog sendiri tanpa merusak tampilan halaman.', 'Operators can update cultural profiles and catalogs themselves without breaking page layouts.'],
   },
   {
     Icon: GitBranch,
-    title: ['Sprint dan alur Git tim 13 orang', 'Sprint and Git workflow for a 13-person team'],
-    copy: ['Pada Feb–Jul 2026, frontend, backend, konten, dan uji penerimaan di lapangan dikoordinasikan dalam rilis bertahap bersama pelaku UMKM.', 'From Feb–Jul 2026, frontend, backend, content, and field acceptance testing were coordinated in iterative releases with small-business operators.'],
+    title: ['Rilis bertahap bersama tim 13 orang', 'Iterative releases with a 13-person team'],
+    copy: ['Pada Feb–Jul 2026, sprint dan alur Git menyelaraskan pekerjaan frontend, backend, konten, serta uji penerimaan bersama pelaku UMKM.', 'From Feb–Jul 2026, sprints and a Git workflow coordinated frontend, backend, content, and field acceptance testing with small-business operators.'],
+    plain: ['Tim bisa mencoba pembaruan bersama warga sebelum lanjut ke rilis berikutnya.', 'The team could try updates with residents before moving on to the next release.'],
   },
 ]
 
@@ -27,9 +30,10 @@ export function CireundeuDecisions({ lang }) {
     <h3 id="field-engineering">{lang ? 'Field engineering decisions' : 'Keputusan engineering di lapangan'}</h3>
     <p className="engineering-caption">{lang ? 'Implementation notes from the project lead.' : 'Catatan implementasi dari penanggung jawab proyek.'}</p>
     <ol className="engineering-grid">
-      {fieldDecisions.map(({ Icon, title, copy }, index) => <li key={title[0]} className="glass">
+      {fieldDecisions.map(({ Icon, title, copy, plain }, index) => <li key={title[0]} className="glass">
         <p className="eyebrow"><Icon size={16} aria-hidden="true" /> 0{index + 1}</p>
         <h4>{title[lang]}</h4><p>{copy[lang]}</p>
+        <p className="plain-translation">{plain[lang]}</p>
       </li>)}
     </ol>
   </section>
@@ -43,6 +47,7 @@ export function RetrievalComparison({ lang }) {
       <p>{lang
         ? 'Similarity alone can under-rank exact local names such as Tanjung Memban and Pelabuhan Sekupang. Repeated questions make another model call. The 1.4 s baseline is illustrative.'
         : 'Kemiripan saja bisa menurunkan peringkat nama lokal seperti Tanjung Memban dan Pelabuhan Sekupang. Kueri berulang memanggil model lagi. Baseline 1,4 dtk bersifat ilustratif.'}</p>
+      <p className="plain-translation">{lang ? 'An answer can sound relevant while pointing to the wrong place.' : 'Jawaban bisa terdengar relevan tetapi merujuk ke tempat yang keliru.'}</p>
     </article>
     <article className="glass">
       <p className="eyebrow">{lang ? 'Tuned pipeline · v2' : 'Pipeline yang disetel · v2'}</p>
@@ -50,6 +55,9 @@ export function RetrievalComparison({ lang }) {
       <p>{lang
         ? 'Production uses area/category filters, PostgreSQL tsvector with ts_rank_cd, entity reranking, and exact-query caching. The SQL adds pgvector RRF and a ≥0.94 semantic cache for model-matched vectors. <100 ms remains a target.'
         : 'Produksi memakai filter kawasan/kategori, PostgreSQL tsvector dengan ts_rank_cd, reranking entitas, dan cache kueri identik. SQL menyiapkan RRF pgvector dan cache semantik ≥0,94 untuk vektor dari model yang sama. <100 ms masih menjadi target.'}</p>
+      <p className="plain-translation">{lang
+        ? 'Hybrid RRF can combine exact place-name matches with the meaning of a question. A cache can reuse an eligible previous answer.'
+        : 'Hybrid RRF bisa menggabungkan nama tempat yang cocok persis dengan makna pertanyaan. Cache bisa memakai kembali jawaban sebelumnya yang memenuhi syarat.'}</p>
     </article>
   </div>
 }
@@ -83,10 +91,14 @@ export function ResearchTradeoff({ lang }) {
     <dl>
       <div><dt>Python / Django REST</dt><dd>{lang
         ? 'Explicit control over chunking, ranking weights and offline grounding tests. The prototype uses FastEmbed and ChromaDB. BM25 and pgvector RRF are comparison candidates.'
-        : 'Kontrol eksplisit atas chunking, bobot peringkat, dan pengujian grounding offline. Prototipe memakai FastEmbed dan ChromaDB. BM25 dan pgvector RRF adalah kandidat pembanding.'}</dd></div>
+        : 'Kontrol eksplisit atas chunking, bobot peringkat, dan pengujian grounding offline. Prototipe memakai FastEmbed dan ChromaDB. BM25 dan pgvector RRF adalah kandidat pembanding.'}
+        <p className="plain-translation">{lang ? 'Test how passages are selected without interrupting the public chat.' : 'Cara sistem memilih potongan dokumen bisa diuji tanpa mengganggu chat publik.'}</p>
+      </dd></div>
       <div><dt>PostgreSQL / Supabase</dt><dd>{lang
         ? 'Keeps source filters and ranking in SQL, reducing services to operate. Production uses lexical retrieval and exact-query cache. Semantic caching is prepared in SQL with a <100 ms target.'
-        : 'Filter dan pemeringkatan sumber berada di SQL sehingga lebih sedikit layanan yang perlu dikelola. Produksi memakai retrieval lexical dan cache kueri identik. Cache semantik disiapkan di SQL dengan target <100 ms.'}</dd></div>
+        : 'Filter dan pemeringkatan sumber berada di SQL sehingga lebih sedikit layanan yang perlu dikelola. Produksi memakai pencarian leksikal dan cache kueri identik. Cache semantik disiapkan di SQL dengan target <100 ms.'}
+        <p className="plain-translation">{lang ? 'An identical question can reuse its answer without another model call.' : 'Pertanyaan yang sama persis bisa memakai jawaban sebelumnya tanpa memanggil AI lagi.'}</p>
+      </dd></div>
     </dl>
   </div>
 }

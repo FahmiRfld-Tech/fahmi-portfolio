@@ -3,6 +3,7 @@ import { ArrowUpRight, Check, Copy, FileText } from 'lucide-react'
 import content from '../content.json'
 import { EMAIL, GITHUB, LINKEDIN } from './content'
 import SegmentTabs from './SegmentTabs'
+import CommandTrigger from './CommandTrigger'
 import { resumeLabel } from './Resume'
 import { External } from './Shared'
 
@@ -75,7 +76,7 @@ export default function EditorialContact({ lang, copied, copyText, openCommand, 
             <External className="key" href={GITHUB}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>
             <External className="key" href={LINKEDIN}>LinkedIn <ArrowUpRight size={15} aria-hidden="true" /></External>
             <button className="key resume-action" type="button" onClick={openResume}><FileText size={16} aria-hidden="true" /> {resumeLabel[lang]}</button>
-            <button className="key contact-command" onClick={openCommand} type="button" aria-label={lang ? 'Open command palette' : 'Buka palet perintah'}>⌘ K</button>
+            <CommandTrigger className="contact-command" lang={lang} onClick={openCommand} />
           </div>
         </div>
         <a className="email-address" href={'mailto:' + EMAIL}>{EMAIL}</a>

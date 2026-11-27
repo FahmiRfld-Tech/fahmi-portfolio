@@ -5,6 +5,7 @@ import content from './content.json'
 import { caseStudies } from './cases'
 import Dialog from './Dialog'
 import CommandPalette from './editorial/CommandPalette'
+import CommandTrigger from './editorial/CommandTrigger'
 import { CireundeuShowcase, EditorialProlog, FloatingChapterDock, HalloBatamStage, LeadershipTimeline } from './editorial/Chapters'
 import { chapters, EMAIL, GITHUB, LINKEDIN, projectActions } from './editorial/content'
 import { CaseDetails, External, ProjectLink, projectUrl } from './editorial/Shared'
@@ -62,10 +63,7 @@ function TopBar({ lang, setLang, openCommand }) {
             <span aria-hidden="true">|</span>
             <button type="button" aria-pressed={!!lang} aria-label="English" onClick={() => setLang(1)}>EN</button>
           </div>
-          <button className="key command-key" type="button" onClick={openCommand}
-            aria-label={lang ? 'Open command palette' : 'Buka palet perintah'} aria-keyshortcuts="Control+K Meta+K">
-            <Command size={15} aria-hidden="true" /><span>K</span>
-          </button>
+          <CommandTrigger className="command-key" lang={lang} onClick={openCommand} />
         </div>
       </div>
     </header>
@@ -89,7 +87,6 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.lang = lang ? 'en' : 'id'
-    document.title = 'M Fahmi Rifaldi — ' + (lang ? 'The Editorial Engine' : 'The Editorial Engine · Portofolio')
     const url = new URL(location.href)
     if (lang) url.searchParams.set('lang', 'en')
     else url.searchParams.delete('lang')

@@ -34,7 +34,7 @@ export function ChapterHeader({ chapter, category, title, children, headingId })
 
 export function BrowserFrame({ project, children, actions }) {
   return (
-    <div className="browser-frame glass alabaster" data-project={project.id} data-spotlight="" data-tilt="">
+    <div className={'browser-frame glass' + (project.id === 'batam' ? ' alabaster' : '')} data-project={project.id} data-spotlight="" data-tilt="">
       <div className="browser-bar">
         <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
         <span className="browser-address">{project.preview.startsWith('/') ? project.preview : new URL(project.preview).hostname}</span>
@@ -58,11 +58,13 @@ export function Screenshot({ project, lang, open, className = '', eager = false 
 export function CaseDetails({ project, lang, className = '', technicalStack }) {
   return (
     <dl className={'case-details ' + className}>
-      {caseStudies[project.id].map(({ label, copy, evidence }, index) => (
+      {caseStudies[project.id].map(({ label, lead, copy, plain, evidence }, index) => (
         <div key={label[0]}>
           <dt>{label[lang]}</dt>
           <dd>
+            {lead && <strong className="case-lead">{lead[lang]}</strong>}
             {copy[lang]}
+            {plain && <p className="plain-translation">{plain[lang]}</p>}
             {evidence && <External href={evidence.href} className="text-link evidence-link">{evidence.label[lang]} <ArrowUpRight size={15} aria-hidden="true" /></External>}
             {technicalStack && index === 2 && <Tags items={technicalStack} />}
           </dd>
