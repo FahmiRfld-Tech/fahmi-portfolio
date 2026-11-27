@@ -41,8 +41,8 @@
         "2026 / Applied AI · Multimedia"
       ],
       "summary": [
-        "Pilih momen dari transkrip dan ekspor cuplikan vertikal langsung di browser.",
-        "Find moments in a transcript and export vertical clips directly from the browser."
+        "Clipper mengubah rekaman panjang menjadi klip vertikal dengan pemrosesan lokal. Studi arsitekturnya memperagakan penilaian hook terstruktur, penyelarasan jeda audio, dan reframing 9:16 dengan EMA untuk mempercepat rough-cut.",
+        "Clipper turns long-form recordings into vertical clips through local processing. Its architecture study demonstrates structured hook scoring, audio-gap alignment, and EMA-smoothed 9:16 reframing for faster rough cuts."
       ],
       "role": [
         "Proyek desktop Windows dengan demo web interaktif.",

@@ -1,6 +1,6 @@
 import { useId, useRef, useState } from 'react'
 
-export default function SegmentTabs({ label, items, children, onSelect }) {
+export default function SegmentTabs({ label, items, children, onSelect, keepPanels = false }) {
   const id = useId()
   const buttons = useRef([])
   const [active, setActive] = useState(0)
@@ -23,6 +23,15 @@ export default function SegmentTabs({ label, items, children, onSelect }) {
     buttons.current[next]?.focus()
   }
 
+  const panels = items.map((_, index) => {
+    const inactive = index !== active
+    return <div key={index} className="segment-panel" id={id + '-panel-' + index} role="tabpanel"
+      aria-labelledby={id + '-tab-' + index} hidden={inactive && !keepPanels}
+      inert={inactive && keepPanels} data-inactive={inactive && keepPanels ? '' : undefined} tabIndex={0}>
+      {(keepPanels || !inactive) && children(index)}
+    </div>
+  })
+
   return (
     <>
       <div className="segment-tabs" role="tablist" aria-label={label} style={{ '--segment-count': items.length }}>
@@ -31,10 +40,7 @@ export default function SegmentTabs({ label, items, children, onSelect }) {
           tabIndex={active === index ? 0 : -1} ref={element => { buttons.current[index] = element }}
           onClick={() => select(index)} onKeyDown={event => navigate(event, index)}>{item}</button>)}
       </div>
-      {items.map((_, index) => <div key={index} className="segment-panel" id={id + '-panel-' + index} role="tabpanel"
-        aria-labelledby={id + '-tab-' + index} hidden={index !== active} tabIndex={0}>
-        {index === active && children(index)}
-      </div>)}
+      {keepPanels ? <div className="segment-sizing">{panels}</div> : panels}
     </>
   )
 }

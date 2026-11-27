@@ -48,3 +48,17 @@ Open `/clipper/` for the browser adaptation of the verified November 17, 2026 Wi
 The reference is the November 17, 2026 `AI_Video_Clipper_Final_Source.zip` archive (SHA-256 `cd4cbd6acf6762b9373fe177b91e6b194bd48353a58169a9d276e4ce3c77e6c3`). The archive records 79 passing desktop tests, one skipped face-fixture test, six local MP4 exports, and six verified Drive uploads for a desktop job. These are historical results for the Windows release.
 
 The web selector adapts that archive's `lean_analysis.py` and the non-overlap check in `media.py`, with shorter duration defaults for the browser. The separate resume patch was shipped as source only and had not been tested with the Windows executable or a live Drive upload. MotionKlip was a separate gaming fork labeled source preview.
+
+
+### Multimodal Pipeline Inspector
+
+Open [chapter 05, AI Video Clipper](https://fahmi-portfolio-sand.vercel.app/#lab-clipper) to explore three design decisions with synthetic data:
+
+- **Hook scoring.** A stored model-output fixture provides only segment IDs. The validator rejects unknown or reversed IDs and extra fields, then looks up the exact integer-millisecond boundaries. The score of 94 is an illustrative model output.
+- **VAD and GOP alignment.** The fixture evaluates a 20 ms amplitude envelope and selects a point 180 ms later, inside a 300 ms low-energy gap. The design favors keyframes within the gap for stream-copy and otherwise re-encodes the GOP edge. The inspector does not decode audio or inspect a real bitstream.
+- **9:16 reframing.** Scrub prerecorded face coordinates to inspect EMA smoothing (alpha 0.18) with a 4 px dead zone. The no-face fixture displays the full screen feed against a blurred vertical background. The face confidence is illustrative.
+
+The two-hour-to-under-four-minute figure is a workflow target. The public browser demo uses local transcript heuristics and a user-selected fit/fill layout. It does not run the illustrated VAD or computer vision pipeline on visitor videos.
+
+- [Inspector implementation](src/editorial/ClipperInspector.jsx) and [fixture algorithms](src/editorial/clipper-pipeline.js)
+- [Browser clipper source](src/clipper) and [inspector commit history](https://github.com/FahmiRfld-Tech/fahmi-portfolio/commits/main/src/editorial/ClipperInspector.jsx)

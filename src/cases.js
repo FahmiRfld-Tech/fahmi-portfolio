@@ -1,3 +1,5 @@
+import { architecture } from './editorial/clipper-story'
+
 export const caseStudies = {
   batam: [
     {
@@ -31,6 +33,14 @@ export const caseStudies = {
       label: ['Demo interaktif', 'Interactive demo'],
       copy: ['Versi web menjalankan Whisper Tiny di browser, memakai heuristik transkrip dari versi desktop, dan menghasilkan video 9:16 serta SRT. Video milik pengunjung tetap di perangkat.', 'The web version runs Whisper Tiny locally, applies transcript heuristics adapted from the desktop version, and exports 9:16 video plus SRT. Uploaded video stays on the visitor’s device.'],
     },
+    {
+      label: ['Cakupan inspector', 'Inspector scope'],
+      copy: [
+        'Tiga keputusan teknis berikut disimulasikan dengan data contoh. Waktu 2 jam → <4 menit adalah target rough-cut, belum hasil benchmark yang terverifikasi.',
+        'The inspector simulates the three technical decisions below with fixtures. Two hours to under four minutes is a rough-cut target, pending a verified benchmark.',
+      ],
+    },
+    ...architecture,
   ],
   cireundeu: [
     {

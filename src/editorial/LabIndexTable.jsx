@@ -2,6 +2,9 @@ import { useEffect, useState, useSyncExternalStore } from 'react'
 import { ArrowRight, ArrowUpRight, Minus, Plus } from 'lucide-react'
 import { GITHUB, labMeta } from './content'
 import LabPreview from './LabPreview'
+import ClipperInspector from './ClipperInspector'
+import { domain, impact } from './clipper-story'
+import './clipper-inspector.css'
 import { ChapterHeader, External, ProjectLink, Tags } from './Shared'
 
 const desktopGallery = matchMedia('(min-width: 901px)')
@@ -12,12 +15,18 @@ function subscribeGallery(notify) {
 const galleryIsWide = () => desktopGallery.matches
 
 function LabPanel({ project, lang, open, desktop }) {
+  const clipper = project.id === 'clipper'
   return (
     <div className="lab-preview">
-      <LabPreview {...{ project, lang, open }} screenshotFirst={desktop && project.id !== 'rag'} />
+      {clipper ? <ClipperInspector lang={lang} />
+        : <LabPreview {...{ project, lang, open }} screenshotFirst={desktop && project.id !== 'rag'} />}
       <div className="lab-description">
+        {clipper && <p className="eyebrow clipper-domain">{domain}</p>}
         <p className="narrative">{project.summary[lang]}</p>
         <p className="lab-role">{project.role[lang]}</p>
+        {clipper && <dl className="clipper-impact">
+          {impact.map(({ value, label }) => <div key={value[0]}><dt>{label[lang]}</dt><dd>{value[lang]}</dd></div>)}
+        </dl>}
         <Tags items={project.stack} />
         <div className="actions">
           <ProjectLink project={project} lang={lang}>
@@ -25,7 +34,7 @@ function LabPanel({ project, lang, open, desktop }) {
             <ArrowUpRight size={16} aria-hidden="true" />
           </ProjectLink>
           {project.id === 'quran' && <External href={project.link}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>}
-          {project.id === 'clipper' && <External href={GITHUB + '/fahmi-portfolio/tree/main/src/clipper'}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>}
+          {clipper && <External href={GITHUB + '/fahmi-portfolio#multimodal-pipeline-inspector'}>{lang ? 'Architecture & commits' : 'Lihat arsitektur & commit'} <ArrowUpRight size={15} aria-hidden="true" /></External>}
           <button className="text-link" type="button" onClick={() => open('case', project)}>{lang ? 'Technical details' : 'Detail teknis'} <ArrowRight size={16} aria-hidden="true" /></button>
         </div>
       </div>
@@ -80,7 +89,10 @@ export default function LabIndexTable({ projects, lang, open }) {
           })}
         </ol>
         {desktop && <section id="lab-gallery-preview" className="lab-gallery-preview glass" aria-labelledby={'lab-' + current.id + '-panel-trigger'}>
-          <LabPanel key={current.id} project={current} {...{ lang, open, desktop }} />
+          {projects.map(project => <div key={project.id} className="lab-gallery-layer" data-inactive={current.id !== project.id ? '' : undefined}
+            inert={current.id !== project.id}>
+            <LabPanel {...{ project, lang, open, desktop }} />
+          </div>)}
         </section>}
       </div>
     </section>
