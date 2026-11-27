@@ -13,7 +13,33 @@ npm run build
 npm run preview
 ```
 
-Vercel builds with Vite and serves `dist/`. The portfolio needs no environment variables or API keys.
+## Cloudflare Pages
+
+Deploy the built output from `dist/`. `site.config.js` defaults to `https://fahmirifaldi.is-a.dev`. Set the optional public build variable `PORTFOLIO_SITE_URL` to use another HTTPS origin, such as `https://fahmirifaldi.pages.dev` before the custom domain is active. The build uses that same origin for canonical metadata, social images, the resume, robots.txt and sitemap.xml.
+
+```sh
+npx wrangler login && npx wrangler pages deploy dist --project-name=fahmirifaldi --branch=main
+```
+
+If the project does not exist, create it as a Direct Upload project with `npx wrangler pages project create fahmirifaldi --production-branch=main`. Pages serves the real Clipper page and crawler files first, with an SPA fallback for unmatched paths.
+
+### Register the custom domain
+
+Once the Pages address is serving the site, use the draft record at [fahmirifaldi.json](.domain-setup/domains/fahmirifaldi.json). Run these commands from the portfolio checkout with a GitHub CLI session for `FahmiRfld-Tech`.
+
+```sh
+gh auth login
+gh repo fork is-a-dev/register --clone=false
+git clone https://github.com/FahmiRfld-Tech/register.git ../is-a-dev-register
+git -C ../is-a-dev-register switch -c add-fahmirifaldi
+cp .domain-setup/domains/fahmirifaldi.json ../is-a-dev-register/domains/
+git -C ../is-a-dev-register add domains/fahmirifaldi.json
+git -C ../is-a-dev-register commit -m "Add fahmirifaldi.is-a.dev"
+git -C ../is-a-dev-register push -u origin add-fahmirifaldi
+gh pr create --repo is-a-dev/register --base main --head FahmiRfld-Tech:add-fahmirifaldi --title "Add fahmirifaldi.is-a.dev" --body "Personal engineering portfolio at https://fahmirifaldi.pages.dev/"
+```
+
+Attach `fahmirifaldi.is-a.dev` to the Pages project using the [is-a.dev Cloudflare Pages guide](https://docs.is-a.dev/guides/cloudflare-pages/). Verify HTTPS and asset routes before retiring the old hosting deployment.
 
 ## Interactions
 
@@ -31,7 +57,7 @@ Vercel builds with Vite and serves `dist/`. The portfolio needs no environment v
 | `batam-chat.webp` | [Hallo Batam AI](https://batamtes.vercel.app/), a public chat about beaches in Nongsa |
 | `cireundeu.webp` | [Kampung Adat Cireundeu](https://kampungcireundeu.kii.lat/) |
 | `quran.webp` | [Sahabat Qur’an](https://sahabatquran-phi.vercel.app/) |
-| `rag.webp` | [Batam Django backend public README](https://github.com/FahmiRfld-Tech/wisatabatam-backend.) |
+| `rag.webp` | [Batam Django backend public README](https://github.com/FahmiRfld-Tech/wisatabatam-backend) |
 
 ## AI Video Clipper demo
 
@@ -52,7 +78,7 @@ The web selector adapts that archive's `lean_analysis.py` and the non-overlap ch
 
 ### Multimodal Pipeline Inspector
 
-Open [chapter 05, AI Video Clipper](https://fahmi-portfolio-sand.vercel.app/#lab-clipper) to explore three design decisions with synthetic data:
+Open [chapter 05, AI Video Clipper](https://fahmirifaldi.is-a.dev/#lab-clipper) to explore three design decisions with synthetic data:
 
 - **Hook scoring.** A stored model-output fixture provides only segment IDs. The validator rejects unknown or reversed IDs and extra fields, then looks up the exact integer-millisecond boundaries. The score of 94 is an illustrative model output.
 - **VAD and GOP alignment.** The fixture evaluates a 20 ms amplitude envelope and selects a point 180 ms later, inside a 300 ms low-energy gap. The design favors keyframes within the gap for stream-copy and otherwise re-encodes the GOP edge. The inspector does not decode audio or inspect a real bitstream.

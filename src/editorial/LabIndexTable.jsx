@@ -1,13 +1,11 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { ArrowRight, ArrowUpRight, Minus, Plus } from 'lucide-react'
-import { GITHUB, labMeta } from './content'
+import { labMeta } from './content'
 import LabPreview from './LabPreview'
 import ClipperInspector from './ClipperInspector'
 import PromptGateSandbox from './PromptGateSandbox'
-import { domain, impact } from './clipper-story'
 import './clipper-inspector.css'
-import { ChapterHeader, External, ProjectLink, Tags } from './Shared'
-import { ResearchTradeoff } from './EngineeringNotes'
+import { ChapterHeader, ProjectLink } from './Shared'
 
 const desktopGallery = matchMedia('(min-width: 901px)')
 function subscribeGallery(notify) {
@@ -15,6 +13,13 @@ function subscribeGallery(notify) {
   return () => desktopGallery.removeEventListener('change', notify)
 }
 const galleryIsWide = () => desktopGallery.matches
+
+const labLines = {
+  clipper: ['Klip vertikal, diproses lokal.', 'Vertical clips, processed locally.'],
+  quran: ['Hafalan dengan perjalanan bertema.', 'Memorization through themed journeys.'],
+  rag: ['Eksperimen pencarian dokumen semantik.', 'Experiments in semantic retrieval.'],
+  promptgate: ['Filter prompt, samarkan PII, perbaiki JSON.', 'Screen prompts, mask PII, repair JSON.'],
+}
 
 function LabPanel({ project, lang, open, desktop }) {
   const clipper = project.id === 'clipper'
@@ -24,24 +29,15 @@ function LabPanel({ project, lang, open, desktop }) {
       {promptgate ? <PromptGateSandbox lang={lang} /> : clipper ? <ClipperInspector lang={lang} />
         : <LabPreview {...{ project, lang, open }} screenshotFirst={desktop && project.id !== 'rag'} />}
       <div className="lab-description">
-        {clipper && <p className="eyebrow clipper-domain">{domain}</p>}
-        {project.lead && <strong className="case-lead">{project.lead[lang]}</strong>}
-        <p className="narrative">{project.summary[lang]}</p>
-        {project.plain && <p className="plain-translation">{project.plain[lang]}</p>}
-        {project.role && <p className="lab-role">{project.role[lang]}</p>}
-        {project.id === 'rag' && <ResearchTradeoff lang={lang} />}
-        {clipper && <dl className="clipper-impact">
-          {impact.map(({ value, label }) => <div key={value[0]}><dt>{label[lang]}</dt><dd>{value[lang]}</dd></div>)}
-        </dl>}
-        <Tags items={project.stack} />
+        <p className="narrative lab-line">{labLines[project.id][lang]}</p>
         <div className="actions">
           <ProjectLink project={project} lang={lang}>
             {(project.id === 'rag' || promptgate) ? (lang ? 'View on GitHub' : 'Lihat GitHub') : (lang ? 'Open demo' : 'Buka Demo')}
             <ArrowUpRight size={16} aria-hidden="true" />
           </ProjectLink>
-          {project.id === 'quran' && <External href={project.link}>GitHub <ArrowUpRight size={15} aria-hidden="true" /></External>}
-          {clipper && <External href={GITHUB + '/fahmi-portfolio#multimodal-pipeline-inspector'}>{lang ? 'Architecture & commits' : 'Lihat arsitektur & commit'} <ArrowUpRight size={15} aria-hidden="true" /></External>}
-          <button className="text-link" type="button" onClick={() => open('case', project)}>{lang ? 'Technical details' : 'Detail teknis'} <ArrowRight size={16} aria-hidden="true" /></button>
+          <button className="key technical-trigger" type="button" aria-haspopup="dialog" onClick={() => open('case', project)}>
+            {lang ? 'Technical breakdown' : 'Bedah Teknis'} <ArrowUpRight size={16} aria-hidden="true" />
+          </button>
         </div>
       </div>
     </div>

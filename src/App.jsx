@@ -1,20 +1,22 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { AnimatePresence, m } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, Check, Command, Copy, FileText, GitCommitHorizontal, Images, MapPin, Monitor, ZoomIn } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Check, Command, Copy, FileText, GitCommitHorizontal, Images, MapPin, Monitor, ZoomIn, Zap } from 'lucide-react'
 import content from './content.json'
 import { caseStudies } from './cases'
 import Dialog from './Dialog'
 import CommandPalette from './editorial/CommandPalette'
 import CommandTrigger from './editorial/CommandTrigger'
+import IdentityPass, { IdentityTrigger } from './editorial/IdentityPass'
+import { LeadershipDossier, ProjectDossier, ProjectDossierActions, StackDossier } from './editorial/Dossiers'
 import { CireundeuShowcase, EditorialProlog, FloatingChapterDock, HalloBatamStage, LeadershipTimeline } from './editorial/Chapters'
-import { chapters, EMAIL, GITHUB, LINKEDIN, projectActions } from './editorial/content'
-import { CaseDetails, External, ProjectLink, projectUrl } from './editorial/Shared'
+import { chapters, chapterNumber, EMAIL, GITHUB, LINKEDIN, projectActions } from './editorial/content'
+import { ProjectLink, projectUrl } from './editorial/Shared'
 import useSpotlights from './editorial/useSpotlights'
 import { EditorialTicker } from './editorial/HeroMotion'
 import EditorialContact from './editorial/EditorialContact'
 import LabIndexTable from './editorial/LabIndexTable'
-import Resume, { resumeLabel } from './editorial/Resume'
-import { BATAM_RAG_NOTES, BATAM_UPGRADE } from './editorial/EngineeringNotes'
+import Resume, { PrintResume, resumeLabel } from './editorial/Resume'
+import { BATAM_UPGRADE } from './editorial/EngineeringNotes'
 import './editorial/recruiter.css'
 
 const [flagship] = content.projects
@@ -49,7 +51,7 @@ function ProjectPreview({ project, lang }) {
   )
 }
 
-function TopBar({ lang, setLang, openCommand }) {
+function TopBar({ lang, setLang, openCommand, openIdentity }) {
   return (
     <header className="top-bar">
       <div className="wrap top-content">
@@ -58,6 +60,7 @@ function TopBar({ lang, setLang, openCommand }) {
           <span className="brand-detail"><i className="live-dot" aria-hidden="true" /> M. Fahmi Rifaldi <span className="brand-location">— Bandung, ID</span></span>
         </a>
         <div className="nav-tools">
+          <IdentityTrigger className="nav-identity" lang={lang} onClick={openIdentity} />
           <div className="language-switch" role="group" aria-label={lang ? 'Language' : 'Bahasa'}>
             <button type="button" aria-pressed={!lang} aria-label="Bahasa Indonesia" onClick={() => setLang(0)}>ID</button>
             <span aria-hidden="true">|</span>
@@ -72,7 +75,7 @@ function TopBar({ lang, setLang, openCommand }) {
 
 export default function App() {
   const [lang, setLang] = useState(() => new URLSearchParams(location.search).get('lang') === 'en' ? 1 : 0)
-  const [overlay, setOverlay] = useState(null)
+  const [overlay, setOverlay] = useState(() => location.hash === '#batam-xray' ? { type: 'case', project: flagship, initialTab: 2 } : null)
   const [toast, setToast] = useState(null)
   const timer = useRef(0)
   const copyAttempt = useRef(0)
@@ -81,8 +84,18 @@ export default function App() {
   const closeLabel = lang ? 'Close' : 'Tutup'
 
   useLayoutEffect(() => {
+    function highlightHash() {
+      const id = location.hash.slice(1)
+      if (id === 'batam-xray') {
+        document.getElementById('hallo-batam')?.scrollIntoView({ behavior: 'instant' })
+        setOverlay({ type: 'case', project: flagship, initialTab: 2 })
+      }
+    }
     const id = location.hash.slice(1)
-    if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
+    if (id === 'batam-xray') highlightHash()
+    else if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'instant' })
+    window.addEventListener('hashchange', highlightHash)
+    return () => window.removeEventListener('hashchange', highlightHash)
   }, [])
 
   useEffect(() => {
@@ -133,59 +146,102 @@ export default function App() {
       field.value = value
       field.readOnly = true
       field.style.cssText = 'position:fixed;top:0;left:0;opacity:0'
-      document.body.append(field)
+      const clipboardHost = document.querySelector('dialog[open]') ?? document.body
+      clipboardHost.append(field)
       try { field.select(); success = document.execCommand('copy') }
       catch { /* The toast displays the address for manual copying. */ }
       finally { field.remove(); trigger?.focus({ preventScroll: true }) }
     }
-    if (attempt !== copyAttempt.current) return
+    if (attempt !== copyAttempt.current || kind === 'identity') return success
     setToast({ success, value, kind, key: attempt })
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setToast(null), 3200)
+    return success
   }
 
   const toastMessage = toast?.kind === 'draft'
     ? (toast.success ? (lang ? 'Message draft copied' : 'Draf pesan disalin') : (lang ? 'Could not copy the draft. Select the text to copy it.' : 'Draf gagal disalin. Pilih teks draf untuk menyalinnya.'))
     : (toast?.success ? (lang ? 'Email copied to clipboard' : 'Email disalin ke clipboard') : EMAIL)
 
-  const open = (type, project) => setOverlay({ type, project })
+  const open = (type, project, initialTab) => setOverlay({ type, project, initialTab })
   const close = () => setOverlay(null)
   const openCommand = () => open('command')
   const openResume = () => open('resume')
+  const openIdentity = () => open('identity')
   const chapterNames = [
     ['Prolog', 'Prologue'], ['Hallo Batam AI', 'Hallo Batam AI'],
     ['Komunitas Cireundeu', 'Cireundeu Community'], ['Kepemimpinan', 'Leadership'],
     ['Laboratorium', 'Lab'], ['Epilog', 'Epilogue'],
   ]
-  const chapterCommands = chapters.map(({ id, label }, index) => ({
-    id, name: '0' + (index + 1) + ' · ' + chapterNames[index][lang],
-    keywords: label.join(' '), Icon: ArrowRight, run: () => go(id),
-  }))
+  const chapterPreviews = [
+    ['3.000+', 'Skala komunitas asrama yang dipimpin.', 'Residents in the community Fahmi helped lead.'],
+    ['X-Ray', 'Pemandu wisata AI dengan kutipan sumber.', 'An AI travel guide with inspectable citations.'],
+    ['13', 'Anggota tim di balik portal dan CMS UMKM.', 'Team members behind the portal and local-business CMS.'],
+    ['6', 'Peran dari praktikum hingga organisasi mahasiswa.', 'Roles across teaching and student organizations.'],
+    ['4', 'Demo video, hafalan, retrieval, dan keamanan AI.', 'Demos spanning video, memorization, retrieval, and AI security.'],
+    ['ID / EN', 'Kontak langsung dan CV siap cetak.', 'Direct contact and a print-ready CV.'],
+  ]
+  const chapterCommands = chapters.map(({ id, label }, index) => {
+    const [stat, idCopy, enCopy] = chapterPreviews[index]
+    return {
+      id, name: chapterNumber(id) + ' · ' + chapterNames[index][lang],
+      keywords: label.join(' '), Icon: ArrowRight, stat, summary: lang ? enCopy : idCopy, run: () => go(id),
+    }
+  })
   const engineering = [
-    { id: 'xray', name: 'Hallo Batam AI · X-Ray Grounding', keywords: 'citation kutipan evidence', Icon: ArrowRight, run: () => go('batam-xray') },
-    { id: 'multimodal', name: 'AI Video Clipper · Multimodal Inspector', keywords: 'clipforge vad ema', Icon: ArrowRight, run: () => go('lab-clipper') },
-    { id: 'trace', name: lang ? 'Open Hero RAG Trace' : 'Buka RAG Trace di Hero', keywords: 'hybrid cache rrf', Icon: ArrowRight, run: () => go('rag-trace') },
-    { id: 'playground', name: lang ? 'Batam Playground' : 'Demo interaktif Batam', keywords: 'playground batam', Icon: ArrowRight, run: () => go('playground') },
-    { id: 'stack', name: lang ? 'Tools & education' : 'Teknologi & pendidikan', keywords: 'stack telkom', Icon: ArrowRight, run: () => go('stack') },
-    ...content.projects.map(project => ({ id: 'case-' + project.id, name: project.name[lang] + (lang ? ' · case study' : ' · studi kasus'), keywords: project.name.join(' ') + ' ' + project.stack.join(' '), Icon: Images, run: () => open('case', project) })),
+    { id: 'xray', name: 'Hallo Batam AI · X-Ray Grounding', keywords: 'citation kutipan evidence', Icon: ArrowRight,
+      stat: 'X-Ray',
+      summary: lang ? 'Inspect the source behind an answer.' : 'Periksa sumber di balik jawaban.',
+      run: () => open('case', flagship, 2) },
+    { id: 'multimodal', name: 'AI Video Clipper · Multimodal Inspector', keywords: 'clipforge vad ema', Icon: ArrowRight,
+      stat: '9:16',
+      summary: lang ? 'Inspect clip scoring, audio cuts, and smart reframing.' : 'Periksa skor klip, potongan audio, dan reframing.',
+      run: () => go('lab-clipper') },
+    { id: 'trace', name: lang ? 'Open Hero RAG Trace' : 'Buka RAG Trace di Hero', keywords: 'hybrid cache rrf', Icon: ArrowRight,
+      stat: 'RAG',
+      summary: lang ? 'Follow retrieval, caching, and evidence gaps.' : 'Telusuri pencarian, cache, dan batas bukti.',
+      run: () => go('rag-trace') },
+    { id: 'playground', name: lang ? 'Batam Playground' : 'Demo interaktif Batam', keywords: 'playground batam', Icon: ArrowRight,
+      stat: 'Demo',
+      summary: lang ? 'Try example questions about Batam.' : 'Coba pertanyaan wisata seputar Batam.',
+      run: () => go('playground') },
+    { id: 'stack', name: lang ? 'Tools & education' : 'Teknologi & pendidikan', keywords: 'stack telkom', Icon: ArrowRight,
+      stat: 'D4',
+      summary: lang ? 'Explore the tools and Telkom University background.' : 'Lihat teknologi dan pendidikan di Telkom University.',
+      run: () => open('stack') },
+    ...content.projects.map(project => ({ id: 'case-' + project.id, name: project.name[lang] + (lang ? ' · case study' : ' · studi kasus'), keywords: project.name.join(' ') + ' ' + project.stack.join(' '), Icon: Images,
+      stat: project.stack[0],
+      summary: project.summary[lang],
+      run: () => open('case', project) })),
   ]
   const demos = [
     ...content.projects.map(project => ({
       id: 'live-' + project.id, name: projectActions[project.id][lang] + ' · ' + project.name[lang], keywords: 'live demo aplikasi code kode portal', Icon: ArrowUpRight,
+      stat: project.stack[0], summary: project.summary[lang],
       run: () => {
         const href = projectUrl(project, lang)
         if (href.startsWith('/')) location.assign(href)
         else window.open(href, '_blank', 'noopener,noreferrer')
       },
     })),
-    { id: 'commit', name: lang ? 'Open Hallo Batam AI commit' : 'Lihat commit Hallo Batam AI', keywords: 'github commit contribution', Icon: GitCommitHorizontal, run: () => window.open(commitLink, '_blank', 'noopener,noreferrer') },
+    { id: 'commit', name: lang ? 'Open Hallo Batam AI commit' : 'Lihat commit Hallo Batam AI', keywords: 'github commit contribution', Icon: GitCommitHorizontal,
+      stat: 'Git',
+      summary: lang ? 'Open the retrieval upgrade in GitHub.' : 'Buka perubahan retrieval di GitHub.',
+      run: () => window.open(commitLink, '_blank', 'noopener,noreferrer') },
   ]
   const recruiter = [
-    { id: 'resume', name: resumeLabel[lang], keywords: 'resume curriculum vitae ats print cetak pdf cv', Icon: FileText, run: openResume },
-    { id: 'copy', name: (lang ? 'Copy email · ' : 'Salin email · ') + EMAIL, Icon: Copy, run: () => copyText(EMAIL, 'email') },
-    { id: 'github', name: lang ? 'Open GitHub ↗' : 'Buka GitHub ↗', Icon: ArrowUpRight, run: () => window.open(GITHUB, '_blank', 'noopener,noreferrer') },
-    { id: 'linkedin', name: lang ? 'Open LinkedIn ↗' : 'Buka LinkedIn ↗', Icon: ArrowUpRight, run: () => window.open(LINKEDIN, '_blank', 'noopener,noreferrer') },
-    { id: 'language', name: lang ? 'Gunakan Bahasa Indonesia' : 'Switch to English', Icon: Command, run: () => setLang(1 - lang) },
+    { id: 'identity', name: lang ? '15s Vibe Pass' : 'Kenalan 15 Detik', keywords: 'profile profil tldr stack', Icon: Zap, stat: '15s', summary: lang ? 'Highlights, tools, and contact.' : 'Ringkasan, teknologi, dan kontak.', run: openIdentity },
+    { id: 'resume', stat: 'PDF', summary: lang ? 'Bilingual ATS-ready resume.' : 'CV bilingual siap ATS.', name: resumeLabel[lang], keywords: 'resume curriculum vitae ats print cetak pdf cv', Icon: FileText, run: openResume },
+    { id: 'copy', name: (lang ? 'Copy email · ' : 'Salin email · ') + EMAIL, Icon: Copy, stat: '@', summary: lang ? 'Copy Fahmi’s address to the clipboard.' : 'Salin alamat Fahmi ke clipboard.', run: () => copyText(EMAIL, 'email') },
+    { id: 'github', name: lang ? 'Open GitHub ↗' : 'Buka GitHub ↗', Icon: ArrowUpRight, stat: 'Code', summary: lang ? 'Browse Fahmi’s repositories.' : 'Lihat repositori Fahmi.', run: () => window.open(GITHUB, '_blank', 'noopener,noreferrer') },
+    { id: 'linkedin', name: lang ? 'Open LinkedIn ↗' : 'Buka LinkedIn ↗', Icon: ArrowUpRight,
+      stat: 'LinkedIn',
+      summary: lang ? 'Open Fahmi’s professional profile.' : 'Buka profil profesional Fahmi.',
+      run: () => window.open(LINKEDIN, '_blank', 'noopener,noreferrer') },
+    { id: 'language', name: lang ? 'Gunakan Bahasa Indonesia' : 'Switch to English', Icon: Command,
+      stat: lang ? 'ID' : 'EN',
+      summary: lang ? 'Read the portfolio in Indonesian.' : 'Baca portofolio dalam bahasa Inggris.',
+      run: () => setLang(1 - lang) },
   ]
 
   const groups = [
@@ -200,13 +256,13 @@ export default function App() {
       <a className="skip key" href="#main">{lang ? 'Skip to content' : 'Langsung ke konten'}</a>
       <div className="portfolio-shell">
         <div className="portfolio-scroll" ref={scrollRoot}>
-          <TopBar {...{ lang, setLang, openCommand }} />
+          <TopBar {...{ lang, setLang, openCommand, openIdentity }} />
           <main className="wrap" id="main" tabIndex="-1">
-            <EditorialProlog {...{ lang, openCommand }} project={flagship} evidence={batamEvidence} />
+            <EditorialProlog {...{ lang, openCommand, openIdentity }} project={flagship} evidence={batamEvidence} />
             <EditorialTicker lang={lang} />
             <HalloBatamStage project={flagship} {...{ lang, open }} />
             <CireundeuShowcase project={community} {...{ lang, open }} />
-            <LeadershipTimeline lang={lang} />
+            <LeadershipTimeline {...{ lang, open }} />
             <LabIndexTable projects={lab} {...{ lang, open }} />
             <EditorialContact {...{ lang, copyText, openCommand, openResume }} copied={toast?.success ? toast : null} />
           </main>
@@ -221,24 +277,31 @@ export default function App() {
           {toast.success && <Check size={18} aria-hidden="true" />}{toastMessage}
         </m.div>}
       </AnimatePresence>
-      {overlay?.type === 'command' && <Dialog key="command" className="command-dialog" title={lang ? 'Command palette' : 'Palet perintah'} {...{ closeLabel, close }}>
+      {overlay?.type === 'command' && <Dialog key="command" className="command-dialog" title={lang ? 'Spotlight' : 'Menu Cepat'} {...{ closeLabel, close }}>
         <CommandPalette {...{ lang, groups, close }} />
       </Dialog>}
-      {overlay?.type === 'resume' && <Dialog key="resume" className="resume-dialog" title={lang ? 'Executive resume' : 'CV eksekutif'} {...{ closeLabel, close }}>
+      {overlay?.type === 'resume' && <Dialog key="resume" className="resume-dialog paper-dialog" title={lang ? 'Executive resume' : 'CV eksekutif'}
+        eyebrow="M. FAHMI RIFALDI" footer={<PrintResume lang={lang} />} {...{ closeLabel, close }}>
         <Resume lang={lang} />
       </Dialog>}
       {overlay?.type === 'preview' && <Dialog key="preview" className="preview-dialog" title={overlay.project.name[lang]} {...{ closeLabel, close }}>
         <ProjectPreview project={overlay.project} lang={lang} />
       </Dialog>}
-      {overlay?.type === 'case' && <Dialog key="case" title={overlay.project.name[lang]} {...{ closeLabel, close }}>
-        <CaseDetails project={overlay.project} lang={lang} />
-        {overlay.project.id === 'batam' && <p className="architecture-note">Vercel → Supabase Edge Function → PostgreSQL + OpenAI</p>}
-        <div className="actions">
-          <ProjectLink project={overlay.project} lang={lang} className="key primary" />
-          {overlay.project.id === 'clipper' && <External href={GITHUB + '/fahmi-portfolio/tree/main/src/clipper'}>{lang ? 'Web source on GitHub' : 'Kode web di GitHub'} <ArrowUpRight size={16} aria-hidden="true" /></External>}
-          {overlay.project.id === 'batam' && <External href={BATAM_RAG_NOTES}>{lang ? 'Architecture document' : 'Dokumen arsitektur'} <ArrowUpRight size={16} aria-hidden="true" /></External>}
-          {overlay.project.id === 'quran' && <External href={overlay.project.link}>{lang ? 'Concept documentation' : 'Dokumentasi konsep'} <ArrowUpRight size={16} aria-hidden="true" /></External>}
-        </div>
+      {overlay?.type === 'identity' && <Dialog key="identity" className="identity-dialog paper-dialog"
+        title={lang ? '15s Vibe Pass' : 'Kenalan 15 Detik'} eyebrow="DIGITAL ID" {...{ closeLabel, close }}>
+        <IdentityPass lang={lang} copyEmail={() => copyText(EMAIL, 'identity')} />
+      </Dialog>}
+      {overlay?.type === 'leadership' && <Dialog key="leadership" className="leadership-dialog paper-dialog"
+        title={content.roles[overlay.project].role[lang]} eyebrow={'04 / ' + (lang ? 'LEADERSHIP' : 'KEPEMIMPINAN')} {...{ closeLabel, close }}>
+        <LeadershipDossier index={overlay.project} lang={lang} />
+      </Dialog>}
+      {overlay?.type === 'stack' && <Dialog key="stack" className="case-dialog paper-dialog"
+        title={lang ? 'Tools & education' : 'Teknologi & pendidikan'} {...{ closeLabel, close }}>
+        <StackDossier lang={lang} navigate={id => { close(); go(id) }} />
+      </Dialog>}
+      {overlay?.type === 'case' && <Dialog key={'case-' + overlay.project.id} className="case-dialog paper-dialog" title={overlay.project.name[lang]}
+        eyebrow={lang ? 'CASE STUDY' : 'STUDI KASUS'} footer={<ProjectDossierActions project={overlay.project} lang={lang} />} {...{ closeLabel, close }}>
+        <ProjectDossier project={overlay.project} lang={lang} initialTab={overlay.initialTab} />
       </Dialog>}
     </>
   )

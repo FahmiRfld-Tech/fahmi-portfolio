@@ -39,7 +39,7 @@ const projectNames = {
   'lab-rag': 'Batam RAG Backend',
 }
 
-export default function StackMatrix({ lang }) {
+export default function StackMatrix({ lang, navigate }) {
   const [selected, setSelected] = useState('RAG')
   const [hovered, setHovered] = useState(null)
   const active = hovered ?? selected
@@ -63,7 +63,11 @@ export default function StackMatrix({ lang }) {
       </div>
       <div id="stack-context" className="stack-context glass" data-category={category}>
         <div className="usage-copy" key={active} role="status"><p className="workbench-label">{active} / {labels[category][lang]}</p><p>{lang ? enCopy : idCopy}</p></div>
-        {!!matches.length && <div className="usage-links">{matches.map(id => <a key={id} className="text-link" href={'#' + id}>
+        {!!matches.length && <div className="usage-links">{matches.map(id => <a key={id} className="text-link" href={'#' + id} onClick={event => {
+          if (!navigate || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+          event.preventDefault()
+          navigate(id)
+        }}>
           {projectNames[id] ?? (lang ? 'View related experience' : 'Lihat pengalaman terkait')} <ArrowDownRight size={15} aria-hidden="true" />
         </a>)}</div>}
       </div>

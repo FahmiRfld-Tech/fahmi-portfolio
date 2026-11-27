@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Minus, Plus } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, Layers3 } from 'lucide-react'
 import Playground from '../Playground'
 import CommandTrigger from './CommandTrigger'
+import { IdentityTrigger } from './IdentityPass'
 import { HeroHeadline, HeroMetrics } from './HeroMotion'
 import content from '../content.json'
-import StackMatrix from './StackMatrix'
 import Workbench from './Workbench'
-import { chapterNumber, chapters, insights } from './content'
-import { BrowserFrame, CaseDetails, ChapterHeader, External, ProjectLink, RevealRow, Screenshot, Tags } from './Shared'
-import { BATAM_RAG_NOTES, CireundeuDecisions, GroundingPreview, RetrievalComparison } from './EngineeringNotes'
+import { chapterNumber, chapters } from './content'
+import { BrowserFrame, ChapterHeader, ProjectLink, Screenshot } from './Shared'
 
 export function FloatingChapterDock({ lang, scrollRoot }) {
   const [active, setActive] = useState('prolog')
@@ -74,7 +73,7 @@ export function FloatingChapterDock({ lang, scrollRoot }) {
   )
 }
 
-export function EditorialProlog({ lang, openCommand, project, evidence }) {
+export function EditorialProlog({ lang, openCommand, openIdentity, project, evidence }) {
   const metrics = [
     { number: content.metrics[2].number, label: ['Penghuni Asrama Dipimpin', 'Dormitory Residents Led'] },
     { number: content.metrics[1].number, label: ['Mahasiswa & Praktikan Dibimbing', 'Students Mentored'] },
@@ -87,11 +86,12 @@ export function EditorialProlog({ lang, openCommand, project, evidence }) {
         <p className="eyebrow hero-kicker"><span className="prolog-number">{chapterNumber('prolog')}</span><i className="live-dot" aria-hidden="true" /> {lang ? 'Applied AI & Full-Stack Engineer · Multimedia Systems' : 'Rekayasa AI Terapan & Full-Stack · Sistem Multimedia'}</p>
         <HeroHeadline lang={lang} />
         <p className="narrative thesis-copy">{lang
-          ? 'Leading a residence community of more than 3,000 people taught me how decisions play out on the ground. I bring that habit to software, from a travel assistant with checkable sources to a portal local businesses can update themselves.'
-          : 'Memimpin komunitas asrama dengan lebih dari 3.000 penghuni mengajarkan saya melihat bagaimana keputusan bekerja di lapangan. Kebiasaan itu saya bawa ke rekayasa perangkat lunak, mulai dari asisten wisata dengan sumber yang bisa diperiksa hingga portal yang bisa diperbarui pengelola UMKM.'}
+          ? 'I build AI with verifiable answers and web products that communities can run themselves.'
+          : 'Saya merancang AI dengan jawaban yang bisa diperiksa dan produk web yang bisa dikelola komunitas sendiri.'}
         </p>
         <div className="hero-actions">
           <a className="key start-link" href="#hallo-batam" data-magnetic="">{lang ? 'Read the AI case study' : 'Mulai dari studi kasus AI'} <ArrowDownRight size={17} aria-hidden="true" /></a>
+          <IdentityTrigger lang={lang} onClick={openIdentity} />
           <CommandTrigger className="hero-command" lang={lang} onClick={openCommand} />
         </div>
       </div>
@@ -101,39 +101,28 @@ export function EditorialProlog({ lang, openCommand, project, evidence }) {
   )
 }
 
-function RagArchitectureDrawer({ project, lang }) {
-  const [open, setOpen] = useState(false)
-  const production = lang
-    ? ['Area/category filters', 'Exact-query cache', 'tsvector ranking', 'Entity reranking', 'Grounded JSON + Evidence Gap']
-    : ['Filter kawasan/kategori', 'Cache kueri identik', 'Peringkat tsvector', 'Reranking entitas', 'JSON grounded + Evidence Gap']
-  const vector = lang
-    ? ['Compatible embedding', 'Semantic cache ≥0.94', 'Area/category filters', 'Lexical + pgvector RRF', 'Grounded JSON']
-    : ['Embedding kompatibel', 'Cache semantik ≥0,94', 'Filter kawasan/kategori', 'Lexical + RRF pgvector', 'JSON grounded']
-  return (
-    <div className="architecture">
-      <button className="architecture-trigger" type="button" aria-expanded={open} aria-controls="rag-drawer" onClick={() => setOpen(!open)}>
-        <span>{lang ? 'Inspect the RAG and retrieval architecture' : 'Bedah Alur RAG & Arsitektur Retrieval'}</span>
-        {open ? <Minus size={20} aria-hidden="true" /> : <Plus size={20} aria-hidden="true" />}
-      </button>
-      <div id="rag-drawer" className="reveal-panel" data-open={open} inert={!open}>
-        <div className="reveal-inner">
-          <div className="architecture-content">
-            <p className="eyebrow">{lang ? 'Documented production path' : 'Alur produksi yang terdokumentasi'}</p>
-            <ol className="architecture-flow">{production.map(step => <li key={step}>{step}</li>)}</ol>
-            <p className="eyebrow">{lang ? 'Vector retrieval design' : 'Rancangan pencarian vektor'}</p>
-            <ol className="architecture-flow vector">{vector.map(step => <li key={step}>{step}</li>)}</ol>
-            <p className="narrative">{lang
-              ? 'The migration adds RRF and model-matched vector cache logic. The current corpus has zero populated embeddings, so real requests use the production path above.'
-              : 'Migrasi menambahkan logika RRF dan cache vektor dari model yang sama. Korpus saat ini masih memiliki nol embedding terisi, sehingga permintaan riil memakai jalur produksi di atas.'}</p>
-            <div className="actions">
-              <External href={BATAM_RAG_NOTES}>{lang ? 'Architecture document' : 'Dokumen arsitektur'} <ArrowUpRight size={15} aria-hidden="true" /></External>
-              <External href={project.link + '/blob/main/docs/DATABASE.md'}>{lang ? 'Database audit' : 'Audit basis data'} <ArrowUpRight size={15} aria-hidden="true" /></External>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+const projectSignals = {
+  batam: [
+    ['2', 'Mode: teks & suara', 'Modes: text & voice'],
+    ['ID / EN', 'Bahasa', 'Languages'],
+    ['X-Ray', 'Kutipan sumber', 'Source citations'],
+  ],
+  cireundeu: [
+    ['13', 'Anggota tim', 'Team members'],
+    ['Feb–Jul ’26', 'Periode proyek', 'Delivery window'],
+    ['CMS', 'Mandiri untuk UMKM', 'Self-service for businesses'],
+  ],
+}
+
+function ProjectSignals({ project, lang, open }) {
+  return <div className="project-signals">
+    <ul aria-label={lang ? 'Project at a glance' : 'Proyek sekilas'}>
+      {projectSignals[project.id].map(([signal, id, en]) => <li key={signal}><strong>{signal}</strong><span>{lang ? en : id}</span></li>)}
+    </ul>
+    <button className="key technical-trigger" type="button" aria-haspopup="dialog" onClick={() => open('case', project)}>
+      {lang ? 'Technical breakdown (3)' : 'Bedah Teknis (3)'} <ArrowUpRight size={16} aria-hidden="true" />
+    </button>
+  </div>
 }
 
 export function HalloBatamStage({ project, lang, open }) {
@@ -151,10 +140,9 @@ export function HalloBatamStage({ project, lang, open }) {
     <section id="hallo-batam" className="chapter" aria-labelledby="batam-title" tabIndex="-1">
       <span className="anchor-alias" id="projects" tabIndex="-1" />
       <ChapterHeader chapter="hallo-batam" category="Applied AI & RAG Architecture" title={project.name[lang]} headingId="batam-title">
-        <p className="narrative">{lang
-          ? 'Batam’s tourism information is scattered, so an AI answer can sound confident even when reliable data is scarce. Hallo Batam AI cites official sources and says when the evidence cannot establish a detail, such as how crowded Nongsa Beach is.'
-          : 'Informasi wisata Batam tersebar di banyak situs. Jawaban AI bisa terdengar yakin padahal datanya terbatas. Hallo Batam AI menautkan rujukan resmi dan menjelaskan ketika data belum cukup, misalnya untuk memastikan keramaian di Pantai Nongsa.'}</p>
+        <p className="narrative">{lang ? 'Explore Batam with an AI guide that shows its sources.' : 'Jelajahi Batam dengan pemandu AI yang menyertakan sumber.'}</p>
       </ChapterHeader>
+      <ProjectSignals {...{ project, lang, open }} />
       <BrowserFrame project={project} actions={<ProjectLink project={project} lang={lang} />}>
         <div className="stage-choices" role="group" aria-label={lang ? 'Stage view' : 'Tampilan panggung'}>
           <button type="button" aria-pressed={!demo} onClick={() => setDemo(false)}>{lang ? 'Nongsa conversation' : 'Percakapan Nongsa'}</button>
@@ -162,16 +150,11 @@ export function HalloBatamStage({ project, lang, open }) {
         </div>
         <div className="batam-capture" hidden={demo}>
           <Screenshot project={project} lang={lang} open={open} eager />
-          <p className="stage-caption">{lang ? 'Actual conversation from Hallo Batam AI' : 'Tangkapan percakapan asli dari Hallo Batam AI'} · {project.summary[lang]}</p>
         </div>
         <div hidden={!demo}>
           <Playground lang={lang} liveUrl={project.preview} />
         </div>
       </BrowserFrame>
-      <CaseDetails project={project} lang={lang} className="swiss-spec" technicalStack={[...project.stack, 'RAG']} />
-      <RetrievalComparison lang={lang} />
-      <GroundingPreview lang={lang} />
-      <RagArchitectureDrawer project={project} lang={lang} />
     </section>
   )
 }
@@ -179,45 +162,46 @@ export function HalloBatamStage({ project, lang, open }) {
 export function CireundeuShowcase({ project, lang, open }) {
   return (
     <section id="cireundeu" tabIndex="-1" className="chapter" aria-labelledby="cireundeu-title">
-      <ChapterHeader chapter="cireundeu" category="Community & Full-Stack Systems" title={project.name[lang]} headingId="cireundeu-title" />
-      <div className="cireundeu-story">
-        <p className="eyebrow project-role">{project.role[lang]}</p>
-        <p className="narrative">{lang
-          ? 'I led a 13-person cross-functional team as Project Manager and Full-Stack Developer. The public portal introduces visitors to Kampung Adat Cireundeu, while its CMS is designed so local business administrators can update their own content and assets.'
-          : 'Saya memimpin 13 orang lintas disiplin sebagai Project Manager dan Full-Stack Developer. Portal memperkenalkan Kampung Adat Cireundeu kepada pengunjung, sementara CMS dirancang agar pengelola UMKM bisa memperbarui konten dan aset secara mandiri.'}</p>
-      </div>
+      <ChapterHeader chapter="cireundeu" category="Community & Full-Stack Systems" title={project.name[lang]} headingId="cireundeu-title">
+        <p className="narrative">{lang ? 'A visitor portal local businesses can update themselves.' : 'Portal wisata yang bisa dikelola sendiri oleh UMKM setempat.'}</p>
+      </ChapterHeader>
+      <ProjectSignals {...{ project, lang, open }} />
       <BrowserFrame project={project} actions={<ProjectLink project={project} lang={lang} />}>
         <Screenshot project={project} lang={lang} open={open} className="cireundeu-capture" />
       </BrowserFrame>
-      <div className="chapter-actions">
-        <Tags items={project.stack} />
-        <button className="text-link" type="button" onClick={() => open('case', project)}>{lang ? 'Read the technical case study' : 'Baca studi kasus teknis'} <ArrowRight size={16} aria-hidden="true" /></button>
-      </div>
-      <CireundeuDecisions lang={lang} />
     </section>
   )
 }
 
-export function LeadershipTimeline({ lang }) {
+const roleLabels = [
+  ['Strategi multimedia', 'Multimedia strategy'],
+  ['Pemimpin proyek Cireundeu', 'Cireundeu project lead'],
+  ['Koordinator praktikum', 'Practicum coordinator'],
+  ['Pimpinan asrama', 'Residence leadership'],
+  ['Advokasi mahasiswa', 'Student advocacy'],
+  ['Ketua Dorm Olympic', 'Dorm Olympic lead'],
+]
+
+export function LeadershipTimeline({ lang, open }) {
   return (
     <section id="experience" tabIndex="-1" className="chapter" aria-labelledby="experience-title">
-      <ChapterHeader chapter="experience" category="Leadership & Human Scale · 2024–2026" headingId="experience-title"
-        title={lang ? 'Leadership that shaped how I work' : 'Kepemimpinan yang Membentuk Cara Kerja'} />
+      <ChapterHeader chapter="experience" category="2024–2026" headingId="experience-title"
+        title={lang ? 'Leadership' : 'Kepemimpinan'} />
       <ol className="timeline">
-        {content.roles.map(({ role, org, date }, index) => <RevealRow key={role[0]} id={'role-' + index} className="timeline-row" defaultOpen={index < 2}
-          summary={<><span className="row-number">0{index + 1}</span><span className="row-identity"><strong>{role[lang]}</strong><span>{org[lang]}</span></span><span className="date">{date[lang]}</span></>}>
-          <p className="narrative timeline-insight">{insights[index][lang]}</p>
-        </RevealRow>)}
+        {content.roles.map(({ role, org, date }, index) => <li key={role[0]} className="timeline-row glass" data-spotlight="">
+          <button className="row-trigger" aria-haspopup="dialog" type="button" onClick={() => open('leadership', index)}>
+            <span className="row-number">0{index + 1}</span>
+            <strong>{roleLabels[index][lang]}</strong>
+            <span className="role-org">{org[lang]}</span>
+            <span className="date">{date[lang]}</span>
+            <ArrowUpRight className="row-icon" size={17} aria-hidden="true" />
+          </button>
+        </li>)}
       </ol>
-      <div id="stack" tabIndex="-1" className="profile-details">
-        <h3>{lang ? 'Tools, education & achievements' : 'Teknologi, pendidikan & pencapaian'}</h3>
-        <div className="info-grid">
-          <StackMatrix lang={lang} />
-          <div>{content.info.map(item => <article key={item.title[0]} className="education-item">
-            <h4>{item.title[lang]}</h4>{item.copy && <p>{item.copy[lang]}</p>}
-            {!!item.tags.length && <Tags items={item.tags} />}
-          </article>)}</div>
-        </div>
+      <div id="stack" className="chapter-actions">
+        <button className="key" type="button" aria-haspopup="dialog" onClick={() => open('stack')}>
+          <Layers3 size={16} aria-hidden="true" />{lang ? 'Tools & education' : 'Teknologi & pendidikan'}
+        </button>
       </div>
     </section>
   )

@@ -1,9 +1,9 @@
 import { useId, useRef, useState } from 'react'
 
-export default function SegmentTabs({ label, items, children, onSelect, keepPanels = false, activeIndex }) {
+export default function SegmentTabs({ label, items, children, onSelect, keepPanels = false, activeIndex, initialIndex = 0 }) {
   const id = useId()
   const buttons = useRef([])
-  const [localIndex, setLocalIndex] = useState(0)
+  const [localIndex, setLocalIndex] = useState(initialIndex)
   const active = activeIndex ?? localIndex
 
   function select(index) {

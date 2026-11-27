@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { ArrowUpRight, Maximize2, Minus, Plus } from 'lucide-react'
+import { ArrowUpRight, Maximize2 } from 'lucide-react'
 import { caseStudies } from '../cases'
 import { chapterNumber, projectActions } from './content'
 
@@ -55,10 +54,10 @@ export function Screenshot({ project, lang, open, className = '', eager = false 
   )
 }
 
-export function CaseDetails({ project, lang, className = '', technicalStack }) {
+export function CaseDetails({ project, lang, className = '' }) {
   return (
     <dl className={'case-details ' + className}>
-      {caseStudies[project.id].map(({ label, lead, copy, plain, evidence }, index) => (
+      {caseStudies[project.id].map(({ label, lead, copy, plain, evidence }) => (
         <div key={label[0]}>
           <dt>{label[lang]}</dt>
           <dd>
@@ -66,34 +65,9 @@ export function CaseDetails({ project, lang, className = '', technicalStack }) {
             {copy[lang]}
             {plain && <p className="plain-translation">{plain[lang]}</p>}
             {evidence && <External href={evidence.href} className="text-link evidence-link">{evidence.label[lang]} <ArrowUpRight size={15} aria-hidden="true" /></External>}
-            {technicalStack && index === 2 && <Tags items={technicalStack} />}
           </dd>
         </div>
       ))}
     </dl>
-  )
-}
-
-export function RevealRow({ id, className = '', summary, children, defaultOpen = false }) {
-  const [pinned, setPinned] = useState(defaultOpen)
-  const [preview, setPreview] = useState(false)
-  const open = pinned || preview
-  return (
-    <li className={'reveal-row glass ' + className} data-spotlight=""
-      onPointerEnter={event => { if (event.pointerType === 'mouse' && matchMedia('(hover: hover)').matches) setPreview(true) }}
-      onPointerLeave={event => {
-        if (event.pointerType === 'mouse' && !event.currentTarget.querySelector('.reveal-panel')?.contains(document.activeElement)) setPreview(false)
-      }}
-      onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setPreview(false) }}
-    >
-      <button type="button" className="row-trigger" aria-expanded={open} aria-controls={id}
-        onClick={() => { if (pinned) setPreview(false); setPinned(!pinned) }}>
-        {summary}
-        {open ? <Minus className="row-icon" size={18} aria-hidden="true" /> : <Plus className="row-icon" size={18} aria-hidden="true" />}
-      </button>
-      <div className="reveal-panel" data-open={open} id={id} inert={!open}>
-        <div className="reveal-inner">{children}</div>
-      </div>
-    </li>
   )
 }

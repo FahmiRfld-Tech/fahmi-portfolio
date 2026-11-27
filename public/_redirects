@@ -1,0 +1,2 @@
+# Cloudflare Pages serves matching files, then /index.html for unknown SPA routes.
+# An unconditional rewrite would also replace /clipper/, /llms.txt and JS assets.

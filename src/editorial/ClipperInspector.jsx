@@ -1,7 +1,6 @@
 import { useId, useState } from 'react'
 import { AudioLines, Braces, Focus } from 'lucide-react'
 import SegmentTabs from './SegmentTabs'
-import { architecture } from './clipper-story'
 import { alpha, audioEnergy, deadZone, faceSamples, findSilenceSnap, frameMs, hookResult, rawBoundary, resolveSegmentIds, smoothCenters, timestamp, transcript, waveformStart } from './clipper-pipeline'
 
 const range = resolveSegmentIds(hookResult)
@@ -17,17 +16,8 @@ function ModeSwitch({ options, selected, onSelect, label }) {
   </div>
 }
 
-function PipelineExplainer({ decision, lang }) {
-  return <div className="pipeline-explainer">
-    <strong>{decision.lead[lang]}</strong>
-    <p>{decision.copy[lang]}</p>
-    <p>{decision.plain[lang]}</p>
-  </div>
-}
-
 function HookScoring({ lang }) {
   return <div className="pipeline-step hook-step">
-    <PipelineExplainer decision={architecture[0]} lang={lang} />
     <p className="pipeline-badge"><Braces size={15} aria-hidden="true" /> Hook Score: 94/100 · {lang ? 'High retention contrast' : 'Kontras retensi tinggi'}</p>
     <ol className="pipeline-transcript">
       {transcript.map(row => <li key={row.id} data-selected={range.ids.includes(row.id)}>
@@ -47,7 +37,6 @@ function AudioSnap({ lang }) {
   const [mode, setMode] = useState(0)
   const boundary = mode ? snap.cut : rawBoundary
   return <div className="pipeline-step audio-step" data-snapped={!!mode}>
-    <PipelineExplainer decision={architecture[1]} lang={lang} />
     <ModeSwitch selected={mode} onSelect={setMode} label={lang ? 'Cut boundary' : 'Batas potong'}
       options={lang ? ['Raw LLM Boundary', 'VAD Silence-Snapped (+180 ms)'] : ['Batas LLM mentah', 'VAD Silence-Snapped (+180 ms)']} />
     <svg className="pipeline-wave" viewBox="0 0 320 110" aria-hidden="true">
@@ -66,7 +55,7 @@ function AudioSnap({ lang }) {
     <p className="pipeline-state" role="status"><strong>{timestamp(boundary)}</strong> · {mode
       ? (lang ? 'Clean breath gap · ' : 'Jeda napas bersih · ') + snap.duration + ' ms (>250 ms)'
       : (lang ? 'Warning: cut intersects speech.' : 'Peringatan: batas memotong suku kata.')}</p>
-    <p className="pipeline-footnote">{lang ? 'Fixture energy in 20 ms frames. The GOP policy checks for a keyframe inside the silence window before using stream-copy.' : 'Energi audio contoh dalam frame 20 ms. Kebijakan GOP memeriksa keyframe di dalam jeda sebelum memakai stream-copy.'}</p>
+    <p className="pipeline-footnote">{lang ? 'Synthetic audio · 20 ms frames' : 'Audio sintetis · frame 20 ms'}</p>
   </div>
 }
 
@@ -89,7 +78,6 @@ function SmartReframe({ lang }) {
   const left = Math.max(0, Math.min(320 - width, smoothed[frame] - width / 2))
   const shift = x => ({ transform: 'translateX(' + x + 'px)' })
   return <div className="pipeline-step reframe-step" data-fallback={!!mode}>
-    <PipelineExplainer decision={architecture[2]} lang={lang} />
     <ModeSwitch selected={mode} onSelect={setMode} label={lang ? 'Reframing mode' : 'Mode reframing'}
       options={lang ? ['Speaker Mode · 9:16 crop', 'Screen / Gameplay · Fallback'] : ['Mode pembicara · Crop 9:16', 'Layar / Gim · Fallback']} />
     <div className="reframe-view">
@@ -115,7 +103,7 @@ function SmartReframe({ lang }) {
       <span>{lang ? 'Sample frame' : 'Frame contoh'} {frame + 1}/{faceSamples.length}</span>
       <input id={slider} type="range" min="0" max={faceSamples.length - 1} value={frame} disabled={!!mode} onChange={event => setFrame(event.target.valueAsNumber)} />
     </label>
-    <p className="pipeline-footnote">{lang ? 'Synthetic face track. Slide to compare detection and the smoothed crop.' : 'Posisi wajah sintetis. Geser slider untuk membandingkan deteksi dan crop yang diperhalus.'}</p>
+    <p className="pipeline-footnote">{lang ? 'Synthetic face track' : 'Posisi wajah sintetis'}</p>
   </div>
 }
 

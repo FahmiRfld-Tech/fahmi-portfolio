@@ -1,8 +1,9 @@
+import { useState } from 'react'
 import { Printer } from 'lucide-react'
 import content from '../content.json'
 import { EMAIL, GITHUB } from './content'
 
-const portfolio = 'https://fahmi-portfolio-sand.vercel.app'
+const portfolio = new URL(document.querySelector('link[rel=canonical]').href)
 const work = [
   {
     title: ['Co-Founder & Chief Executive Officer', 'Co-Founder & Chief Executive Officer'],
@@ -31,14 +32,25 @@ const projects = [
 
 export const resumeLabel = ['Lihat / Unduh CV (PDF)', 'View / Download CV (PDF)']
 
+export function PrintResume({ lang }) {
+  return <button className="key primary" type="button" onClick={() => window.print()}>
+    <Printer size={17} aria-hidden="true" /> {lang ? 'Print / Save PDF' : 'Cetak / Simpan PDF'}
+  </button>
+}
+
+const filters = [
+  ['all', 'Semua', 'All'], ['projects', 'Proyek', 'Projects'], ['work', 'Pengalaman', 'Experience'], ['study', 'Pendidikan', 'Education'],
+]
+
 export default function Resume({ lang }) {
+  const [filter, setFilter] = useState('all')
   return <>
-    <div className="resume-toolbar">
-      <button className="key primary" type="button" onClick={() => window.print()} data-initial-focus>
-        <Printer size={17} aria-hidden="true" /> {lang ? 'Print / Save PDF' : 'Cetak / Simpan PDF'}
-      </button>
+    <div className="resume-filters" role="group" aria-label={lang ? 'Resume filters' : 'Filter CV'}>
+      {filters.map(([id, indonesian, english]) => <button type="button" className="key" key={id} aria-pressed={id === filter} onClick={() => setFilter(id)}>
+        {lang ? english : indonesian}
+      </button>)}
     </div>
-    <article className="resume-paper" aria-labelledby="resume-name">
+    <article className="resume-paper" data-section={filter} aria-labelledby="resume-name">
       <header>
         <h2 id="resume-name">M. Fahmi Rifaldi</h2>
         <p className="resume-position">Applied AI &amp; Full-Stack Product Engineer</p>
@@ -46,26 +58,26 @@ export default function Resume({ lang }) {
           <span>{lang ? 'Bandung, West Java, Indonesia' : 'Bandung, Jawa Barat, Indonesia'}</span>
           <a href={'mailto:' + EMAIL}>{EMAIL}</a>
           <a href={GITHUB}>github.com/FahmiRfld-Tech</a>
-          <a href={portfolio}>fahmi-portfolio-sand.vercel.app</a>
+          <a href={portfolio.href}>{portfolio.hostname}</a>
         </address>
       </header>
-      <section>
+      <section data-resume-part="study">
         <h3>{lang ? 'Education' : 'Pendidikan'}</h3>
         <h4>{lang ? 'Applied Bachelor’s in Multimedia Engineering Technology' : 'D4 Teknologi Rekayasa Multimedia'}</h4>
         <p>{lang ? 'Telkom University · Sep 2023 – Present · GPA 3.67 / 4.00' : 'Telkom University · Sep 2023 – sekarang · IPK 3,67 / 4,00'}</p>
       </section>
-      <section>
+      <section data-resume-part="study">
         <h3>{lang ? 'Certifications & Training' : 'Sertifikasi & Pelatihan'}</h3>
         <p>{lang ? 'BNSP Certified Multimedia Designer' : 'Desainer Multimedia Tersertifikasi BNSP'} · Google AI Essentials · LKMM-TM</p>
       </section>
-      <section>
+      <section data-resume-part="projects">
         <h3>{lang ? 'Core Engineering Projects' : 'Proyek Engineering Utama'}</h3>
         <ul>{projects.map(([id, detail]) => {
           const project = content.projects.find(entry => entry.id === id)
           return <li key={id}><h4>{project.name[lang]}</h4><p>{detail[lang]}</p></li>
         })}</ul>
       </section>
-      <section>
+      <section data-resume-part="work">
         <h3>{lang ? 'Experience & Leadership' : 'Pengalaman & Kepemimpinan'}</h3>
         <ul>{work.map(({ role, title, place, detail }, index) => {
           const entry = content.roles[role]

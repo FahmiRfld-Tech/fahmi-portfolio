@@ -7,10 +7,10 @@ Fahmi is studying D4 Teknologi Rekayasa Multimedia at Telkom University. His por
 ## Engineering projects
 
 - [Hallo Batam AI](https://batamtes.vercel.app/): A bilingual travel assistant that filters by area and category, ranks PostgreSQL text matches, reranks place names, and exposes verified excerpts and evidence gaps. Production uses lexical retrieval and exact-query caching. Model-matched pgvector RRF and semantic-cache logic are prepared in SQL. [Retrieval notes](https://github.com/FahmiRfld-Tech/wisatabatam/blob/main/docs/RAG_V2.md)
-- [ClipForge / AI Video Clipper](https://fahmi-portfolio-sand.vercel.app/clipper/): Local-first vertical video export. The [Multimodal Pipeline Inspector](https://fahmi-portfolio-sand.vercel.app/#lab-clipper) illustrates segment-ID validation, silence snapping, and EMA-based reframing with sample data.
+- [ClipForge / AI Video Clipper](/clipper/): Local-first vertical video export. The [Multimodal Pipeline Inspector](/#lab-clipper) illustrates segment-ID validation, silence snapping, and EMA-based reframing with sample data.
 - [Digitalisasi Cireundeu](https://kampungcireundeu.kii.lat/): Full-stack tourism portal and self-service CMS for local businesses. Fahmi led a cross-functional team of 13.
-- [Batam RAG Backend](https://fahmi-portfolio-sand.vercel.app/#lab-rag): Separate Python/Django REST research prototype with FastEmbed and ChromaDB for embedding-based retrieval experiments.
-- [PromptGate](https://fahmi-portfolio-sand.vercel.app/#lab-promptgate): Dependency-free Python middleware for deterministic prompt-injection screening, request-local PII masking, and syntax-only JSON auto-repair. The TypeScript sandbox runs sample cases entirely in the browser. [Repository](https://github.com/FahmiRfld-Tech/promptgate)
+- [Batam RAG Backend](/#lab-rag): Separate Python/Django REST research prototype with FastEmbed and ChromaDB for embedding-based retrieval experiments.
+- [PromptGate](/#lab-promptgate): Dependency-free Python middleware for deterministic prompt-injection screening, request-local PII masking, and syntax-only JSON auto-repair. The TypeScript sandbox runs sample cases entirely in the browser. [Repository](https://github.com/FahmiRfld-Tech/promptgate)
 
 ## Technical stack
 
@@ -26,8 +26,8 @@ Fahmi is studying D4 Teknologi Rekayasa Multimedia at Telkom University. His por
 
 ## Contact
 
-- [Portfolio](https://fahmi-portfolio-sand.vercel.app/)
+- [Portfolio](/)
 - [Email](mailto:fahmirifaldi253@gmail.com)
 - [GitHub](https://github.com/FahmiRfld-Tech)
 - [LinkedIn](https://www.linkedin.com/in/m-fahmi-rifaldi-ba0653245/)
-- [ID/EN print-ready CV](https://fahmi-portfolio-sand.vercel.app/#contact)
+- [ID/EN print-ready CV](/#contact)
