@@ -4,25 +4,6 @@ import content from '../content.json'
 import { EMAIL, GITHUB } from './content'
 
 const portfolio = new URL(document.querySelector('link[rel=canonical]').href)
-const work = [
-  {
-    title: ['Co-Founder & Chief Executive Officer', 'Co-Founder & Chief Executive Officer'],
-    place: ['Faham Visual · Studio kreatif & perangkat lunak, Bandung', 'Faham Visual · Creative & software studio, Bandung'],
-  },
-  {
-    title: ['Magang Web & Digital', 'Web & Digital Intern'],
-    place: ['Center of Excellence (CoE) GreenTech, Telkom University', 'Center of Excellence (CoE) GreenTech, Telkom University'],
-  },
-  {
-    role: 3,
-    detail: ['Memimpin komunitas asrama dengan 3.000+ penghuni.', 'Led a dormitory community of 3,000+ residents.'],
-  },
-  {
-    role: 2,
-    detail: ['Mendampingi 300+ praktikan di lima mata kuliah komputasi dan multimedia.', 'Mentored 300+ students across five computing and multimedia courses.'],
-  },
-  { role: 0 },
-]
 const projects = [
   ['batam', ['Pencarian terfilter, pemetaan bukti ke kutipan X-Ray, dan pengungkapan batas bukti. RRF dan cache semantik pgvector disiapkan di SQL.','Filtered search, evidence mapped to X-Ray citations, and evidence-gap disclosure. pgvector RRF and semantic caching are prepared in SQL.']],
   ['clipper', ['Ekspor video vertikal lokal. Inspector ClipForge memperagakan pemetaan ID segmen, VAD silence-snapping, dan reframing EMA 9:16.','Local vertical video export. The ClipForge inspector demonstrates segment-ID mapping, VAD silence-snapping, and EMA 9:16 reframing.']],
@@ -79,14 +60,10 @@ export default function Resume({ lang }) {
       </section>
       <section data-resume-part="work">
         <h3>{lang ? 'Experience & Leadership' : 'Pengalaman & Kepemimpinan'}</h3>
-        <ul>{work.map(({ role, title, place, detail }, index) => {
-          const entry = content.roles[role]
-          return <li key={index}>
-            <h4>{entry ? entry.role[lang] : title[lang]}</h4>
-            <p>{entry ? entry.org[lang] + ' · ' + entry.date[lang] : place[lang]}</p>
-            {detail && <p>{detail[lang]}</p>}
-          </li>
-        })}</ul>
+        <ul>{content.roles.map(({ role, org, date }) => <li key={role}>
+          <h4>{role}</h4>
+          <p>{org[lang]} · {date[lang]}</p>
+        </li>)}</ul>
       </section>
     </article>
   </>

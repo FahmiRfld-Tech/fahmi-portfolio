@@ -18,11 +18,15 @@ Fahmi is studying D4 Teknologi Rekayasa Multimedia at Telkom University. His por
 - Web and backend: TypeScript, JavaScript, React, Vite, Python, Django REST.
 - Multimedia: Whisper, FFmpeg, Web Audio API, browser-based video processing.
 
-## Leadership
+## Experience & leadership
 
-- Led a Telkom University dormitory community of 3,000+ residents.
-- Mentored 300+ students across five computing and multimedia courses as a technical practicum assistant coordinator.
-- Led 13 contributors across frontend, backend, content, and field acceptance testing for Cireundeu.
+- **Head of Boys' Dormitory & Vice Chair Senior Resident XIII** — Telkom University · 3.000+ Penghuni (Jun 2024 – Jul 2026).
+- **Technical Practicum Lab Coordinator** — Fakultas Ilmu Terapan, Telkom University · 300+ Mahasiswa (Sep 2024 – Jan 2026).
+- **Project Manager & Full-Stack Lead** — KKN Tematik Digitalisasi Cireundeu · 13 Anggota Tim (Feb – Jul 2026).
+- **Web & Digital Systems Intern** — Center of Excellence (CoE) GreenTech, Telkom University (2025 – 2026).
+- **Freelance Multimedia & Digital Strategist** — Kedai Akoh 99 (Sep 2025 – Sekarang).
+- **Head of Advocacy & Student Welfare Dept.** — Himpunan Mahasiswa Teknologi Rekayasa Multimedia (Jan – Nov 2025).
+- **Project Leader — Dorm Olympic 2025** — Telkom University (Feb – Mei 2025).
 
 ## Contact
 

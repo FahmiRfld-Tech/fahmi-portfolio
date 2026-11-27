@@ -1,8 +1,8 @@
-import { ArrowUpRight, FolderGit2, Layers3, ShieldCheck, Users } from 'lucide-react'
+import { ArrowUpRight, FolderGit2, Layers3, ShieldCheck } from 'lucide-react'
 import content from '../content.json'
 import { BATAM_RAG_NOTES, CireundeuDecisions, GroundingPreview, ResearchTradeoff, RetrievalComparison } from './EngineeringNotes'
 import { CaseDetails, External, ProjectLink, Tags } from './Shared'
-import { GITHUB, insights } from './content'
+import { GITHUB } from './content'
 import SegmentTabs from './SegmentTabs'
 import StackMatrix from './StackMatrix'
 import { domain, impact } from './clipper-story'
@@ -64,14 +64,6 @@ export function ProjectDossierActions({ project, lang }) {
       {lang ? 'Concept documentation' : 'Dokumentasi konsep'} <ArrowUpRight size={16} aria-hidden="true" />
     </External>}
   </>
-}
-
-export function LeadershipDossier({ index, lang }) {
-  const { org, date } = content.roles[index]
-  return <div className="leadership-detail">
-    <div><Users size={22} aria-hidden="true" /><strong>{org[lang]}</strong><span className="date">{date[lang]}</span></div>
-    <p>{insights[index][lang]}</p>
-  </div>
 }
 
 export function StackDossier({ lang, navigate }) {

@@ -19,6 +19,8 @@ export default function useSpotlights(root) {
       card?.removeAttribute('data-lit')
       card?.style.removeProperty('--tilt-x')
       card?.style.removeProperty('--tilt-y')
+      card?.style.removeProperty('--tilt-shadow-x')
+      card?.style.removeProperty('--tilt-shadow-y')
       card?.style.removeProperty('--magnet-x')
       card?.style.removeProperty('--magnet-y')
       card = null
@@ -38,8 +40,9 @@ export default function useSpotlights(root) {
       if (!card) return
       x = Math.min(1, Math.max(0, (event.clientX - untransformed.left) / untransformed.width))
       y = Math.min(1, Math.max(0, (event.clientY - untransformed.top) / untransformed.height))
-      nextX = (0.5 - y) * 2 * tiltLimit
-      nextY = (x - 0.5) * 2 * tiltLimit
+      const limit = card.classList.contains('workbench') ? 2.5 : tiltLimit
+      nextX = (0.5 - y) * 2 * limit
+      nextY = (x - 0.5) * 2 * limit
       if (frame === undefined) frame = requestAnimationFrame(paint)
     }
 
@@ -47,17 +50,19 @@ export default function useSpotlights(root) {
       frame = undefined
       if (!card) return
       if (card.hasAttribute('data-magnetic')) {
-        card.style.setProperty('--magnet-x', ((x - 0.5) * 8) + 'px')
-        card.style.setProperty('--magnet-y', ((y - 0.5) * 8) + 'px')
+        card.style.setProperty('--magnet-x', Math.min(4, Math.max(-4, (x - 0.5) * untransformed.width * .15)) + 'px')
+        card.style.setProperty('--magnet-y', Math.min(4, Math.max(-4, (y - 0.5) * untransformed.height * .15)) + 'px')
         return
       }
       card.style.setProperty('--mouse-x', x * 100 + '%')
       card.style.setProperty('--mouse-y', y * 100 + '%')
-      if (card.hasAttribute('data-tilt')) {
+      if (card.hasAttribute('data-tilt') && (!card.classList.contains('workbench') || matchMedia('(min-width: 900px)').matches)) {
         tiltX += (nextX - tiltX) * .23
         tiltY += (nextY - tiltY) * .23
         card.style.setProperty('--tilt-x', tiltX + 'deg')
         card.style.setProperty('--tilt-y', tiltY + 'deg')
+        card.style.setProperty('--tilt-shadow-x', (-tiltY * 3) + 'px')
+        card.style.setProperty('--tilt-shadow-y', (27 + tiltX * 2) + 'px')
         if (Math.abs(nextX - tiltX) + Math.abs(nextY - tiltY) > .025) frame = requestAnimationFrame(paint)
       }
       card.setAttribute('data-lit', '')
